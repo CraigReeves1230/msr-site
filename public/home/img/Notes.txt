@@ -1,0 +1,1 @@
+Post Images should be 1900 * 600 pixels.
