@@ -1,3 +1,10 @@
+<?php
+    use App\PrivateMessage;
+    use Illuminate\Support\Facades\Auth;
+    $user = Auth::user();
+    $private_messages = PrivateMessage::where('user_id', $user->id)->orderBy('id', 'desc')->limit(2)->get();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,54 +62,30 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
                 <ul class="dropdown-menu message-dropdown">
+
+                    @foreach($private_messages as $pm)
                     <li class="message-preview">
                         <a href="#">
                             <div class="media">
                                     <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                        <img class="media-object" height="35" src="{{$pm->author()->images[0]->path}}" alt="">
                                     </span>
                                 <div class="media-body">
-                                    <h5 class="media-heading"><strong>John Smith</strong>
+                                    <h5 class="media-heading"><strong>{{$pm->author()->name}}</strong>
                                     </h5>
-                                    <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                    <p class="small text-muted"><i class="fa fa-clock-o"></i> {{$pm->created_at->diffForHumans()}}</p>
+                                    <p>{{str_limit($pm->content, 40)}}</p>
                                 </div>
                             </div>
                         </a>
                     </li>
-                    <li class="message-preview">
-                        <a href="#">
-                            <div class="media">
-                                    <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
-                                    </span>
-                                <div class="media-body">
-                                    <h5 class="media-heading"><strong>John Smith</strong>
-                                    </h5>
-                                    <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="message-preview">
-                        <a href="#">
-                            <div class="media">
-                                    <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
-                                    </span>
-                                <div class="media-body">
-                                    <h5 class="media-heading"><strong>John Smith</strong>
-                                    </h5>
-                                    <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
+                    @endforeach
+
+
                     <li class="message-footer">
                         <a href="#">Read All New Messages</a>
                     </li>
+
                 </ul>
             </li>
             <li class="dropdown">
@@ -133,7 +116,7 @@
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> John Smith <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{$user->name}} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li>
                         <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
@@ -161,7 +144,7 @@
                     <a href="{{route('my_wrestlers')}}"><i class="fa fa-fw fa-bar-chart-o"></i> My Wrestlers</a>
                 </li>
                 <li>
-                    <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
+                    <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Inbox</a>
                 </li>
                 <li>
                     <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>

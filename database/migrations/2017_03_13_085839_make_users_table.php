@@ -20,7 +20,9 @@ class MakeUsersTable extends Migration
             $table->string('email', 100)->unique();
             $table->string('password');
             $table->string('status')->default("active");
+            $table->boolean('admin')->default(false);
             $table->boolean('master')->default(false);
+            $table->boolean('muted')->default(false);
             $table->rememberToken();
         });
     }

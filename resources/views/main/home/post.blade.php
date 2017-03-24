@@ -16,20 +16,25 @@
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
         <div class="row">
             <div class="comments-container">
-                <h1>Comments</h1>
+
+                @if(count($post->comments) > 0)
+                    <h1>Comments</h1>
+                @endif
 
                 @if(Auth::check())
                 <!-- Comment form -->
                 <form action="{{route('save_comment')}}" method="post">
                     <div class="form-group">
+                        <label for="content">Leave Comment</label>
                         <textarea class="form-control" name="content" id="" rows="5"></textarea>
                         {{csrf_field()}}
                         <input type="hidden" name="post_id" value="{{$post->id}}">
-                        <input style="margin-top: 8px;" value="Leave Comment" type="submit" class="btn btn-default" name="leave_comment">
+                        <input style="margin-top: 8px;" value="Submit" type="submit" class="btn btn-default" name="leave_comment">
                     </div>
                 </form>
                 @endif
 
+                @if(count($comments) > 0)
                 <ul id="comments-list" class="comments-list">
                     <li>
 
@@ -41,8 +46,6 @@
                                     <div class="comment-head">
                                         <h6 class="comment-name">{{$comment->user->name}}</h6>
                                         <span>posted {{$comment->created_at->diffForHumans()}}</span>
-                                        <!-- <i class="fa fa-reply"></i> -->
-                                        <!-- <i class="fa fa-heart"></i> -->
                                     </div>
                                     <div class="comment-content">
                                         {{$comment->content}}
@@ -53,7 +56,7 @@
 
                         <ul class="comments-list reply-list">
 
-                            <!-- Comment response -->
+                            <!-- Comment replies -->
                             @foreach($comment->replies as $reply)
                             <li>
                                 <div class="comment-avatar"><img src="{{$reply->user->images[0]->path}}" alt=""></div>
@@ -61,8 +64,6 @@
                                         <div class="comment-head">
                                             <h6 class="comment-name">{{$reply->user->name}}</h6>
                                             <span>{{$reply->created_at->diffForHumans()}}</span>
-                                            <!-- <i class="fa fa-reply toggle-reply"></i> -->
-                                            <!-- <i class="fa fa-heart"></i> -->
                                         </div>
                                         <div class="comment-content">
                                             {{$reply->content}}
@@ -84,27 +85,12 @@
                                 </form>
                                 @endif
                                 <!-- end comment reply form -->
-                        </ul>
-                    </li>
-                    @endforeach
-                </ul>
-
+                            </ul>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
-
         </div>
-
-    </div>
-
-
-    <script
-    src="https://code.jquery.com/jquery-3.2.0.min.js"
-    integrity="sha256-JAW99MJVpJBGcbzEuXk4Az05s/XyDdBomFqNlM3ic+I="
-    crossorigin="anonymous"></script>
-
-    <script>
-            $(".comment-head .toggle-reply").click(function(){
-                $(".comment-reply").slideToggle("slow");
-            });
-    </script>
-
+    @endif
 @endsection

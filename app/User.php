@@ -39,6 +39,10 @@ class User extends Authenticatable
         return $this->hasMany('App\WrestlerRating');
     }
 
+    public function private_messages(){
+        return $this->hasMany('App\PrivateMessage');
+    }
+
     //returns images for user
     public function images() {
         return $this->morphMany('App\Image', 'imageable');

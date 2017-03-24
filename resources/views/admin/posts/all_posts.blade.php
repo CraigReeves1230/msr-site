@@ -40,13 +40,13 @@
         @foreach($posts as $post)
         <tr>
             <td>{{$post->id}}</td>
-            <td>{{$post->title}}</td>
+            <td><a href="{{route('read_article', ['id' => $post->id])}}">{{$post->title}}</a></td>
             <td>{{$post->subtitle}}</td>
             <td>{{$post->user->name}}</td>
             <td><a href="{{route('edit_post', ['id' => $post->id])}}">Edit</a></td>
             <td><a href="{{route('delete_post', ['id' => $post->id])}}">Delete</a></td>
             <td><img height="80" src="{{$post->images[0]->path}}"></td>
-            <td>{{substr($post->content, 0, 300)}}</td>
+            <td>{{str_limit($post->content, 300)}}</td>
         </tr>
         @endforeach
     </table>

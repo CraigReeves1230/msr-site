@@ -20,7 +20,7 @@ class Comment extends Model
     }
 
     public function replies(){
-        return $this->hasMany('App\Reply');
+        return $this->hasMany('App\CommentReply');
     }
 
     public function save_comment($commentable, $data){

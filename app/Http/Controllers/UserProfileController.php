@@ -21,6 +21,6 @@ class UserProfileController extends Controller
     public function my_wrestlers(){
         $user = Auth::user();
         $wrestlers = $user->wrestlers();
-        return view('main/my_profile/my_ratings', compact('user', 'wrestlers'));
+        return view('main/my_profile/my_wrestlers/my_ratings', compact('user', 'wrestlers'));
     }
 }

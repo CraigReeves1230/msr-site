@@ -36,6 +36,12 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // Post replies
     Route::post('post/reply/create', 'PostCommentsController@store_reply')->name('save_reply');
 
+    // Create private message
+    Route::get('/message/{id}/create', 'PrivateMessagesController@create')->name('create_pm');
+
+    // Store private message
+    Route::post('/message/{id}/store', 'PrivateMessagesController@store')->name('store_pm');
+
     /*
     |----------------------------------------------------------------------------
     | Admin Tool
@@ -152,9 +158,6 @@ Route::group(['middlewareGroups' => 'web'], function(){
     |--------------------------------------------------------------------------*/
     Route::get('/user_profile', 'UserProfileController@index')->name('user_profile');
     Route::get('/user_profile/my_wrestlers', 'UserProfileController@my_wrestlers')->name('my_wrestlers');
-
-
-
 });
 
 Auth::routes();

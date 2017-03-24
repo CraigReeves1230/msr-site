@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\Post;
-use App\Reply;
+use App\CommentReply;
 use Illuminate\Http\Request;
 
 class PostCommentsController extends Controller
@@ -20,7 +20,7 @@ class PostCommentsController extends Controller
         return redirect()->back();
     }
 
-    public function store_reply(Reply $reply, Request $request){
+    public function store_reply(CommentReply $reply, Request $request){
         $data = $request->all();
         $reply->save_reply($data);
         return redirect()->back();

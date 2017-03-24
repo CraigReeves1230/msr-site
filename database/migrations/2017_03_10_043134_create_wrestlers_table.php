@@ -22,6 +22,7 @@ class CreateWrestlersTable extends Migration
             $table->double('movement')->nullable();
             $table->double('mat_and_chain')->nullable();
             $table->double('setting_up')->nullable();
+            $table->double('sell_timing')->nullable();
             $table->double('bumping')->nullable();
             $table->double('technical')->nullable();
             $table->double('high_fly')->nullable();
@@ -35,6 +36,7 @@ class CreateWrestlersTable extends Migration
             $table->double('comebacks')->nullable();
             $table->double('selling')->nullable();
             $table->double('ring_awareness')->nullable();
+            $table->double('community_rating')->nullable();
         });
     }
 

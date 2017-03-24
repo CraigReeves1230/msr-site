@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class Reply extends Model
+class CommentReply extends Model
 {
     protected $fillable = [
         'content', 'likes', 'user_id'

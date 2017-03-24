@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddEnabledToWrestlerRatings extends Migration
+class CreatePrivateMessagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class AddEnabledToWrestlerRatings extends Migration
      */
     public function up()
     {
-        Schema::table('wrestler_ratings', function (Blueprint $table) {
-            $table->boolean('enabled')->default(true);
+        Schema::create('private_messages', function (Blueprint $table) {
+            $table->increments('id');
+            $table->text('content');
+            $table->integer('user_id');
+            $table->integer('author_id');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ class AddEnabledToWrestlerRatings extends Migration
      */
     public function down()
     {
-        Schema::table('wrestler_ratings', function (Blueprint $table) {
-            $table->dropColumn('enabled');
-        });
+        Schema::dropIfExists('private_messages');
     }
 }

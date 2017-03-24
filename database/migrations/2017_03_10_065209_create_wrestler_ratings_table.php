@@ -17,12 +17,14 @@ class CreateWrestlerRatingsTable extends Migration
             $table->timestamps();
             $table->integer('wrestler_id');
             $table->integer('user_id')->nullable();
+            $table->boolean('enabled')->default(true);
             $table->double('striking')->nullable();
             $table->double('submission')->nullable();
             $table->double('throws')->nullable();
             $table->double('movement')->nullable();
             $table->double('mat_and_chain')->nullable();
             $table->double('setting_up')->nullable();
+            $table->double('sell_timing')->nullable();
             $table->double('bumping')->nullable();
             $table->double('technical')->nullable();
             $table->double('high_fly')->nullable();
@@ -36,6 +38,7 @@ class CreateWrestlerRatingsTable extends Migration
             $table->double('comebacks')->nullable();
             $table->double('selling')->nullable();
             $table->double('ring_awareness')->nullable();
+            $table->double('overall_score');
         });
     }
 
