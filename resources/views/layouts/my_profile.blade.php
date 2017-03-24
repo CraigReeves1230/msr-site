@@ -27,6 +27,7 @@
 
     <!-- Morris Charts CSS -->
     <link href="/css/plugins/morris.css" rel="stylesheet">
+    <link href="/css/private_messages.css" rel="stylesheet">
 
 
     <!-- Custom Fonts -->
@@ -122,7 +123,7 @@
                         <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                        <a href="{{route('pm_inbox')}}"><i class="fa fa-fw fa-envelope"></i>Inbox</a>
                     </li>
                     <li>
                         <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
@@ -144,7 +145,15 @@
                     <a href="{{route('my_wrestlers')}}"><i class="fa fa-fw fa-bar-chart-o"></i> My Wrestlers</a>
                 </li>
                 <li>
-                    <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Inbox</a>
+                    <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-envelope"></i> Private Messages <i class="fa fa-fw fa-caret-down"></i></a>
+                    <ul id="demo" class="collapse">
+                        <li>
+                            <a href="{{route('pm_inbox')}}">Received Messages</a>
+                        </li>
+                        <li>
+                            <a href="#">Sent Messages</a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>

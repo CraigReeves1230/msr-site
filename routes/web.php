@@ -42,6 +42,12 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // Store private message
     Route::post('/message/{id}/store', 'PrivateMessagesController@store')->name('store_pm');
 
+    // Private messages inbox
+    Route::get('/user_profile/messages', 'PrivateMessagesController@index')->name('pm_inbox');
+
+    // Show private message
+    Route::get('user_profile/message/{id}', 'PrivateMessagesController@show')->name('pm_show');
+
     /*
     |----------------------------------------------------------------------------
     | Admin Tool

@@ -24,4 +24,17 @@ class PrivateMessagesController extends Controller
         $pm->send_message($recipient, $message);
         return redirect()->back();
     }
+
+    public function index(){
+        $user = Auth::user();
+        $private_messages = $user->private_messages()->orderBy('id', 'desc')->get();
+        return view('private_messages/inbox', compact('user', 'private_messages'));
+    }
+
+    public function show($id){
+        $user = Auth::user();
+        $private_message = PrivateMessage::findOrFail($id);
+        return view('private_messages/show', compact('user', 'private_message'));
+    }
+
 }
