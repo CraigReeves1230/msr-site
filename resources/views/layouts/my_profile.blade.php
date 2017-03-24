@@ -2,7 +2,8 @@
     use App\PrivateMessage;
     use Illuminate\Support\Facades\Auth;
     $user = Auth::user();
-    $private_messages = PrivateMessage::where('user_id', $user->id)->orderBy('id', 'desc')->limit(2)->get();
+    $private_messages = PrivateMessage::where([ ['user_id', $user->id], ['trash_id', '<>', $user->id ] ])
+        ->orderBy('id', 'desc')->limit(2)->get();
 ?>
 
 <!DOCTYPE html>
@@ -123,7 +124,7 @@
                         <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
                     </li>
                     <li>
-                        <a href="{{route('pm_inbox')}}"><i class="fa fa-fw fa-envelope"></i>Inbox</a>
+                        <a href="{{route('pm_index')}}"><i class="fa fa-envelope"></i> Messages</a>
                     </li>
                     <li>
                         <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
@@ -145,15 +146,7 @@
                     <a href="{{route('my_wrestlers')}}"><i class="fa fa-fw fa-bar-chart-o"></i> My Wrestlers</a>
                 </li>
                 <li>
-                    <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-envelope"></i> Private Messages <i class="fa fa-fw fa-caret-down"></i></a>
-                    <ul id="demo" class="collapse">
-                        <li>
-                            <a href="{{route('pm_inbox')}}">Received Messages</a>
-                        </li>
-                        <li>
-                            <a href="#">Sent Messages</a>
-                        </li>
-                    </ul>
+                    <a href="{{route('pm_index')}}"><i class="fa fa-fw fa-envelope"></i> Private Messages</a>
                 </li>
                 <li>
                     <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PrivateMessage extends Model
 {
-    protected $fillable = ['content', 'user_id', 'author_id'];
+    protected $fillable = ['content', 'user_id', 'author_id', 'trash_id'];
 
     public function user(){
         return $this->belongsTo('App\User');
@@ -17,9 +17,13 @@ class PrivateMessage extends Model
         return User::findOrFail($this->author_id);
     }
 
-    public function send_message($recipient, $content){
+    public function replies(){
+        return $this->hasMany('App\PrivateMessageReply');
+    }
+
+    public function send_message($author, $recipient, $content){
         $this->user_id = $recipient->id;
-        $this->author_id = Auth::user()->id;
+        $this->author_id = $author->id;
         $this->content = $content;
         $this->save();
     }

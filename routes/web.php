@@ -42,11 +42,17 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // Store private message
     Route::post('/message/{id}/store', 'PrivateMessagesController@store')->name('store_pm');
 
-    // Private messages inbox
-    Route::get('/user_profile/messages', 'PrivateMessagesController@index')->name('pm_inbox');
+    // Private messages index
+    Route::get('/user_profile/messages', 'PrivateMessagesController@see_messages')->name('pm_index');
 
     // Show private message
     Route::get('user_profile/message/{id}', 'PrivateMessagesController@show')->name('pm_show');
+
+    // Private message reply
+    Route::post('user_profile/message/reply', 'PrivateMessagesController@send_reply')->name('send_pm_reply');
+
+    // Private message delete
+    Route::get('user_profile/messages/{id}/delete', 'PrivateMessagesController@delete')->name('delete_pm');
 
     /*
     |----------------------------------------------------------------------------

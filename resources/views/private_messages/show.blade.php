@@ -33,32 +33,43 @@
                         </div>
                     </article>
 
-                    <!--
-                    <!-- Reply
+
+                    <!-- Reply -->
+                    @foreach($private_message_replies as $reply)
                     <article class="row">
                         <div class="col-md-2 col-sm-2 col-md-offset-1 col-sm-offset-0 hidden-xs">
                             <figure class="thumbnail">
-                                <img class="img-responsive" src="http://www.keita-gaming.com/assets/profile/default-avatar-c5d8ec086224cb6fc4e395f4ba3018c2.jpg" />
-                                <figcaption class="text-center">username</figcaption>
+                                <img class="img-responsive" height="64" src="{{$reply->author()->images[0]->path}}" />
+                                <figcaption class="text-center">{{$reply->author()->name}}</figcaption>
                             </figure>
                         </div>
                         <div class="col-md-9 col-sm-9">
                             <div class="panel panel-default arrow left">
                                 <div class="panel-body">
                                     <header class="text-left">
-                                        <div class="comment-user"><i class="fa fa-user"></i> That Guy</div>
-                                        <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i> Dec 16, 2014</time>
+                                        <div class="comment-user"><i class="fa fa-user"></i> {{$reply->author()->name}}</div>
+                                        <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i> {{$reply->created_at->diffForHumans()}}</time>
                                     </header>
                                     <div class="comment-post">
                                         <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                            {{$reply->content}}
                                         </p>
                                     </div>
-                                    <p class="text-right"><a href="#" class="btn btn-default btn-sm"><i class="fa fa-reply"></i> reply</a></p>
                                 </div>
                             </div>
                         </div>
-                    </article> -->
+                    </article>
+                    @endforeach
+
+                    <form action="{{route('send_pm_reply')}}" method="post">
+                        {{csrf_field()}}
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label for="content"><h4>Send Reply</h4></label>
+                            <textarea class="form-control" name="content" rows="3"></textarea>
+                            <input type="hidden" value="{{$private_message->id}}" name="private_message_id">
+                            <input type="submit" value="Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
+                        </div>
+                    </form>
 
 
 
