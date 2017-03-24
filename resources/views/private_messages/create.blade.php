@@ -15,7 +15,7 @@
         <form action="{{route('store_pm', ['id' => $recipient->id])}}" method="post">
             {{csrf_field()}}
             <textarea name="content" class="form-control" rows="6"></textarea>
-            <input type="submit" style="margin-top: 10px;" class="btn btn-primary" name="submit" >
+            <input value="Submit Message" type="submit" style="margin-top: 10px;" class="btn btn-primary" name="submit" >
         </form>
 
         <!-- Display errors -->

@@ -74,7 +74,7 @@
                             <!-- end comment response -->
                                 <!-- comment reply form -->
                                 @if(Auth::check())
-                                <form action="{{route('save_reply')}}" method="post">
+                                <form action="{{route('save_comment_reply')}}" method="post">
                                     {{csrf_field()}}
                                     <div class="form-group" style="margin-top: 10px;">
                                         <label for="content"><h4>Comment Reply</h4></label>

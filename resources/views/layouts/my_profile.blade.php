@@ -67,7 +67,7 @@
 
                     @foreach($private_messages as $pm)
                     <li class="message-preview">
-                        <a href="#">
+                        <a href="{{route('pm_show', ['id' => $pm->id])}}">
                             <div class="media">
                                     <span class="pull-left">
                                         <img class="media-object" height="35" src="{{$pm->author()->images[0]->path}}" alt="">
@@ -85,7 +85,7 @@
 
 
                     <li class="message-footer">
-                        <a href="#">Read All New Messages</a>
+                        <a href="{{route('pm_index')}}">Read All New Messages</a>
                     </li>
 
                 </ul>

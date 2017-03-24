@@ -34,7 +34,7 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::post('post/comment/create', 'PostCommentsController@store_comment')->name('save_comment');
 
     // Post replies
-    Route::post('post/reply/create', 'PostCommentsController@store_reply')->name('save_reply');
+    Route::post('post/reply/create', 'PostCommentsController@store_reply')->name('save_comment_reply');
 
     // Create private message
     Route::get('/message/{id}/create', 'PrivateMessagesController@create')->name('create_pm');
