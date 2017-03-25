@@ -13,7 +13,7 @@
         <div class="post-preview">
             <a href="{{route('read_article', ['id' => $post->id])}}"><h2>{{$post->title}}</h2>
             <h3>{{$post->subtitle}}</h3></a>
-            <p class="post-meta">Posted by <a href="{{route('create_pm', [$post->user->id])}}">{{$post->user->name}}</a></p>
+            <p class="post-meta">Posted by <a href="{{route('user_profile', [$post->user->id])}}">{{$post->user->name}}</a></p>
         </div>
         <hr>
     @endforeach

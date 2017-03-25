@@ -1,4 +1,4 @@
-@extends('layouts.my_profile')
+@extends('layouts.my_dashboard')
 @section('page_title', 'My Wrestlers')
 @section('content')
 

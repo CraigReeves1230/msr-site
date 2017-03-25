@@ -33,7 +33,7 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // Post comments
     Route::post('post/comment/create', 'PostCommentsController@store_comment')->name('save_comment');
 
-    // Post replies
+    // Post comment replies
     Route::post('post/reply/create', 'PostCommentsController@store_reply')->name('save_comment_reply');
 
     // Create private message
@@ -41,18 +41,6 @@ Route::group(['middlewareGroups' => 'web'], function(){
 
     // Store private message
     Route::post('/message/{id}/store', 'PrivateMessagesController@store')->name('store_pm');
-
-    // Private messages index
-    Route::get('/user_profile/messages', 'PrivateMessagesController@see_messages')->name('pm_index');
-
-    // Show private message
-    Route::get('user_profile/message/{id}', 'PrivateMessagesController@show')->name('pm_show');
-
-    // Private message reply
-    Route::post('user_profile/message/reply', 'PrivateMessagesController@send_reply')->name('send_pm_reply');
-
-    // Private message delete
-    Route::get('user_profile/messages/{id}/delete', 'PrivateMessagesController@delete')->name('delete_pm');
 
     /*
     |----------------------------------------------------------------------------
@@ -166,10 +154,34 @@ Route::group(['middlewareGroups' => 'web'], function(){
 
     /*
     |----------------------------------------------------------------------------
+    | User Dashboard
+    |--------------------------------------------------------------------------*/
+
+    // user dashboard
+    Route::get('/user_dashboard', 'UserDashboardController@index')->name('user_dashboard');
+
+    // My wrestlers page
+    Route::get('/user_dashboard/my_wrestlers', 'UserDashboardController@my_wrestlers')->name('my_wrestlers');
+
+    // Private messages index
+    Route::get('/user_dashboard/messages', 'PrivateMessagesController@see_messages')->name('pm_index');
+
+    // Show private message
+    Route::get('user_dashboard/message/{id}', 'PrivateMessagesController@show')->name('pm_show');
+
+    // Private message reply
+    Route::post('user_dashboard/message/reply', 'PrivateMessagesController@send_reply')->name('send_pm_reply');
+
+    // Private message delete
+    Route::get('user_dashboard/messages/{id}/delete', 'PrivateMessagesController@delete')->name('delete_pm');
+
+    /*
+    |----------------------------------------------------------------------------
     | User Profile
     |--------------------------------------------------------------------------*/
-    Route::get('/user_profile', 'UserProfileController@index')->name('user_profile');
-    Route::get('/user_profile/my_wrestlers', 'UserProfileController@my_wrestlers')->name('my_wrestlers');
+
+    Route::get('user_profile/{id}/show', 'UserProfileController@show')->name('user_profile');
+
 });
 
 Auth::routes();

@@ -41,10 +41,10 @@
                         <!-- Comment -->
                         @foreach($comments as $comment)
                             <div class="comment-main-level">
-                                <div class="comment-avatar"><img src="{{$comment->user->images[0]->path}}" alt=""></div>
+                                <div class="comment-avatar"><a href="{{route('user_profile', ['id' => $comment->user->id])}}"><img src="{{$comment->user->images[0]->path}}" alt=""></a></div>
                                 <div class="comment-box">
                                     <div class="comment-head">
-                                        <h6 class="comment-name">{{$comment->user->name}}</h6>
+                                      <h6 class="comment-name"><a href="{{route('user_profile', ['id' => $comment->user->id])}}">{{$comment->user->name}}</a></h6>
                                         <span>posted {{$comment->created_at->diffForHumans()}}</span>
                                     </div>
                                     <div class="comment-content">
@@ -59,10 +59,10 @@
                             <!-- Comment replies -->
                             @foreach($comment->replies as $reply)
                             <li>
-                                <div class="comment-avatar"><img src="{{$reply->user->images[0]->path}}" alt=""></div>
+                                <div class="comment-avatar"><a href="{{route('user_profile', ['id' => $reply->user->id])}}"><img src="{{$reply->user->images[0]->path}}" alt=""></a></div>
                                     <div class="comment-box">
                                         <div class="comment-head">
-                                            <h6 class="comment-name">{{$reply->user->name}}</h6>
+                                            <h6 class="comment-name"><a href="{{route('user_profile', ['id' => $reply->user->id])}}">{{$reply->user->name}}</a></h6>
                                             <span>{{$reply->created_at->diffForHumans()}}</span>
                                         </div>
                                         <div class="comment-content">

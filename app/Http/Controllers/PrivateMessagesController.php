@@ -24,7 +24,7 @@ class PrivateMessagesController extends Controller
         $author = Auth::user();
         $recipient = User::findOrFail($id);
         $pm->send_message($author, $recipient, $message);
-        return redirect('/');
+        return redirect('user_dashboard/messages');
     }
 
     public function see_messages(){
@@ -46,7 +46,9 @@ class PrivateMessagesController extends Controller
     }
 
     public function send_reply(Request $request){
+        $data = $request->all();
         $id = $request['private_message_id'];
+        $user = Auth::user();
         $private_message = PrivateMessage::findOrFail($id);
         $content = $request['content'];
         $author = Auth::user();
@@ -56,7 +58,7 @@ class PrivateMessagesController extends Controller
                                             'private_message_id' => $id,
                                             'content' => $content]);
         $reply->save();
-        return redirect('user_profile/message/' . $id);
+        return redirect('user_dashboard/message/' . $id);
     }
 
     public function delete($id){
@@ -67,8 +69,8 @@ class PrivateMessagesController extends Controller
         // get pm from database
         $pm = PrivateMessage::findOrFail($id);
 
-        // only delete from database if it has been trashed
-        if($pm->trash_id > 0){
+        // only delete from database if it has been trashed or there have been no replies
+        if($pm->trash_id > 0 || count($pm->replies) < 1){
             // delete all replies as well as the message
             $pm->replies()->delete();
             $pm->delete();
@@ -79,7 +81,7 @@ class PrivateMessagesController extends Controller
         }
 
         // redirect
-        return redirect('user_profile/messages');
+        return redirect('user_dashboard/messages');
 
     }
 

@@ -128,7 +128,7 @@ class WrestlerRatingController extends Controller
         // save wrestler
         $wrestler_rating->save_rating($wrestler);
 
-        return redirect('user_profile/my_wrestlers');
+        return redirect('user_dashboard/my_wrestlers');
     }
 
     public function edit_rating1($id)

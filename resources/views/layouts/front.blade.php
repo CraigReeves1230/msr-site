@@ -84,7 +84,7 @@
                     @if(Auth::guest())
                         <a href="/register">SIGN UP</a>
                     @else
-                        <a href="{{route('user_profile')}}">
+                        <a href="{{route('user_dashboard')}}">
                              {{Auth::user()->name}}
                         </a>
                     @endif
