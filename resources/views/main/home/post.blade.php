@@ -23,7 +23,7 @@
 
                 @if(Auth::check())
                 <!-- Comment form -->
-                <form action="{{route('save_comment')}}" method="post">
+                <form action="{{route('save_post_comment')}}" method="post">
                     <div class="form-group">
                         <label for="content">Leave Comment</label>
                         <textarea class="form-control" name="content" id="" rows="5"></textarea>
@@ -74,7 +74,7 @@
                             <!-- end comment response -->
                                 <!-- comment reply form -->
                                 @if(Auth::check())
-                                <form action="{{route('save_comment_reply')}}" method="post">
+                                <form action="{{route('save_post_comment_reply')}}" method="post">
                                     {{csrf_field()}}
                                     <div class="form-group" style="margin-top: 10px;">
                                         <label for="content"><h4>Comment Reply</h4></label>

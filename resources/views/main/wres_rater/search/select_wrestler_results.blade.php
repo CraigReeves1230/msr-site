@@ -58,42 +58,39 @@
 
         <section class="col-xs-12 col-sm-6 col-md-12">
 
-            @foreach($wrestlers as $wrestler)
-            <article class="search-result row">
-                <div class="col-xs-12 col-sm-12 col-md-3">
-                    <a href="{{route('new_rating_go', $wrestler->id)}}" title="{{$wrestler->name}}"
-                       class="thumbnail"><img src="{{$wrestler->get_image()}}" alt="{{$wrestler->name}}" /></a>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-2">
-                    <ul class="meta-search">
-                    </ul>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-7 excerpet">
+            <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css"/>
+            <div class="container">
 
-                        <h3><a href="{{route('new_rating_go', $wrestler->id)}}" title="" style="color: #0f74a8;">{{$wrestler->name}}</a></h3>
-
-                    <p>Community Rating: <?php
-                        if(!empty($wrestler->community_rating)) {
-                            echo App\MatchRater::convertToStarRating($wrestler->community_rating);
-                        } else {
-                            echo "N/A";
-                        }
-                    ?></p>
-                    <p>
-                        Workrate IQ: <?php
-                if(!empty($wrestler->community_rating)) {
-                    $w_iq = round(($wrestler->community_rating * 10 * 2 + 60), 2);
-                    echo $w_iq;
-                } else {
-                    echo "N/A";
-                } ?>
-                    </p>
-
-                </div>
-                <span class="clearfix borda"></span>
-            </article>
-            @endforeach
-
+                @foreach($wrestlers as $wrestler)
+                    <div class="well">
+                        <div class="media">
+                            <a class="pull-left" href="#">
+                                <img class="media-object" height="100" src="{{$wrestler->images[0]->path}}">
+                            </a>
+                            <div class="media-body">
+                                <h4 class="media-heading"><a href="{{route('wrestler_profile', ['id' => $wrestler->id])}}">{{$wrestler->name}}</a></h4>
+                                <p>{!! $wrestler->bio !!}</p>
+                                <ul class="list-inline list-unstyled">
+                                    <li></li>
+                                    <a href="{{route('wrestler_profile', $wrestler->id) }}">See Profile</a></span>
+                                    <li>|</li>
+                                    <span><i class="glyphicon glyphicon-heart"></i> {{count($wrestler->followers())}} followers</span>
+                                    <li>|</li>
+                                    <li>
+                                        Community Rating: <?php
+                                        if(!empty($wrestler->community_rating)) {
+                                            echo App\MatchRater::convertToStarRating($wrestler->community_rating);
+                                        } else {
+                                            echo "N/A";
+                                        }
+                                        ?>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+            </div>
         </section>
     </div>
 

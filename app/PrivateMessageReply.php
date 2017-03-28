@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class PrivateMessageReply extends Model
 {
@@ -21,11 +22,9 @@ class PrivateMessageReply extends Model
     }
 
     public function send_reply($data){
-        $data = $request->all();
-        $id = $request['private_message_id'];
-        $user = Auth::user();
+        $id = $data['private_message_id'];
         $private_message = PrivateMessage::findOrFail($id);
-        $content = $request['content'];
+        $content = $data['content'];
         $author = Auth::user();
         $recipient_id = $private_message->author()->id;
         $reply = new PrivateMessageReply(['user_id' => $recipient_id,

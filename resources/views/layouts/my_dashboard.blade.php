@@ -1,9 +1,11 @@
 <?php
-    use App\PrivateMessage;
+use App\Alert;
+use App\PrivateMessage;
     use Illuminate\Support\Facades\Auth;
     $user = Auth::user();
     $private_messages = PrivateMessage::where([ ['user_id', $user->id], ['trash_id', '<>', $user->id ] ])
         ->orderBy('id', 'desc')->limit(2)->get();
+    $alerts = $user->alerts()->orderBy('id', 'desc')->limit(5)->get();
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <script src="https://cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
 
     <title>MSR My Profile - @yield('page_title')</title>
 
@@ -62,9 +65,16 @@
         <!-- Top Menu Items -->
         <ul class="nav navbar-right top-nav">
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
-                <ul class="dropdown-menu message-dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
 
+                            @if($user->new_messages == 1)
+                                    style="color: #50D4FD;"
+                            @endif
+
+                            class="fa fa-envelope"></i> <b class="caret"></b></a>
+                <ul class="dropdown-menu message-dropdown">
+                    <?php $user->new_messages = 0; ?>
+                    <?php $user->save(); ?>
                     @foreach($private_messages as $pm)
                     <li class="message-preview">
                         <a href="{{route('pm_show', ['id' => $pm->id])}}">
@@ -91,30 +101,24 @@
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+
+                            @if($user->new_alerts == 1)
+                                    style="color: #50D4FD;"
+                            @endif
+
+                            class="fa fa-bell"></i> <b class="caret"></b></a>
                 <ul class="dropdown-menu alert-dropdown">
-                    <li>
-                        <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
-                    </li>
-                    <li>
-                        <a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
-                    </li>
-                    <li>
-                        <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
-                    </li>
-                    <li>
-                        <a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
-                    </li>
-                    <li>
-                        <a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
-                    </li>
-                    <li>
-                        <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">View All</a>
-                    </li>
+                    <?php $user->new_alerts = 0; ?>
+                    <?php $user->save(); ?>
+                    @foreach($alerts as $alert)
+                        <li>
+                            <a href="{{$alert->link}}">{{str_limit($alert->message, 50)}}
+                                <span class="label label-{{$alert->type}}">{{$alert->name}}</span>
+                                <br><i style="color: #9d9d9d">{{$alert->created_at->diffForHumans()}}</i></a>
+
+                        </li>
+                    @endforeach
                 </ul>
             </li>
             <li class="dropdown">
@@ -148,13 +152,21 @@
                     <a href="{{route('user_dashboard')}}"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                 </li>
                 <li>
-                    <a href="{{route('my_wrestlers')}}"><i class="fa fa-fw fa-bar-chart-o"></i> My Wrestlers</a>
+                    <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> My Wrestlers <i class="fa fa-fw fa-caret-down"></i></a>
+                    <ul id="demo" class="collapse">
+                        <li>
+                            <a href="{{route('my_wrestlers')}}">Rated Wrestlers</a>
+                        </li>
+                        <li>
+                            <a href="{{route('my_favorites')}}">Favorites</a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a href="{{route('pm_index')}}"><i class="fa fa-fw fa-envelope"></i> Private Messages</a>
                 </li>
                 <li>
-                    <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>
+                    <a href="{{route('dashboard_edit_user')}}"><i class="fa fa-fw fa-edit"></i> Edit Profile</a>
                 </li>
                 <li>
                     <a href="bootstrap-elements.html"><i class="fa fa-fw fa-desktop"></i> Bootstrap Elements</a>
@@ -206,6 +218,9 @@
 
 </div>
 <!-- /#wrapper -->
+
+
+
 
 <!-- jQuery -->
 <script src="/js/jquery.js"></script>

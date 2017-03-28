@@ -83,6 +83,7 @@
                 </tr>
             @endforeach
         </table>
+                {{$ratings->links()}}
     </div>
 
 

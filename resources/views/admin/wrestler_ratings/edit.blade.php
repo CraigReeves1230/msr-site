@@ -34,7 +34,7 @@
                 <input name="movement" value="{{$ratings->movement}}" type="text" class="form-control">
             </div>
             <div class="form-group">
-                <label for="sell_timing"><h3>Submission Execution</h3></label>
+                <label for="sell_timing"><h3>Sell Timing</h3></label>
                 <input name="sell_timing" value="{{$ratings->sell_timing}}" type="text" class="form-control">
             </div>
             <div class="form-group">
@@ -98,6 +98,7 @@
                 <input name="ring_awareness" value="{{$ratings->ring_awareness}}" type="text" class="form-control">
             </div>
 
+            {{method_field('PATCH')}}
             <input type="submit" value="Update Ratings" class="btn btn-primary" name="submit" >
         </form>
 

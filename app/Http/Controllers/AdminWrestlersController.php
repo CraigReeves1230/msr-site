@@ -33,7 +33,7 @@ class AdminWrestlersController extends Controller
     }
 
     public function all_wrestlers(){
-        $wrestlers = Wrestler::orderBy('name', 'asc')->get();
+        $wrestlers = Wrestler::orderBy('name', 'asc')->paginate(10);
         return view('admin.wrestlers.all_wrestlers', compact('wrestlers'));
     }
 
@@ -63,7 +63,7 @@ class AdminWrestlersController extends Controller
         return redirect('admin/all_wrestlers');
     }
 
-    public function delete_wrestler($id){
+    public function destroy($id){
 
         // find wrestler
         $wrestler = Wrestler::findOrFail($id);

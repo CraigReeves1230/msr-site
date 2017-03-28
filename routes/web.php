@@ -31,10 +31,10 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::get('article/{id}', 'HomeController@post')->name('read_article');
 
     // Post comments
-    Route::post('post/comment/create', 'PostCommentsController@store_comment')->name('save_comment');
+    Route::post('post/comment/create', 'PostCommentsController@store_comment')->name('save_post_comment');
 
     // Post comment replies
-    Route::post('post/reply/create', 'PostCommentsController@store_reply')->name('save_comment_reply');
+    Route::post('post/reply/create', 'PostCommentsController@store_reply')->name('save_post_comment_reply');
 
     // Create private message
     Route::get('/message/{id}/create', 'PrivateMessagesController@create')->name('create_pm');
@@ -60,13 +60,13 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::get('/admin/posts/edit/{id}', 'AdminPostsController@edit')->name('edit_post');
 
     // Delete post
-    Route::get('admin/posts/delete/{id}', 'AdminPostsController@delete')->name('delete_post');
+    Route::delete('admin/posts/delete/{id}', 'AdminPostsController@delete')->name('delete_post');
 
     // Store post
     Route::post('admin/posts/store', 'AdminPostsController@store')->name('store_post');
 
     // Update post
-    Route::post('admin/posts/update/{id}', 'AdminPostsController@update')->name('update_post');
+    Route::patch('admin/posts/update/{id}', 'AdminPostsController@update')->name('update_post');
 
     // Add wrestler
     Route::get('admin/create_wrestler', 'AdminWrestlersController@create_wrestler')->name('create_wrestler');
@@ -84,10 +84,10 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::get('admin/wrestlers/{id}/edit', 'AdminWrestlersController@edit_wrestler')->name('edit_wrestler');
 
     // Update wrestler
-    Route::post('admin/wrestlers/{id}', 'AdminWrestlersController@update_wrestler')->name('update_wrestler');
+    Route::patch('admin/wrestlers/{id}', 'AdminWrestlersController@update_wrestler')->name('update_wrestler');
 
     // Delete wrestler
-    Route::get('admin/wrestlers/{id}/delete', 'AdminWrestlersController@delete_wrestler')->name('delete_wrestler');
+    Route::delete('admin/wrestlers/{id}/delete', 'AdminWrestlersController@destroy')->name('delete_wrestler');
 
     // List of ratings for a wrestler
     Route::get('admin/wrestler_ratings/{id}', 'AdminWrestlerRatingsController@show')->name('all_ratings');
@@ -96,7 +96,7 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::get('admin/wrestler_ratings/{id}/edit', 'AdminWrestlerRatingsController@edit')->name('edit_ratings');
 
     // Update wrestler ratings
-    Route::post('admin/wrestler_ratings/{id}', 'AdminWrestlerRatingsController@update')->name('update_ratings');
+    Route::patch('admin/wrestler_ratings/{id}', 'AdminWrestlerRatingsController@update')->name('update_ratings');
 
     // Delete wrestler ratings
     Route::get('admin/wrestler_ratings/delete/{id}', 'AdminWrestlerRatingsController@delete_ratings')->name('delete_ratings');
@@ -105,10 +105,10 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::resource('admin/users', 'AdminUsersController');
 
     // Ban user
-    Route::get('admin/users/{id}/ban_user', 'AdminUsersController@ban_user')->name('ban_user');
+    Route::patch('admin/users/{id}/ban_user', 'AdminUsersController@ban_user')->name('ban_user');
 
     // Reinstate user
-    Route::get('admin/users/{id}/reinstate_user', 'AdminUsersController@reinstate_user')->name('reinstate_user');
+    Route::patch('admin/users/{id}/reinstate_user', 'AdminUsersController@reinstate_user')->name('reinstate_user');
 
     // Search users
     Route::post('admin/users/search_users', 'AdminUsersController@search_users')->name('search_users');
@@ -144,13 +144,17 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::get('/wres_profile/{id}/edit1', 'WrestlerRatingController@edit_rating1')->name('edit_rating1');
     Route::post('/wres_profile/{id}/edit2', 'WrestlerRatingController@edit_rating2')->name('edit_rating2');
     Route::post('/wres_profile/{id}/edit3', 'WrestlerRatingController@edit_rating3')->name('edit_rating3');
-    Route::post('/wres_profile/{id}/edit4', 'WrestlerRatingController@edit_rating4')->name('edit_rating4');
+    Route::patch('/wres_profile/{id}/edit4', 'WrestlerRatingController@edit_rating4')->name('edit_rating4');
 
     /*
     |----------------------------------------------------------------------------
     | Wrestler Profile
     |--------------------------------------------------------------------------*/
     Route::get('/wres_profile/{id}', 'UserWrestlersController@show')->name('wrestler_profile');
+    Route::get('/wres_profile/fav/{id}', 'UserWrestlersController@favorite')->name('wrestler_fav');
+    Route::get('/wres_profile/unfollow/{id}', 'UserWrestlersController@unfollow')->name('wrestler_unfollow');
+    Route::post('/wres_profile/comment', 'UserWrestlersController@store_comment')->name('save_wrestler_comment');
+    Route::post('/wres_profile/reply', 'UserWrestlersController@store_reply')->name('save_wrestler_comment_reply');
 
     /*
     |----------------------------------------------------------------------------
@@ -160,8 +164,10 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // user dashboard
     Route::get('/user_dashboard', 'UserDashboardController@index')->name('user_dashboard');
 
-    // My wrestlers page
-    Route::get('/user_dashboard/my_wrestlers', 'UserDashboardController@my_wrestlers')->name('my_wrestlers');
+    // My rated wrestlers page
+    Route::get('/user_dashboard/my_ratings', 'UserDashboardController@my_wrestlers')->name('my_wrestlers');
+
+    Route::get('/user_dashboard/my_favorites', 'UserDashboardController@my_favorites')->name('my_favorites');
 
     // Private messages index
     Route::get('/user_dashboard/messages', 'PrivateMessagesController@see_messages')->name('pm_index');
@@ -173,7 +179,14 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::post('user_dashboard/message/reply', 'PrivateMessagesController@send_reply')->name('send_pm_reply');
 
     // Private message delete
-    Route::get('user_dashboard/messages/{id}/delete', 'PrivateMessagesController@delete')->name('delete_pm');
+    Route::delete('user_dashboard/messages/{id}/delete', 'PrivateMessagesController@destroy')->name('delete_pm');
+
+    // Edit User from user dashboard
+    Route::get('user_dashboard/edit', 'UserDashboardController@edit_user')->name('dashboard_edit_user');
+
+    // update user from dashboard
+    Route::patch('user_dashboard/store_user', 'UserDashboardController@update_user')->name('dashboard_update_user');
+
 
     /*
     |----------------------------------------------------------------------------

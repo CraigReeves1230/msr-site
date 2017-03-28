@@ -78,7 +78,7 @@ class Post extends Model
         $this->title = $request['title'];
         $this->subtitle = $request['subtitle'];
         $this->content = $request['content'];
-        $this->save();
+        $this->update();
 
         // Attach image to post, replacing the photo if it is already there
         if($uploaded_image == 1) {

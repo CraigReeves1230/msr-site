@@ -19,7 +19,8 @@ class WrestlerRatingController extends Controller
 
     public function wres_search()
     {
-        return view('main/wres_rater/search/select_wrestler_for_rating');
+        $wrestlers = Wrestler::orderBy('name', 'asc')->paginate(4);
+        return view('main/wres_rater/search/select_wrestler_for_rating', compact('wrestlers'));
     }
 
     public function wres_search_results(Request $request)
@@ -37,6 +38,11 @@ class WrestlerRatingController extends Controller
     {
 
         $search_query = $request['search_wrestler'];
+
+        // if search query has nothing, redirect back to search
+        if(empty($search_query)){
+            return redirect('wres_search');
+        }
 
         // get logged_in_user
         $logged_in_user = Auth::user();
@@ -128,7 +134,7 @@ class WrestlerRatingController extends Controller
         // save wrestler
         $wrestler_rating->save_rating($wrestler);
 
-        return redirect('user_dashboard/my_wrestlers');
+        return redirect('wres_profile/' . $wrestler->id);
     }
 
     public function edit_rating1($id)

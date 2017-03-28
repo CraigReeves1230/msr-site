@@ -82,13 +82,23 @@
                 <td><a href="">View Posts</a></td>
                 <td><a href="">User Profile</a></td>
                 <td><a href="{{route('users.edit', ['id' => $user->id])}}">Edit</a></td>
+
                 @if($user->status == "active")
-                    <td><a href="{{route('ban_user', ['id' => $user->id])}}">Ban User</a></td>
+                    <td><form method="post" action="{{route('ban_user', ['id' => $user->id])}}">
+                            {{csrf_field()}} {{method_field("PATCH")}}
+                        <input type="submit" class="btn btn-danger" name="ban" value="Ban User">
+                    </form></td>
                 @elseif($user->status == "banned")
-                    <td><a href="{{route('reinstate_user', ['id' => $user->id])}}">Reinstate User</a></td>
+
+                    <td><form method="post" action="{{route('reinstate_user', ['id' => $user->id])}}">
+                            {{csrf_field()}} {{method_field("PATCH")}}
+                            <input type="submit" class="btn btn-success" name="reinstate" value="Reinstate User">
+                        </form></td>
                 @endif
             </tr>
         @endforeach
     </table>
+
+    {{$users->links()}}
 
 @endsection

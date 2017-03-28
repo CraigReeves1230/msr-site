@@ -1,8 +1,7 @@
 @extends('layouts.front')
 @section('title', 'The Most Unbiased Wrestling Bias Online')
 @section('page_title', $wrestler->name)
-@section('page_heading_image', $wrestler->images[0]->path)
-@section('page_subtitle', 'EDIT RATINGS')
+@section('page_heading_image', '/img/home-bg.jpg')
 @section('content')
 
 <div class="row">
@@ -11,8 +10,6 @@
 
         </article><br>
     </div>
-
-
 
     <div class="container">
 

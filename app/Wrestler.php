@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\WrestlerRating;
+use Illuminate\Support\Facades\DB;
 
 class Wrestler extends Model
 {
@@ -15,7 +16,8 @@ class Wrestler extends Model
         'bumping', 'technical', 'high_fly', 'power',
         'reaction', 'durability', 'conditioning',
         'basing', 'shine', 'heat', 'comebacks',
-        'selling', 'ring_awareness', 'community_rating', 'craig_rating'
+        'selling', 'ring_awareness', 'community_rating', 'bio',
+        'twitter', 'instagram', 'gender'
     ];
 
     //returns images for wrestler
@@ -74,6 +76,12 @@ class Wrestler extends Model
         // Image field
         $request->file('image');
 
+        // Bio, gender, Twitter and Instagram
+        $this->bio = $request['bio'];
+        $this->twitter = $request['twitter'];
+        $this->instagram = $request['instagram'];
+        $this->gender = $request['gender'];
+
         // save wrestler
         $this->save();
         $this->alt_names()->save(new AltName(['name' => $this->name]));
@@ -131,11 +139,18 @@ class Wrestler extends Model
     public function update_wrestler($request){
 
         $this->name = $request['name'];
+
+        // Bio, Twitter and Instagram
+        $this->bio = $request['bio'];
+        $this->twitter = $request['twitter'];
+        $this->instagram = $request['instagram'];
+        $this->gender = $request['gender'];
+
         $this->update();
 
         //update first alt-name index which is simply the name of the wrestler
         $this->alt_names[0]->name = $request['name'];
-        $this->alt_names[0]->save();
+        $this->alt_names[0]->update();
 
         // Alt name fields
         $alt_name1 = $request['altname1'];
@@ -233,6 +248,9 @@ class Wrestler extends Model
         // store alt names in temp array so we can access after detachment and deletion
         $temp_alt_names = $this->alt_names;
 
+        // get rid of all ratings for wrestler
+        $this->ratings()->delete();
+
         // detach alt names and remove wrestler
         $this->alt_names()->detach();
         $this->delete();
@@ -272,6 +290,11 @@ class Wrestler extends Model
         if($score <= 0) $score = 0;
 
         return $score;
+    }
+
+    // returns comments for wrestler
+    public function comments(){
+        return $this->morphMany('App\Comment', 'commentable');
     }
 
     //this function will automatically compile all ratings into community ratings
@@ -389,5 +412,22 @@ class Wrestler extends Model
         $wrestler->ring_awareness = null;
         $wrestler->community_rating = null;
         $wrestler->save();
+    }
+
+    // returns all users who have favorited this wrestler
+    public function followers(){
+        $ids = DB::table('wrestler_favorites')->select('user_id')->where('wrestler_id', $this->id)->get();
+
+        $id_array = [];
+        for($i = 0; $i < count($ids); $i++){
+            array_push($id_array, get_object_vars($ids[$i]));
+        }
+        $users = User::whereIn('id', $id_array)->get();
+        return $users;
+    }
+
+    // returns true if a particular user follows this wrestler
+    public function is_followed_by($user){
+        return $this->followers()->contains($user->id);
     }
 }

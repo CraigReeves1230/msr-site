@@ -61,15 +61,28 @@
                     </article>
                     @endforeach
 
+                <!-- Display errors -->
+                    @if(count($errors) > 0)
+                        <div class="alert alert-danger" style="margin-top: 10px;">
+                            <ul>
+                                @foreach($errors->all() as $error)
+                                    <li>{{$error}}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <form action="{{route('send_pm_reply')}}" method="post">
                         {{csrf_field()}}
                         <div class="form-group" style="margin-top: 10px;">
                             <label for="content"><h4>Send Reply</h4></label>
-                            <textarea class="form-control" name="content" rows="3"></textarea>
+                            <textarea rows="5" class="form-control" name="content"></textarea>
                             <input type="hidden" value="{{$private_message->id}}" name="private_message_id">
                             <input type="submit" value="Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
                         </div>
                     </form>
+
+
 
 
 

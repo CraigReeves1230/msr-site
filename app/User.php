@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'admin', 'status'
+        'name', 'email', 'password', 'admin', 'status', 'summary', 'new_alerts', 'new_messages'
     ];
 
     /**
@@ -68,6 +68,9 @@ class User extends Authenticatable
     // returns true if user has already given a rating for a particular wrestler
     public function has_rated($wrestler){
 
+        // get the wrestler by the id
+        $wrestler = Wrestler::find($wrestler->id);
+
         //get all wrestlers user has rated
         $rated_wrestlers = $this->wrestlers();
 
@@ -76,6 +79,34 @@ class User extends Authenticatable
         } else {
             return false;
         }
+
+    }
+
+    // favorite a wrestler
+    public function favorite($wrestler){
+        DB::table('wrestler_favorites')->insert(['user_id' => $this->id, 'wrestler_id' => $wrestler->id]);
+    }
+
+    // unfollow a wrestler
+    public function unfollow($wrestler){
+        DB::table('wrestler_favorites')->where(['user_id' => $this->id, 'wrestler_id' => $wrestler->id])->delete();
+    }
+
+    // gets all wrestlers favorited
+    public function favorites(){
+        $ids = DB::table('wrestler_favorites')->select('wrestler_id')->where('user_id', $this->id)->get();
+
+        $id_array = [];
+        for($i = 0; $i < count($ids); $i++){
+            array_push($id_array, get_object_vars($ids[$i]));
+        }
+        $wrestlers = Wrestler::whereIn('id', $id_array)->get();
+        return $wrestlers;
+    }
+
+    // returns true if a wrestler is favorited
+    public function does_follow($wrestler){
+        return $this->favorites()->contains($wrestler->id);
     }
 
     // returns true if user has already given a rating for a particular wrestler by id
@@ -120,18 +151,22 @@ class User extends Authenticatable
     public function update_user($data){
         $this->name = $data['name'];
         $this->email = $data['email'];
+        if(empty($data['summary'])) {
+            $this->summary = "";
+        } else {
+            $this->summary = $data['summary'];
+        }
 
         // update admin status if it has been changed
         if(!empty($data['admin'])){
             $this->admin = $data['admin'];
         }
-
         //update password if it has been changed
         if(!empty($data['password'])){
             $this->password = bcrypt($data['password']);
         }
 
-        $this->save();
+        $this->update();
 
         //update image if it has been changed
         if(!empty($data['image'])){
@@ -153,7 +188,10 @@ class User extends Authenticatable
             if($this->admin == 0 || $logged_in_user->master == 1) {
 
                 $this->status = "banned";
-                $this->save();
+                $this->update();
+
+                // send alert to user
+                Alert::send_alert($this, "Banned", "danger", "Your account has been banned by " . $logged_in_user->name . ".", "#");
 
                 // put this log into the user bans table
                 DB::table('user_bans')->insert(['user_id' => $this->id, 'admin_id' => $logged_in_user->id]);
@@ -182,7 +220,10 @@ class User extends Authenticatable
             if($logged_in_user-> id == $admin_id || $logged_in_user->master == 1) {
 
                 $this->status = "active";
-                $this->save();
+                $this->update();
+
+                // send alert to user
+                Alert::send_alert($this, "Account Reactivated", "success", "Your account has been reactivated by " . $logged_in_user->name . ".", "#");
 
                 // remove log from the user bans table
                 DB::table('user_bans')->where('user_id', $this->id)->delete();
@@ -206,4 +247,10 @@ class User extends Authenticatable
             return null;
         }
     }
+
+    // returns all user's alerts
+    public function alerts(){
+        return $this->hasMany('App\Alert');
+    }
+
 }

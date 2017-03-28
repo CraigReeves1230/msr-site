@@ -4,12 +4,13 @@
     <h1 class="text-center">Edit User</h1>
     <hr>
     <div class="col-md-4">
-        <img class="img-rounded" height="256" src="{{$user->images[0]->path}}">
+        <img class="img-rounded" height="128" src="{{$user->images[0]->path}}">
     </div>
     <div class="col-md-5">
         <form action="{{route('users.update', ['id' => $user->id])}}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="_method" value="PUT">
             {{csrf_field()}}
+            {{method_field('PATCH')}}
 
             <div class="form-group">
                 <label for="name"><h3>User Name</h3></label>
@@ -32,13 +33,19 @@
             <!-- only an owner can appoint admins -->
             @if($logged_in_user->master == 1)
                 <div class="form-group">
-                    <label for="email"><h3>Role</h3></label>
+                    <label for="role"><h3>Role</h3></label>
                     <select value="{{$user->admin}}" name="admin" class="form-control">
                         <option <?php if($user->admin == 0) {echo "selected='selected'";} ?> value="0">Subscriber</option>
                         <option <?php if($user->admin == 1) {echo "selected='selected'";} ?> value="1">Admin</option>
                     </select>
                 </div>
             @endif
+
+            <div class="form-group">
+                <label for="email"><h3>User Summary</h3></label>
+                <textarea name="summary" class="form-control">{{$user->summary}}</textarea>
+                <script> CKEDITOR.replace( 'summary' ); </script>
+            </div>
 
             <div class="form-group">
                 <label for="password"><h3>Password</h3></label>
@@ -62,7 +69,6 @@
                     @endforeach
                 </ul>
             </div>
-
         @endif
     </div>
 

@@ -15,9 +15,9 @@
 
     @endif
     <form action="{{route('update_post', ['id' => $post->id])}}" method="post" enctype="multipart/form-data">
+        {{method_field('PATCH')}}
         <div class="form-group">
             <label for="title"><h3>Post Title</h3></label>
-            <input type="hidden" name="__method" value="PUT">
             <input value="{{$post->title}}" name="title" type="text" class="form-control">
             {{csrf_field()}}
         </div>

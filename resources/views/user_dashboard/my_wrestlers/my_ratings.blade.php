@@ -1,5 +1,5 @@
 @extends('layouts.my_dashboard')
-@section('page_title', 'My Wrestlers')
+@section('page_title', 'My Ratings')
 @section('content')
 
 

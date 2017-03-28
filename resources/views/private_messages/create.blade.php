@@ -14,7 +14,7 @@
     <div class="col-md-5">
         <form action="{{route('store_pm', ['id' => $recipient->id])}}" method="post">
             {{csrf_field()}}
-            <textarea name="content" class="form-control" rows="6"></textarea>
+            <textarea name="content" class="form-control" rows="5"></textarea>
             <input value="Submit Message" type="submit" style="margin-top: 10px;" class="btn btn-primary" name="submit" >
         </form>
 

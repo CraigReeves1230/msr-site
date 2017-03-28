@@ -58,13 +58,13 @@ class AdminPostsController extends Controller
     }
 
     public function allposts(){
-        $posts = Post::orderBy('id', 'desc')->get();
+        $posts = Post::orderBy('id', 'desc')->paginate(10);
         return view('admin/posts/all_posts', compact('posts'));
     }
 
     public function search_posts(Request $request){
         $search_query = $request['search_query'];
-        $posts = Post::where('title', 'LIKE', "%$search_query%")->get();
+        $posts = Post::where('title', 'LIKE', "%$search_query%")->paginate(10);
         if($search_query == "") {
             $posts = Post::orderBy('id', 'desc')->get();
         }

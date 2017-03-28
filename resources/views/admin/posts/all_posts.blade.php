@@ -26,14 +26,14 @@
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Subtitle</th>
-            <th>Author</th>
-            <th>Edit</th>
-            <th>Delete</th>
-            <th>Image</th>
-            <th>Content</th>
+            <th class="text-center">ID</th>
+            <th class="text-center">Title</th>
+            <th class="text-center">Subtitle</th>
+            <th class="text-center">Author</th>
+            <th class="text-center">Edit</th>
+            <th class="text-center">Delete</th>
+            <th class="text-center">Image</th>
+            <th class="text-center">Content</th>
 
         </tr>
         </thead>
@@ -44,12 +44,20 @@
             <td>{{$post->subtitle}}</td>
             <td>{{$post->user->name}}</td>
             <td><a href="{{route('edit_post', ['id' => $post->id])}}">Edit</a></td>
-            <td><a href="{{route('delete_post', ['id' => $post->id])}}">Delete</a></td>
+            <td>
+                <form method="post" action="{{route('delete_post', ['id' => $post->id])}}">
+                    {{method_field('DELETE')}}
+                    <input class="btn btn-danger" type="submit" name="delete_post" value="Delete">
+                    {{csrf_field()}}
+                </form>
+            </td>
             <td><img height="80" src="{{$post->images[0]->path}}"></td>
             <td>{{str_limit($post->content, 300)}}</td>
         </tr>
         @endforeach
     </table>
+
+    {{$posts->links() }}
 
 
 

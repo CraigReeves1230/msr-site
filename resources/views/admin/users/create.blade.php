@@ -21,12 +21,20 @@
             <input name="image" type="file">
         </div>
 
+        @if($logged_in_user->master == 1)
+            <div class="form-group">
+                <label for="role"><h3>Role</h3></label>
+                <select name="admin" class="form-control">
+                    <option value="0">Subscriber</option>
+                    <option value="1">Admin</option>
+                </select>
+            </div>
+        @endif
+
         <div class="form-group">
-            <label for="email"><h3>Role</h3></label>
-            <select name="admin" class="form-control">
-                <option value="0">Subscriber</option>
-                <option value="1">Admin</option>
-            </select>
+            <label for="email"><h3>User Summary</h3></label>
+            <textarea name="summary" class="form-control"></textarea>
+            <script> CKEDITOR.replace( 'summary' ); </script>
         </div>
 
         <div class="form-group">

@@ -16,7 +16,7 @@ class AdminWrestlerRatingsController extends Controller
 
     public function show($id){
         $wrestler = Wrestler::findOrFail($id);
-        $ratings = $wrestler->ratings;
+        $ratings = $wrestler->ratings()->paginate(12);
         return view('admin.wrestler_ratings.show', compact('wrestler', 'ratings'));
     }
 

@@ -1,8 +1,7 @@
 @extends('layouts.front')
 @section('title', 'The Most Unbiased Wrestling Bias Online')
 @section('page_title', $wrestler->name)
-@section('page_heading_image', $wrestler->images[0]->path)
-@section('page_subtitle', 'EDIT RATINGS')
+@section('page_heading_image', '/img/home-bg.jpg')
 @section('content')
 
     <div class="row">
@@ -16,6 +15,7 @@
 
             <form action="{{route('edit_rating4', ['id' => $wrestler->id])}}" method="post" class="form-horizontal">
                 {{csrf_field()}}
+                {{method_field('PATCH')}}
                 <h1 class="text-center">PSYCHOLOGY</h1><br>
 
                 <div class="form-group">
