@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\CommentReply;
+use App\Services\WrestlerRater;
 use App\Wrestler;
 use App\WrestlerRating;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class UserWrestlersController extends Controller
         $this->middleware('auth');
     }
 
-    public function show($id)
+    public function show($id, WrestlerRater $wrestler_rater)
     {
 
         $wrestler = Wrestler::findOrFail($id);
@@ -24,21 +25,16 @@ class UserWrestlersController extends Controller
         //calculate community scores
 
         //calculate execution
-        $execution = round(($wrestler->striking + $wrestler->submission + $wrestler->throws +
-                $wrestler->movement + $wrestler->mat_and_chain + $wrestler->setting_up +
-                $wrestler->bumping + $wrestler->sell_timing) / 8, 1) ;
+        $execution = round($wrestler_rater->calculate_execution($wrestler), 1) ;
 
         //calculate ability
-        $ability = round(($wrestler->technical + $wrestler->high_fly + $wrestler->power +
-                $wrestler->reaction + $wrestler->durability + $wrestler->conditioning +
-                $wrestler->basing) / 7, 1);
+        $ability = round($wrestler_rater->calculate_ability($wrestler), 1);
 
         //calculate psych
-        $psychology = round(($wrestler->shine + $wrestler->heat + $wrestler->comebacks + $wrestler->selling
-                + $wrestler->ring_awareness) / 5, 1);
+        $psychology = round($wrestler_rater->calculate_psychology($wrestler), 1);
 
         // get score
-        $score = $wrestler->community_rating;
+        $score = round($wrestler->community_rating, 1);
 
         // if these are not applicable, make "N/A"
         if ($execution == 0) $execution = 'N/A';
@@ -52,22 +48,16 @@ class UserWrestlersController extends Controller
         if ($user_ratings = $user->ratings()->where('wrestler_id', $wrestler->id)->first()) {
 
             //calculate user execution
-            $user_execution = round(($user_ratings->striking + $user_ratings->submission + $user_ratings->throws +
-                    $user_ratings->movement + $user_ratings->mat_and_chain + $user_ratings->setting_up +
-                    $user_ratings->bumping + $user_ratings->sell_timing) / 8, 1);
+            $user_execution = round($wrestler_rater->calculate_execution($user_ratings), 1);
 
             //calculate user ability
-            $user_ability = round(($user_ratings->technical + $user_ratings->high_fly + $user_ratings->power +
-                    $user_ratings->reaction + $user_ratings->durability + $user_ratings->conditioning +
-                    $user_ratings->basing) / 7, 1);
+            $user_ability = round($wrestler_rater->calculate_ability($user_ratings), 1);
 
             //calculate user psych
-            $user_psychology = round(($user_ratings->shine + $user_ratings->heat +
-                    $user_ratings->comebacks + $user_ratings->selling
-                    + $user_ratings->ring_awareness) / 5, 1);
+            $user_psychology = round($wrestler_rater->calculate_psychology($user_ratings), 1);
 
             //get user score
-            $user_score = WrestlerRating::where('user_id', $user->id)->first()->overall_score;
+            $user_score = round($user->ratings()->where('wrestler_id', $wrestler->id)->first()->overall_score, 1);
 
             // if these are not applicable, make "N/A"
             if ($user_execution == 0) $execution = 'N/A';

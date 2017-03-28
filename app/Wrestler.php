@@ -2,12 +2,19 @@
 
 namespace App;
 
+use App\Services\WrestlerRater;
 use Illuminate\Database\Eloquent\Model;
 use App\WrestlerRating;
 use Illuminate\Support\Facades\DB;
 
 class Wrestler extends Model
 {
+
+    protected $wrestler_rater;
+
+    public function __construct(){
+            $this->wrestler_rater = new WrestlerRater;
+    }
 
     //mass assignment
     protected $fillable = [
@@ -40,28 +47,6 @@ class Wrestler extends Model
     //returns all ratings given to wrestler
     public function ratings() {
         return $this->hasMany('App\WrestlerRating');
-    }
-
-    //this will compile all ratings in columns into a final rating
-    public function calculate_score() {
-
-        //separate ratings into three different sections
-        $execution = ($this->striking + $this->submission + $this->throws
-        + $this->movement + $this->mat_and_chain + $this->sell_timing
-        + $this->setting_up + $this->bumping) / 8;
-
-        $ability = ($this->technical + $this->high_fly + $this->power
-        + $this->reaction + $this->durability + $this->conditioning
-        + $this->basing) / 7;
-
-        $psychology = ($this->shine + $this->heat + $this->comebacks
-        + $this->selling + $this->ring_awareness) / 5;
-
-        // calculate score
-        $score = Wrestler::calculate($execution, $ability, $psychology);
-
-        return $score;
-
     }
 
     public function save_wrestler($request){
@@ -263,35 +248,6 @@ class Wrestler extends Model
         }
     }
 
-    public static function calculate($execution, $ability, $psychology){
-
-        // weighted base average to grade wrestler. Ability and psychology are both
-        // 40% and execution is 20%
-        $score = (($execution * 20) + ($ability * 40) + ($psychology * 40)) / 100;
-
-        // Now we will filter the score...
-
-        //reward wrestler if all three traits are strong
-        if($execution >= 3.25 && $ability >= 3.25 && $psychology >= 3.25) $score += 0.25;
-
-        //reward wrestler again if ability and execution are strong
-        if($execution >= 3.25 && $ability >= 3.25) $score += 0.25;
-
-        //reward wrestler again if psychology and execution are exceptional
-        if($execution >= 3.50 && $psychology >= 3.50) $score += 0.25;
-
-        //reward wrestler again if all three traits are exceptional. This is an exceptional worker
-        if($execution >= 3.50 && $psychology >= 3.50 && $ability >= 3.50) $score += 0.25;
-
-        //score shouldn't exceed 5
-        if($score >= 5.0) $score = 5.0;
-
-        //score shouldn't be lower than zero
-        if($score <= 0) $score = 0;
-
-        return $score;
-    }
-
     // returns comments for wrestler
     public function comments(){
         return $this->morphMany('App\Comment', 'commentable');
@@ -299,6 +255,8 @@ class Wrestler extends Model
 
     //this function will automatically compile all ratings into community ratings
     public static function compileCommunityRatings($id) {
+
+        $wrestler_rater = new WrestlerRater;
 
         // get wrestler
         $wrestler = Wrestler::findOrFail($id);
@@ -380,37 +338,10 @@ class Wrestler extends Model
         $wrestler->ring_awareness = round($wrestler->ring_awareness / count($enabled_ratings), 2);
 
         // get the community score
-        $comm_score = $wrestler->calculate_score();
+        $comm_score = $wrestler_rater->calculate($wrestler);
         $wrestler->community_rating = round($comm_score, 2);
 
         // save the wrestler
-        $wrestler->save();
-    }
-
-    //this function will erase all community ratings, nulling them all out
-    public static function eraseCommunityRatings($id){
-        $wrestler = Wrestler::findOrFail($id);
-        $wrestler->striking = null;
-        $wrestler->submission = null;
-        $wrestler->throws = null;
-        $wrestler->movement = null;
-        $wrestler->mat_and_chain = null;
-        $wrestler->sell_timing = null;
-        $wrestler->setting_up = null;
-        $wrestler->bumping = null;
-        $wrestler->technical = null;
-        $wrestler->high_fly = null;
-        $wrestler->power = null;
-        $wrestler->reaction = null;
-        $wrestler->durability = null;
-        $wrestler->conditioning = null;
-        $wrestler->basing = null;
-        $wrestler->shine = null;
-        $wrestler->heat = null;
-        $wrestler->comebacks = null;
-        $wrestler->selling = null;
-        $wrestler->ring_awareness = null;
-        $wrestler->community_rating = null;
         $wrestler->save();
     }
 

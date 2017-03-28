@@ -75,6 +75,4 @@ class AdminWrestlerRatingsController extends Controller
         return redirect()->back();
     }
 
-
-
 }

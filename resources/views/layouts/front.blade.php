@@ -65,7 +65,7 @@
                     <a href="<?php echo route('rating_tool1') ?>">MATCH RATING TOOL</a>
                 </li>
                 <li>
-                    <a href="<?php echo route('select_wrestler') ?>">RATE A WRESTLER</a>
+                    <a href="<?php echo route('select_wrestler') ?>">WRESTLER RATINGS</a>
                 </li>
                 <li>
                     @if(Auth::guest())

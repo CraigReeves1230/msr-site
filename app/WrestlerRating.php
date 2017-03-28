@@ -2,11 +2,29 @@
 
 namespace App;
 
+use App\Services\CommunityRatingsCompiler;
+use App\Services\CommunityRatingsEraser;
+use App\Services\RatingsNormalizer;
+use App\Services\WrestlerRater;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class WrestlerRating extends Model
 {
+
+    protected $wrestler_rater;
+    protected $community_ratings_compiler;
+    protected $community_ratings_eraser;
+    protected $ratings_normalizer;
+
+    public function __construct()
+    {
+        $this->wrestler_rater = new WrestlerRater;
+        $this->community_ratings_compiler = new CommunityRatingsCompiler;
+        $this->ratings_normalizer = new RatingsNormalizer;
+        $this->community_ratings_eraser = new CommunityRatingsEraser;
+    }
+
     //returns wrestler the rating belongs to
     public function wrestler(){
         return $this->belongsTo('App\Wrestler');
@@ -27,92 +45,22 @@ class WrestlerRating extends Model
         'selling', 'ring_awareness', 'user_id'
     ];
 
-    //this will compile all ratings in columns into a final rating
-    public function calculate_score() {
-
-        //separate ratings into three different sections
-        $execution = ($this->striking + $this->submission + $this->throws
-                + $this->movement + $this->mat_and_chain + $this->sell_timing
-                + $this->setting_up + $this->bumping) / 8;
-
-        $ability = ($this->technical + $this->high_fly + $this->power
-                + $this->reaction + $this->durability + $this->conditioning
-                + $this->basing) / 7;
-
-        $psychology = ($this->shine + $this->heat + $this->comebacks
-                + $this->selling + $this->ring_awareness) / 5;
-
-        // calculate score
-        $score = Wrestler::calculate($execution, $ability, $psychology);
-
-        return $score;
-    }
-
-    public function normalize(){
-
-        // don't allow transitioning and movement to be
-        // more than 0.25 higher than mat/chain
-        if($this->movement > ($this->mat_and_chain + 0.25)) {
-            $this->movement = $this->mat_and_chain + 0.25;
-        }
-
-        // don't allow transitioning
-        // and movement to be less than 0.25 lower than mat/chain
-        if($this->movement < ($this->mat_and_chain - 0.25)) {
-            $this->movement = $this->mat_and_chain - 0.25;
-        }
-
-        // don't let conditioning get more than 0.5 lower than high fly
-        if($this->conditioning < ($this->high_fly - 0.5)){
-            $this->conditioning = $this->high_fly - 0.5;
-        }
-
-        // don't let reaction time get 0.5 lower than basing
-        if($this->reaction < ($this->basing - 0.5)){
-            $this->reaction = $this->basing - 0.5;
-        }
-
-        // don't let basing get 0.75 lower than durability
-        if($this->basing < ($this->durability - 0.75)){
-            $this->basing = $this->durability - 0.75;
-        }
-
-        // don't allow selling to be more than 0.5 lower than ring awareness
-        if($this->selling < ($this->ring_awareness - 0.5)){
-            $this->selling = $this->ring_awareness - 0.5;
-        }
-
-        // don't let selling get higher than 1 higher than ring awareness
-        if($this->selling > ($this->ring_awareness + 1)){
-            $this->selling = $this->ring_awareness + 1;
-        }
-
-        // don't let shine get lower than 1 below comebacks
-        if($this->shine < ($this->comebacks - 1)){
-            $this->shine = $this->comebacks - 1;
-        }
-
-        // don't let comebacks get 1.75 lower than shine
-        if($this->comebacks < ($this->shine - 1.75)){
-            $this->comebacks = $this->shine - 1.75;
-        }
-    }
 
     public function save_rating($wrestler){
 
         // this is the user
         $user = Auth::user();
 
-        // Normalize rating
-        $this->normalize();
-
         // Determine if rating will count based on user's status
        if($user->muted == 1) {
            $this->enabled = false;
        }
 
+        // normalize ratings
+        $this->ratings_normalizer->normalize($this);
+
         // calculate overall rating
-        $this->overall_score = round($this->calculate_score(), 2);
+        $this->overall_score = round($this->wrestler_rater->calculate($this), 2);
 
         // this will update the rating if rating has already been created
         if(!$user->has_rated_id(session('wrestler_id'))){
@@ -124,33 +72,33 @@ class WrestlerRating extends Model
 
         // Update community score
         if(count($wrestler->ratings()->where('enabled', true)->get()) >= 3){
-            Wrestler::compileCommunityRatings($wrestler->id);
+            $this->community_ratings_compiler->compileCommunityRatings($wrestler->id);
         } else {
-            Wrestler::eraseCommunityRatings($wrestler->id);
+            $this->community_ratings_eraser->eraseCommunityRatings($wrestler->id);
         }
     }
 
     public function update_rating($wrestler){
-
-        // Normalize rating
-        $this->normalize();
 
         // Determine if rating will count based on user status
         if($this->user->muted == 1) {
             $this->enabled = false;
         }
 
+        // normalize ratings
+        $this->ratings_normalizer->normalize($this);
+
         // calculate overall rating
-        $this->overall_score = round($this->calculate_score(), 2);
+        $this->overall_score = round($this->wrestler_rater->calculate($this), 2);
 
         // save the ratings
         $wrestler->ratings()->save($this);
 
         // Update community score
         if(count($wrestler->ratings()->where('enabled', true)->get()) >= 3){
-            Wrestler::compileCommunityRatings($wrestler->id);
+            $this->community_ratings_compiler->compileCommunityRatings($wrestler->id);
         } else {
-            Wrestler::eraseCommunityRatings($wrestler->id);
+            $this->community_ratings_eraser->eraseCommunityRatings($wrestler->id);
         }
     }
 
@@ -180,11 +128,11 @@ class WrestlerRating extends Model
     public function delete_ratings($wrestler){
         $this->delete();
 
-        // update community score
+        // Update community score
         if(count($wrestler->ratings()->where('enabled', true)->get()) >= 3){
-            Wrestler::compileCommunityRatings($wrestler->id);
+            $this->community_ratings_compiler->compileCommunityRatings($wrestler->id);
         } else {
-            Wrestler::eraseCommunityRatings($wrestler->id);
+            $this->community_ratings_eraser->eraseCommunityRatings($wrestler->id);
         }
     }
 }

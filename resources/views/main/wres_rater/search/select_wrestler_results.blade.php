@@ -1,6 +1,6 @@
 @extends('layouts.front')
 @section('title', 'Rate A Wrestler')
-@section('page_title', 'RATE WRESTLER')
+@section('page_title', 'WRESTLER RATINGS')
 @section('page_subtitle', '')
 @section('page_heading_image', 'img/home-bg.jpg')
 

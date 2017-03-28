@@ -1,6 +1,6 @@
 @extends('layouts.front')
 @section('title', 'Rate A Wrestler')
-@section('page_title', 'RATE WRESTLER')
+@section('page_title', 'WRESTLER RATINGS')
 @section('page_subtitle', '')
 @section('page_heading_image', 'img/home-bg.jpg')
 
@@ -19,7 +19,6 @@
             {{csrf_field()}}
 
             <div class="form-group">
-                <p>Please search for the name of the wrestler you will be evaluating.</p>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6">

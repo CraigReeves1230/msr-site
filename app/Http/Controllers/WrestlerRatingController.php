@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\RatingsNormalizer;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -88,7 +89,7 @@ class WrestlerRatingController extends Controller
         return view('main/wres_rater/new_rating/wrestler_rater3');
     }
 
-    public function new_rating4(Request $request)
+    public function new_rating4(Request $request, RatingsNormalizer $normalizer)
     {
 
         // gather ratings
@@ -201,7 +202,7 @@ class WrestlerRatingController extends Controller
         return view('main.wres_rater.edit_rating.edit_rating3', compact('ratings', 'wrestler', 'user'));
     }
 
-    public function edit_rating4(Request $request, $id)
+    public function edit_rating4(Request $request, $id, RatingsNormalizer $normalizer)
     {
 
         // gather ratings
