@@ -1,13 +1,3 @@
-<?php
-use App\Alert;
-use App\PrivateMessage;
-    use Illuminate\Support\Facades\Auth;
-    $user = Auth::user();
-    $private_messages = PrivateMessage::where([ ['user_id', $user->id], ['trash_id', '<>', $user->id ] ])
-        ->orderBy('id', 'desc')->limit(2)->get();
-    $alerts = $user->alerts()->orderBy('id', 'desc')->limit(5)->get();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
