@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\RatingConverter;
 use App\Services\RatingsNormalizer;
 use Illuminate\Http\Request;
 
@@ -13,21 +14,24 @@ use Illuminate\Support\Facades\Auth;
 
 class WrestlerRatingController extends Controller
 {
+
+    protected $rating_converter;
+
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    public function wres_search()
+    public function wres_search(RatingConverter $rating_converter)
     {
         $wrestlers = Wrestler::orderBy('name', 'asc')->paginate(4);
-        return view('main/wres_rater/search/select_wrestler_for_rating', compact('wrestlers'));
+        return view('main/wres_rater/search/select_wrestler_for_rating', compact('wrestlers', 'rating_converter'));
     }
 
-    public function wres_search_results(Request $request)
+    /*public function wres_search_results(Request $request)
     {
-        return view('main/wres_rater/search/select_wrestler_results');
-    }
+        return view('main/wres_rater/search/select_wrestler_results', compact('rating_converter'));
+    }*/
 
     public function new_rating_go($id)
     {
@@ -35,7 +39,7 @@ class WrestlerRatingController extends Controller
         return view('main/wres_rater/new_rating/wrestler_rater');
     }
 
-    public function search_result(Request $request)
+    public function search_result(Request $request, RatingConverter $rating_converter)
     {
 
         $search_query = $request['search_wrestler'];
@@ -51,10 +55,10 @@ class WrestlerRatingController extends Controller
         // look for wrestler in database and populate search results
         if ($alt_name = AltName::where("name", "LIKE", "%$search_query%")->first()) {
             $wrestlers = $alt_name->wrestlers;
-            return view('main/wres_rater/search/select_wrestler_results', compact('wrestlers', 'search_query', 'logged_in_user'));
+            return view('main/wres_rater/search/select_wrestler_results', compact('wrestlers', 'search_query', 'logged_in_user', 'rating_converter'));
         } else {
             $wrestlers = [];
-            return view('main/wres_rater/search/select_wrestler_results', compact('wrestlers', 'search_query'));
+            return view('main/wres_rater/search/select_wrestler_results', compact('wrestlers', 'search_query', 'rating_converter'));
         }
     }
 

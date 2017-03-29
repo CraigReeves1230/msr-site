@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\UserRepository;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\Session;
 
 class AdminUsersController extends Controller
 {
+
+    protected $users;
 
     public function __construct(){
         $this->middleware('admin');
@@ -47,11 +50,6 @@ class AdminUsersController extends Controller
         $user = new User;
         $user->save_user($data);
         return redirect('admin/users');
-    }
-
-    public function show($id)
-    {
-
     }
 
     public function edit($id)

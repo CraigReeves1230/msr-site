@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\RatingConverter;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -24,7 +25,8 @@ class MatchRaterController extends Controller
         return view('main/match_rater/mrt_page2');
     }
 
-    public function ratingtool3(Request $request){
+    public function ratingtool3(Request $request, RatingConverter $rating_converter){
+
         session()->put($request->all());
         $match = new MatchRater;
         $match->offense = session('offense');
@@ -39,10 +41,11 @@ class MatchRaterController extends Controller
         $score = $match->calculate_score();
         session(['score' => $score]);
 
-        return view('main/match_rater/mrt_page3', compact('score'));
+        return view('main/match_rater/mrt_page3', compact('score', 'rating_converter'));
     }
 
-    public function ratingtool4(Request $request){
+    public function ratingtool4(Request $request, RatingConverter $rating_converter){
+
         // calculate final score
         $choice = $request['choice'];
         $score = session('score');
@@ -59,7 +62,8 @@ class MatchRaterController extends Controller
                 $score = $score;
                 break;
         }
-        $star_rating = MatchRater::convertToStarRating($score);
-        return view('main/match_rater/mrt_page4', compact('star_rating'));
+        $star_rating = $rating_converter->convertToStarRating($score);
+        return view('main/match_rater/mrt_page4', compact('star_rating', 'rating_converter'));
     }
+
 }

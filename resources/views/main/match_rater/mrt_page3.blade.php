@@ -8,7 +8,7 @@
 
     <p>The current star-rating estimate you've given this match is:</p>
 
-    <h1 class='text-center'>{{App\MatchRater::convertToStarRating($score)}}</h1>
+    <h1 class='text-center'>{{$rating_converter->convertToStarRating($score)}}</h1>
 
     <form action="{{route('rating_tool4')}}" method="post">
         <br>

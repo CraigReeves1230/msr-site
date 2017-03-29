@@ -17,7 +17,7 @@ class MatchRater extends Model
     public $selling;
     public $crowd;
 
-    //mass assignment permissions
+    // mass assignment permissions
     protected $fillable = ['offense', 'timing', 'movement',
         'action', 'excitement', 'time', 'story', 'selling', 'crowd'];
 
@@ -84,81 +84,6 @@ class MatchRater extends Model
             $score += 0.25;
         }
         return $score;
-
     }
-
-    public static function convertToStarRating($score) {
-
-        //initialize value
-        $value = '';
-
-        if($score < 0.25){
-            $value = "DUD";
-        }
-        if($score >= 0.25 && $score < 0.5){
-            $value = "1/4*";
-        }
-        if($score >= 0.50 && $score < 0.75){
-            $value = "1/2*";
-        }
-        if($score >= 0.75 && $score < 1.0){
-            $value = "3/4*";
-        }
-        if($score >= 1.0 && $score < 1.25){
-            $value = "*";
-        }
-        if($score >= 1.25 && $score < 1.50){
-            $value = "*1/4";
-        }
-        if($score >= 1.50 && $score < 1.75){
-            $value = "*1/2";
-        }
-        if($score >= 1.75 && $score < 2.0){
-            $value = "*3/4";
-        }
-        if($score >= 2.0 && $score < 2.25){
-            $value = "**";
-        }
-        if($score >= 2.25 && $score < 2.5){
-            $value = "**1/4";
-        }
-        if($score >= 2.50 && $score < 2.75){
-            $value = "**1/2";
-        }
-        if($score >= 2.75 && $score < 3.0){
-            $value = "**3/4";
-        }
-        if($score >= 3.0 && $score < 3.25){
-            $value = "***";
-        }
-        if($score >= 3.25 && $score < 3.5){
-            $value = "***1/4";
-        }
-        if($score >= 3.5 && $score < 3.75){
-            $value = "***1/2";
-        }
-        if($score >= 3.75 && $score < 4.0){
-            $value = "***3/4";
-        }
-        if($score >= 4.0 && $score < 4.25){
-            $value = "****";
-        }
-        if($score >= 4.25 && $score < 4.5){
-            $value = "****1/4";
-        }
-        if($score >= 4.5 && $score < 4.75){
-            $value = "****1/2";
-        }
-        if($score >= 4.75 && $score < 4.90){
-            $value = "****3/4";
-        }
-        if($score >= 4.9){
-            $value = "*****";
-        }
-
-        return $value;
-    }
-
-
 
 }

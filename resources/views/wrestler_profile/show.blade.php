@@ -79,13 +79,13 @@
                                     @if($score == "N/A")
                                         <li class="list-group-item">{{$score}}</li>
                                     @else
-                                        <li class="list-group-item">{{App\MatchRater::convertToStarRating($score)}}</li>
+                                        <li class="list-group-item">{{$rating_converter->convertToStarRating($score)}}</li>
                                     @endif
                                     <li class="list-group-item"><h4>Your Rating</h4></li>
                                     @if($user_score == "N/A")
                                         <li class="list-group-item">{{$user_score}}</li>
                                     @else
-                                        <li class="list-group-item">{{App\MatchRater::convertToStarRating($user_score)}}</li>
+                                        <li class="list-group-item">{{$rating_converter->convertToStarRating($user_score)}}</li>
                                     @endif
                                 </ul>
                             </div>
@@ -109,30 +109,30 @@
 
                                 <div class="progress">
                                     <div data-placement="top" style="width: {{$execution * 20}}%;"
-                                         aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{App\WrestlerRating::colorize_rating($execution)}}">
+                                         aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{$rating_converter->colorize_rating($execution)}}">
                                         <span class="sr-only">80%</span>
                                         <span class="progress-type">Execution and Timing ({{$execution * 20}} out of 100) </span>
                                     </div>
                                 </div>
 
                                 <div class="progress">
-                                    <div data-placement="top" style="width: {{$ability * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{App\WrestlerRating::colorize_rating($ability)}}">
+                                    <div data-placement="top" style="width: {{$ability * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{$rating_converter->colorize_rating($ability)}}">
                                         <span class="sr-only">70%</span>
                                         <span class="progress-type">Ability and Athleticism ({{$ability * 20}} out of 100)</span>
                                     </div>
                                 </div>
 
                                 <div class="progress">
-                                    <div data-placement="top" style="width: {{$psychology * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{App\WrestlerRating::colorize_rating($psychology)}}">
+                                    <div data-placement="top" style="width: {{$psychology * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{$rating_converter->colorize_rating($psychology)}}">
                                         <span class="sr-only">70%</span>
                                         <span class="progress-type">Ring Psychology and Storytelling ({{$psychology * 20}} out of 100)</span>
                                     </div>
                                 </div>
 
                                 <div class="progress">
-                                    <div data-placement="top" style="width: {{$score * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{App\WrestlerRating::colorize_rating($score)}}">
+                                    <div data-placement="top" style="width: {{$score * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{$rating_converter->colorize_rating($score)}}">
                                         <span class="sr-only">70%</span>
-                                        <span class="progress-type">Workrate Score ({{App\WrestlerRating::workrate_iq($score)}})</span>
+                                        <span class="progress-type">Workrate Score ({{$rating_converter->workrate_iq($score)}})</span>
                                     </div>
                                 </div>
                             </div>
@@ -148,36 +148,35 @@
 
                             <div class="progress">
                                 <div data-placement="top" style="width: {{$user_execution * 20}}%;"
-                                     aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{App\WrestlerRating::colorize_rating($user_execution)}}">
+                                     aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{$rating_converter->colorize_rating($user_execution)}}">
                                     <span class="sr-only">80%</span>
                                     <span class="progress-type">Execution and Timing ({{$user_execution * 20}} out of 100) </span>
                                 </div>
                             </div>
 
                             <div class="progress">
-                                <div data-placement="top" style="width: {{$user_ability * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{App\WrestlerRating::colorize_rating($user_ability)}}">
+                                <div data-placement="top" style="width: {{$user_ability * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{$rating_converter->colorize_rating($user_ability)}}">
                                     <span class="sr-only">70%</span>
                                     <span class="progress-type">Ability and Athleticism ({{$user_ability * 20}} out of 100)</span>
                                 </div>
                             </div>
 
                             <div class="progress">
-                                <div data-placement="top" style="width: {{$user_psychology * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{App\WrestlerRating::colorize_rating($user_psychology)}}">
+                                <div data-placement="top" style="width: {{$user_psychology * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{$rating_converter->colorize_rating($user_psychology)}}">
                                     <span class="sr-only">70%</span>
                                     <span class="progress-type">Ring Psychology and Storytelling ({{$user_psychology * 20}} out of 100)</span>
                                 </div>
                             </div>
 
                             <div class="progress">
-                                <div data-placement="top" style="width: {{$user_score * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{App\WrestlerRating::colorize_rating($user_score)}}">
+                                <div data-placement="top" style="width: {{$user_score * 20}}%;" aria-valuemax="100" aria-valuemin="0" role="progressbar" class="progress-bar progress-bar-{{$rating_converter->colorize_rating($user_score)}}">
                                     <span class="sr-only">70%</span>
-                                    <span class="progress-type">Workrate Score ({{App\WrestlerRating::workrate_iq($user_score)}})</span>
+                                    <span class="progress-type">Workrate Score ({{$rating_converter->workrate_iq($user_score)}})</span>
                                 </div>
                             </div>
                         </div>
                     </ul>
                 </div>
-
             </div>
         </div>
         @endif

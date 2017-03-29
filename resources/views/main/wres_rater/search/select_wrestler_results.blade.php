@@ -79,7 +79,7 @@
                                     <li>
                                         Community Rating: <?php
                                         if(!empty($wrestler->community_rating)) {
-                                            echo App\MatchRater::convertToStarRating($wrestler->community_rating);
+                                            echo $rating_converter->convertToStarRating($wrestler->community_rating);
                                         } else {
                                             echo "N/A";
                                         }

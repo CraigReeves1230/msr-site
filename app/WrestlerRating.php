@@ -102,28 +102,6 @@ class WrestlerRating extends Model
         }
     }
 
-    public static function workrate_iq($score){
-        return round(($score * 10 * 2 + 60), 1);
-    }
-
-    public static function colorize_rating($rating){
-        if($rating < 2){
-            $color = "danger";
-        }
-        if($rating >= 2 && $rating < 3){
-            $color = "warning";
-        }
-        if($rating >= 3 && $rating < 3.5){
-            $color = "success";
-        }
-        if($rating >= 3.5 && $rating < 4.25){
-            $color = "info";
-        }
-        if($rating >= 4.25){
-            $color = "primary";
-        }
-        return $color;
-    }
 
     public function delete_ratings($wrestler){
         $this->delete();

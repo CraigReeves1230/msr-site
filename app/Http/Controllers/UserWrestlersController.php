@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\CommentReply;
+use App\Services\RatingConverter;
 use App\Services\WrestlerRater;
 use App\Wrestler;
 use App\WrestlerRating;
@@ -17,7 +18,7 @@ class UserWrestlersController extends Controller
         $this->middleware('auth');
     }
 
-    public function show($id, WrestlerRater $wrestler_rater)
+    public function show($id, WrestlerRater $wrestler_rater, RatingConverter $rating_converter)
     {
 
         $wrestler = Wrestler::findOrFail($id);
@@ -75,7 +76,7 @@ class UserWrestlersController extends Controller
         // get wrestler comments
         $comments = $wrestler->comments;
 
-        return view('wrestler_profile.show', compact('user', 'wrestler', 'execution', 'user_score',
+        return view('wrestler_profile.show', compact('user', 'wrestler', 'rating_converter', 'execution', 'user_score',
             'psychology', 'ability', 'score', 'user_execution', 'user_ability', 'user_psychology', 'comments'));
     }
 
