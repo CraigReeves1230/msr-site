@@ -65,6 +65,26 @@ class User extends Authenticatable
         return $wrestlers_array;
     }
 
+    // returns an array of all wrestlers user has given ratings to
+    public function wrestlers_paginated($pagination){
+
+        //get all wrestler ratings
+        $ratings = $this->ratings;
+
+        // create array we will store all wrestlers into
+        $wrestlers_array = [];
+
+        //grab all wrestler ids whom those ratings belong
+        for($i = 0; $i < count($ratings); $i++){
+            $wrestlers_array[$i] = $ratings[$i]->wrestler->id;
+        }
+
+        // pull from the database and paginate
+        $wrestlers = Wrestler::whereIn('id', $wrestlers_array)->paginate($pagination);
+
+        return $wrestlers;
+    }
+
     // returns true if user has already given a rating for a particular wrestler
     public function has_rated($wrestler){
 
@@ -101,6 +121,18 @@ class User extends Authenticatable
             array_push($id_array, get_object_vars($ids[$i]));
         }
         $wrestlers = Wrestler::whereIn('id', $id_array)->get();
+        return $wrestlers;
+    }
+
+    // gets all wrestlers favorited, paginated
+    public function favorites_paginated($pagination){
+        $ids = DB::table('wrestler_favorites')->select('wrestler_id')->where('user_id', $this->id)->get();
+
+        $id_array = [];
+        for($i = 0; $i < count($ids); $i++){
+            array_push($id_array, get_object_vars($ids[$i]));
+        }
+        $wrestlers = Wrestler::whereIn('id', $id_array)->paginate($pagination);
         return $wrestlers;
     }
 

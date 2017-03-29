@@ -20,13 +20,13 @@ class UserDashboardController extends Controller
 
     public function my_wrestlers(){
         $user = Auth::user();
-        $wrestlers = $user->wrestlers();
+        $wrestlers = $user->wrestlers_paginated(5);
         return view('user_dashboard/my_wrestlers/my_ratings', compact('user', 'wrestlers'));
     }
 
     public function my_favorites(){
         $user = Auth::user();
-        $wrestlers = $user->favorites();
+        $wrestlers = $user->favorites_paginated(5);
         return view('user_dashboard/my_wrestlers/favorites', compact('user', 'wrestlers'));
     }
 

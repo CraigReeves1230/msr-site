@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Session;
 class AdminUsersController extends Controller
 {
 
-    protected $users;
-
     public function __construct(){
         $this->middleware('admin');
     }
@@ -22,6 +20,7 @@ class AdminUsersController extends Controller
         $users = User::paginate(10);
         return view('admin.users.index', compact('users'));
     }
+
 
     public function create()
     {

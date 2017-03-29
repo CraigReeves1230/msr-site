@@ -18,6 +18,8 @@
             </div>
         </div>
         <hr>
+
     @endforeach
+    {{$wrestlers->links()}}
 
 @endsection
