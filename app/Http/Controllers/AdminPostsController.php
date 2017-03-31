@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use app\Includes\Search;
+use App\Services\Repositories\PostRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -13,9 +14,13 @@ use Illuminate\Support\Facades\Auth;
 class AdminPostsController extends Controller
 {
 
-    public function __construct()
+    protected $post_repository;
+
+    public function __construct(PostRepository $post_repository)
     {
         $this->middleware('admin');
+        $this->post_repository = $post_repository;
+
     }
 
     public function create(){
@@ -28,8 +33,7 @@ class AdminPostsController extends Controller
         $this->validate($request, ['title' => 'required',
             'subtitle' => 'required', 'content' => 'required']);
 
-        $post = new Post;
-        $post->save_post($request);
+        $this->post_repository->save($request);
 
         return redirect('admin/posts/all');
     }
@@ -40,9 +44,7 @@ class AdminPostsController extends Controller
         $this->validate($request, ['title' => 'required',
             'subtitle' => 'required', 'content' => 'required']);
 
-        $post = Post::findOrFail($id);
-        $post->update_post($request);
-
+        $this->post_repository->update($id, $request);
         return redirect('admin/posts/all');
     }
 
