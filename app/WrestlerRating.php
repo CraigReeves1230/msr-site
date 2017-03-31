@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Auth;
 class WrestlerRating extends Model
 {
 
-    protected $wrestler_rater;
-    protected $community_ratings_compiler;
-    protected $community_ratings_eraser;
-    protected $ratings_normalizer;
+    public $wrestler_rater;
+    public $community_ratings_compiler;
+    public $community_ratings_eraser;
+    public $ratings_normalizer;
 
     public function __construct()
     {
@@ -44,64 +44,6 @@ class WrestlerRating extends Model
         'basing', 'shine', 'heat', 'comebacks',
         'selling', 'ring_awareness', 'user_id'
     ];
-
-
-    public function save_rating($wrestler){
-
-        // this is the user
-        $user = Auth::user();
-
-        // Determine if rating will count based on user's status
-       if($user->muted == 1) {
-           $this->enabled = false;
-       }
-
-        // normalize ratings
-        $this->ratings_normalizer->normalize($this);
-
-        // calculate overall rating
-        $this->overall_score = round($this->wrestler_rater->calculate($this), 2);
-
-        // this will update the rating if rating has already been created
-        if(!$user->has_rated_id(session('wrestler_id'))){
-            $wrestler = Wrestler::find(session('wrestler_id'));
-            $wrestler->ratings()->save($this);
-        } else {
-            $this->update();
-        }
-
-        // Update community score
-        if(count($wrestler->ratings()->where('enabled', true)->get()) >= 3){
-            $this->community_ratings_compiler->compileCommunityRatings($wrestler->id);
-        } else {
-            $this->community_ratings_eraser->eraseCommunityRatings($wrestler->id);
-        }
-    }
-
-    public function update_rating($wrestler){
-
-        // Determine if rating will count based on user status
-        if($this->user->muted == 1) {
-            $this->enabled = false;
-        }
-
-        // normalize ratings
-        $this->ratings_normalizer->normalize($this);
-
-        // calculate overall rating
-        $this->overall_score = round($this->wrestler_rater->calculate($this), 2);
-
-        // save the ratings
-        $wrestler->ratings()->save($this);
-
-        // Update community score
-        if(count($wrestler->ratings()->where('enabled', true)->get()) >= 3){
-            $this->community_ratings_compiler->compileCommunityRatings($wrestler->id);
-        } else {
-            $this->community_ratings_eraser->eraseCommunityRatings($wrestler->id);
-        }
-    }
-
 
     public function delete_ratings($wrestler){
         $this->delete();

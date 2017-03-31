@@ -3,25 +3,7 @@
 @section('content')
 
     <h1 class="text-center">All Ratings For {{$wrestler->name}}</h1>
-    <div class="container" style="margin-left: 0px;">
-        <div>
-            <div class="col-sm-4">
-                <div id="imaginary_container" >
-                    <form action="{{route('all_posts_search')}}" method="post">
-                        {{csrf_field()}}
-                        <div class="input-group stylish-input-group">
-                            <input type="text" name="search_query" class="form-control"  placeholder="Search" >
-                            <span class="input-group-addon">
-                        <button type="submit">
-                            <span class="glyphicon glyphicon-search"></span>
-                        </button>
-                    </form>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
+
     <hr>
     <div>
         <table class="table table-bordered table-hover BORDER=1 HEIGHT="40%" ">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Repositories\WrestlerRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -11,9 +12,13 @@ use App\AltName;
 
 class AdminWrestlersController extends Controller
 {
-    public function __construct()
+
+    protected $wrestler_repository;
+
+    public function __construct(WrestlerRepository $wrestler_repository)
     {
         $this->middleware('admin');
+        $this->wrestler_repository = $wrestler_repository;
     }
 
     public function create_wrestler(){
@@ -26,28 +31,27 @@ class AdminWrestlersController extends Controller
         $this->validate($request, ['name' => 'required|unique:wrestlers|max:50', 'image' => 'required']);
 
         // save wrestler
-        $wrestler = new Wrestler;
-        $wrestler->save_wrestler($request);
+        $this->wrestler_repository->save($request);
 
         return redirect('admin/all_wrestlers');
     }
 
     public function all_wrestlers(){
-        $wrestlers = Wrestler::orderBy('name', 'asc')->paginate(10);
+        $wrestlers = $this->wrestler_repository->all('paginate', 10);
         return view('admin.wrestlers.all_wrestlers', compact('wrestlers'));
     }
 
     public function search_wrestlers(Request $request){
         $search_query = $request['search_query'];
-        $wrestlers = Wrestler::where('name', 'LIKE', "%$search_query%")->get();
+        $wrestlers = $this->wrestler_repository->where('name', 'LIKE', "%$search_query%", 'paginate', 10);
         if($search_query == "") {
-            $wrestlers = Wrestler::orderBy('name', 'asc')->get();
+            $wrestlers = $this->wrestler_repository->all('paginate', 10);
         }
         return view('admin.wrestlers.all_wrestlers', compact('wrestlers'));
     }
 
     public function edit_wrestler($id){
-        $wrestler = Wrestler::findOrFail($id);
+        $wrestler = $this->wrestler_repository->find($id);
         return view('admin.wrestlers.edit_wrestler', compact('wrestler'));
     }
 
@@ -57,19 +61,15 @@ class AdminWrestlersController extends Controller
         $this->validate($request, ['name' => 'required|max:50']);
 
         // update wrestler
-        $wrestler = Wrestler::findOrFail($id);
-        $wrestler->update_wrestler($request);
+        $this->wrestler_repository->update($id, $request);
 
         return redirect('admin/all_wrestlers');
     }
 
     public function destroy($id){
 
-        // find wrestler
-        $wrestler = Wrestler::findOrFail($id);
-
         // delete wrestler
-        $wrestler->delete_wrestler();
+        $this->wrestler_repository->delete($id);
 
         return redirect('admin/all_wrestlers');
     }

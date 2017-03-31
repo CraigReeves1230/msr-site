@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Repositories\WrestlerRatingRepository;
+use App\Services\Repositories\WrestlerRepository;
 use App\WrestlerRating;
 use Illuminate\Http\Request;
 use App\Wrestler;
@@ -9,19 +11,24 @@ use App\Wrestler;
 class AdminWrestlerRatingsController extends Controller
 {
 
-    public function __construct()
+    protected $wrestler_rating_repository;
+    protected $wrestler_repository;
+
+    public function __construct(WrestlerRatingRepository $wrestler_rating_repository, WrestlerRepository $wrestler_repository)
     {
         $this->middleware('admin');
+        $this->wrestler_rating_repository = $wrestler_rating_repository;
+        $this->wrestler_repository = $wrestler_repository;
     }
 
     public function show($id){
-        $wrestler = Wrestler::findOrFail($id);
+        $wrestler = $this->wrestler_repository->find($id);
         $ratings = $wrestler->ratings()->paginate(12);
         return view('admin.wrestler_ratings.show', compact('wrestler', 'ratings'));
     }
 
     public function edit($id){
-        $ratings = WrestlerRating::findOrFail($id);
+        $ratings = $this->wrestler_rating_repository->find($id);
         $wrestler = $ratings->wrestler;
         return view('admin.wrestler_ratings.edit', compact('ratings', 'wrestler'));
     }
@@ -29,7 +36,7 @@ class AdminWrestlerRatingsController extends Controller
     public function update(Request $request, $id){
 
         // Save ratings
-        $wrestler_ratings = WrestlerRating::findOrFail($id);
+        $wrestler_ratings = $this->wrestler_rating_repository->find($id);
         $wrestler = $wrestler_ratings->wrestler;
 
         // obtain ratings
@@ -60,18 +67,16 @@ class AdminWrestlerRatingsController extends Controller
         }
 
         // save ratings
-        $wrestler_ratings->update_rating($wrestler);
-
+        $this->wrestler_rating_repository->update($wrestler_ratings);
         return redirect("admin/wrestler_ratings/{$wrestler->id}");
     }
 
     public function delete_ratings($id){
 
         // get ratings
-        $ratings = WrestlerRating::findOrFail($id);
-        $wrestler = $ratings->wrestler;
+        $ratings = $this->wrestler_rating_repository->find($id);
 
-        $ratings->delete_ratings($wrestler);
+        $this->wrestler_rating_repository->delete($ratings);
         return redirect()->back();
     }
 

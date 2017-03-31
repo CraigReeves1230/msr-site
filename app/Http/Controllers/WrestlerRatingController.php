@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\RatingConverter;
 use App\Services\RatingsNormalizer;
+use App\Services\Repositories\WrestlerRatingRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -16,10 +17,12 @@ class WrestlerRatingController extends Controller
 {
 
     protected $rating_converter;
+    protected $wrestler_rating_repository;
 
-    public function __construct()
+    public function __construct(WrestlerRatingRepository $wrestler_rating_repository)
     {
         $this->middleware('auth');
+        $this->wrestler_rating_repository = $wrestler_rating_repository;
     }
 
     public function wres_search(RatingConverter $rating_converter)
@@ -27,11 +30,6 @@ class WrestlerRatingController extends Controller
         $wrestlers = Wrestler::orderBy('name', 'asc')->paginate(4);
         return view('main/wres_rater/search/select_wrestler_for_rating', compact('wrestlers', 'rating_converter'));
     }
-
-    /*public function wres_search_results(Request $request)
-    {
-        return view('main/wres_rater/search/select_wrestler_results', compact('rating_converter'));
-    }*/
 
     public function new_rating_go($id)
     {
@@ -54,7 +52,7 @@ class WrestlerRatingController extends Controller
 
         // look for wrestler in database and populate search results
         if ($alt_name = AltName::where("name", "LIKE", "%$search_query%")->first()) {
-            $wrestlers = $alt_name->wrestlers;
+            $wrestlers = $alt_name->wrestlers()->paginate(10);
             return view('main/wres_rater/search/select_wrestler_results', compact('wrestlers', 'search_query', 'logged_in_user', 'rating_converter'));
         } else {
             $wrestlers = [];
@@ -137,8 +135,7 @@ class WrestlerRatingController extends Controller
         $wrestler_rating->user_id = Auth::user()->id;
 
         // save wrestler
-        $wrestler_rating->save_rating($wrestler);
-
+        $this->wrestler_rating_repository->save($wrestler_rating, $wrestler);
         return redirect('wres_profile/' . $wrestler->id);
     }
 
@@ -206,7 +203,7 @@ class WrestlerRatingController extends Controller
         return view('main.wres_rater.edit_rating.edit_rating3', compact('ratings', 'wrestler', 'user'));
     }
 
-    public function edit_rating4(Request $request, $id, RatingsNormalizer $normalizer)
+    public function edit_rating4(Request $request, $id)
     {
 
         // gather ratings
@@ -248,11 +245,10 @@ class WrestlerRatingController extends Controller
         $wrestler_rating->ring_awareness = session('ring_awareness');
 
         // save wrestler
-        $wrestler_rating->update_rating($wrestler);
+        $this->wrestler_rating_repository->update($wrestler_rating);
 
         // redirect
         return redirect('wres_profile/' . $wrestler->id);
-
     }
 
 }
