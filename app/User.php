@@ -167,46 +167,6 @@ class User extends Authenticatable
         }
     }
 
-    public function save_user($data){
-
-        $this->name = $data['name'];
-        $this->email = $data['email'];
-        $this->admin = $data['admin'];
-        $this->password = bcrypt($data['password']);
-        $this->save();
-        $image = new Image(['path' => $data['image']]);
-        $this->images()->save($image);
-
-       return $this;
-    }
-
-    public function update_user($data){
-        $this->name = $data['name'];
-        $this->email = $data['email'];
-        if(empty($data['summary'])) {
-            $this->summary = "";
-        } else {
-            $this->summary = $data['summary'];
-        }
-
-        // update admin status if it has been changed
-        if(!empty($data['admin'])){
-            $this->admin = $data['admin'];
-        }
-        //update password if it has been changed
-        if(!empty($data['password'])){
-            $this->password = bcrypt($data['password']);
-        }
-
-        $this->update();
-
-        //update image if it has been changed
-        if(!empty($data['image'])){
-            $this->images[0]->path = $data['image'];
-            $this->images[0]->save();
-        }
-    }
-
     // Bans a user
     public function ban(){
 

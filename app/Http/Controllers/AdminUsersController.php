@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\UserRepository;
+use App\Services\Repositories\UserRepository;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,13 +11,16 @@ use Illuminate\Support\Facades\Session;
 class AdminUsersController extends Controller
 {
 
-    public function __construct(){
+    protected $user_repository;
+
+    public function __construct(UserRepository $user_repository){
         $this->middleware('admin');
+        $this->user_repository = $user_repository;
     }
 
     public function index()
     {
-        $users = User::paginate(10);
+        $users = $this->user_repository->all('paginate', 10);
         return view('admin.users.index', compact('users'));
     }
 
@@ -46,15 +49,14 @@ class AdminUsersController extends Controller
             $data['image'] = 'genericface.jpg';
         }
 
-        $user = new User;
-        $user->save_user($data);
+        $this->user_repository->save($data);
         return redirect('admin/users');
     }
 
     public function edit($id)
     {
         $logged_in_user = Auth::user();
-        $user = User::findOrFail($id);
+        $user = $this->user_repository->find($id);
 
         // Make it so that a banned user cannot be edited
         if ($logged_in_user->master == 0){
@@ -94,7 +96,6 @@ class AdminUsersController extends Controller
         }
 
         // find user and store field data into data
-        $user = User::findOrFail($id);
         $data = $request->all();
 
         // upload image if new one was uploaded
@@ -105,32 +106,27 @@ class AdminUsersController extends Controller
         }
 
         //update user and revert back to users
-        $user->update_user($data);
+        $this->user_repository->update($id, $data);
         return redirect('admin/users');
     }
 
     public function ban_user($id){
-        $user = User::findOrFail($id);
+        $user = $this->user_repository->find($id);
         $user->ban();
         return redirect('admin/users');
     }
 
     public function reinstate_user($id){
-        $user = User::findOrFail($id);
+        $user = $this->user_repository->find($id);
         $user->reinstate();
         return redirect('admin/users');
     }
 
-    public function destroy($id)
-    {
-
-    }
-
     public function search_users(Request $request){
         $search_query = $request['search_query'];
-        $users = User::where('name', 'LIKE', "%$search_query%")->get();
+        $users = $this->user_repository->where('name', 'LIKE', "%$search_query%", 'get');
         if($search_query == "") {
-            $users = User::all();
+            $users = $this->user_repository->all();
         }
         return view('admin.users.index', compact('users'));
     }

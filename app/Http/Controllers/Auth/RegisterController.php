@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Services\Repositories\UserRepository;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
@@ -23,29 +24,15 @@ class RegisterController extends Controller
 
     use RegistersUsers;
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
     protected $redirectTo = '/';
+    protected $user_repository;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function __construct(UserRepository $user_repository)
     {
         $this->middleware('guest');
+        $this->user_repository = $user_repository;
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -55,12 +42,6 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return User
-     */
     protected function create(array $data)
     {
         Session::flash('user_created', 'Your account has been created.');
@@ -70,6 +51,6 @@ class RegisterController extends Controller
         $data['admin'] = 0;
         $data['image'] = 'genericface.jpg';
 
-        return $user->save_user($data);
+        return $this->user_repository->save($data);
     }
 }

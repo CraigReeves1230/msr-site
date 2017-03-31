@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\MatchRater;
+use App\Services\Repositories\UserRepository;
 use App\Wrestler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserDashboardController extends Controller
 {
-    public function __construct(){
+    protected $user_repository;
+
+    public function __construct(UserRepository $user_repository){
         $this->middleware('auth');
+        $this->user_repository = $user_repository;
     }
 
     public function index(){
@@ -53,7 +57,7 @@ class UserDashboardController extends Controller
         // get logged in user
         $user = Auth::user();
 
-        $user->update_user($request);
+        $this->user_repository->update($user->id, $request);
         return redirect('/user_dashboard');
     }
 }
