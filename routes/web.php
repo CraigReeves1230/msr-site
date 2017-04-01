@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+use App\Services\RatingsRefresher;
 use App\Wrestler;
 use App\AltName;
 use Illuminate\Support\Facades\Mail;
@@ -113,6 +114,14 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // Search users
     Route::post('admin/users/search_users', 'AdminUsersController@search_users')->name('search_users');
 
+    // See ratings for user
+    Route::get('admin/users/{id}/ratings', 'AdminUsersController@see_ratings')->name('see_ratings');
+
+    // See posts by user
+    Route::get('admin/users/{id}/posts', 'AdminUsersController@see_posts')->name('see_posts');
+
+    // Search posts by user
+    Route::post('admin/users/{id}/post_search', 'AdminUsersController@user_posts_search')->name('user_posts_search');
 
     /*
     |----------------------------------------------------------------------------
@@ -198,6 +207,8 @@ Route::group(['middlewareGroups' => 'web'], function(){
 });
 
 Auth::routes();
+
+
 
 
 

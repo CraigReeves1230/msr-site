@@ -45,30 +45,30 @@ class AdminPostsController extends Controller
             'subtitle' => 'required', 'content' => 'required']);
 
         $this->post_repository->update($id, $request);
-        return redirect('admin/posts/all');
+        return redirect()->back();
     }
 
     public function edit($id){
-        $post = Post::findOrFail($id);
+        $post = $this->post_repository->find($id);
         return view('admin/posts/edit_post', compact('post'));
     }
 
     public function delete($id){
-        $post = Post::findOrFail($id);
+        $post = $this->post_repository->find($id);
         $post->delete_post();
-        return redirect('admin/posts/all');
+        return redirect()->back();
     }
 
     public function allposts(){
-        $posts = Post::orderBy('id', 'desc')->paginate(10);
+        $posts = $post = $this->post_repository->all('paginate', 10);
         return view('admin/posts/all_posts', compact('posts'));
     }
 
     public function search_posts(Request $request){
         $search_query = $request['search_query'];
-        $posts = Post::where('title', 'LIKE', "%$search_query%")->paginate(10);
+        $posts = $this->post_repository->where('title', 'LIKE', "%$search_query%", 'paginate', 10);
         if($search_query == "") {
-            $posts = Post::orderBy('id', 'desc')->get();
+            $posts = $this->post_repository->all('paginate', 10);
         }
         return view('admin.posts.all_posts', compact('posts'));
     }

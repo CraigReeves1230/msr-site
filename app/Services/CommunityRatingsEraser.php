@@ -9,13 +9,21 @@
 namespace App\Services;
 
 
+use App\Services\Repositories\WrestlerRepository;
 use App\Wrestler;
 
 class CommunityRatingsEraser
 {
+
+    public $wrestler_repository;
+
+    public function __construct(WrestlerRepository $wrestler_repository){
+        $this->wrestler_repository = $wrestler_repository;
+    }
+
     //this function will erase all community ratings, nulling them all out
     public function eraseCommunityRatings($wrestler_id){
-        $wrestler = Wrestler::findOrFail($wrestler_id);
+        $wrestler = $this->wrestler_repository->find($wrestler_id);
         $wrestler->striking = null;
         $wrestler->submission = null;
         $wrestler->throws = null;

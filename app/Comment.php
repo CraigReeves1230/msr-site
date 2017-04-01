@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class Comment extends Model
 {
@@ -24,6 +25,7 @@ class Comment extends Model
     }
 
     public function save_comment($commentable, $data){
+
         $this->content = $data['content'];
         $this->user_id = Auth::user()->id;
         $this->likes = 0;

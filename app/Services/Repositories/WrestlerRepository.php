@@ -253,4 +253,14 @@ class WrestlerRepository
         }
     }
 
+    public function where_multiple($array, $method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
+        if($method == 'get'){
+            return Wrestler::where($array)->orderBy($order_index, $order)->get();
+        } elseif($method == 'paginate'){
+            return Wrestler::where($array)->orderBy($order_index, $order)->paginate($per_page);
+        } elseif($method == 'first'){
+            return Wrestler::where($array)->first();
+        }
+    }
+
 }

@@ -14,7 +14,7 @@ use App\Wrestler;
 class WrestlerRater
 {
 
-    protected $ratings_normalizer;
+    public $ratings_normalizer;
 
     public function calculate($rateable){
 

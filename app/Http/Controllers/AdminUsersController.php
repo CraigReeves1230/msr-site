@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Post;
+use App\Services\Repositories\PostRepository;
 use App\Services\Repositories\UserRepository;
-use App\User;
+use App\Services\Repositories\WrestlerRatingRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -12,10 +14,16 @@ class AdminUsersController extends Controller
 {
 
     protected $user_repository;
+    protected $ratings_repository;
+    protected $post_repository;
 
-    public function __construct(UserRepository $user_repository){
+    public function __construct(UserRepository $user_repository,
+                                WrestlerRatingRepository $ratings_repository,
+                                    PostRepository $post_repository){
         $this->middleware('admin');
         $this->user_repository = $user_repository;
+        $this->ratings_repository = $ratings_repository;
+        $this->post_repository = $post_repository;
     }
 
     public function index()
@@ -51,6 +59,29 @@ class AdminUsersController extends Controller
 
         $this->user_repository->save($data);
         return redirect('admin/users');
+    }
+
+    public function see_ratings($id){
+        $user = $this->user_repository->find($id);
+        $ratings = $this->ratings_repository->where('user_id', '=', $user->id, 'paginate', 10);
+        return view('admin/users/view_ratings', compact('ratings', 'user'));
+    }
+
+    public function see_posts($id){
+        $user = $this->user_repository->find($id);
+        $posts = $this->post_repository->where('user_id', '=', $user->id, 'paginate', 10);
+        return view('admin/users/view_posts', compact('posts', 'user'));
+    }
+
+    public function user_posts_search($id, Request $request){
+        $search_query = $request['search_query'];
+        $user = $this->user_repository->find($id);
+        if($search_query == ''){
+            $posts = $this->post_repository->where('user_id', '=', $user->id, 'paginate', 10);
+        } else {
+            $posts = $this->post_repository->where_multiple([['user_id', $id], ['title', 'LIKE', "%$search_query%"]], 'paginate', 10);
+        }
+        return view('admin/users/view_posts', compact('posts', 'user'));
     }
 
     public function edit($id)
@@ -130,5 +161,7 @@ class AdminUsersController extends Controller
         }
         return view('admin.users.index', compact('users'));
     }
+
+
 
 }

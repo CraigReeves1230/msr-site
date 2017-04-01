@@ -5,9 +5,10 @@ namespace App;
 use App\Services\CommunityRatingsCompiler;
 use App\Services\CommunityRatingsEraser;
 use App\Services\RatingsNormalizer;
+use App\Services\Repositories\WrestlerRepository;
 use App\Services\WrestlerRater;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
+
 
 class WrestlerRating extends Model
 {
@@ -20,9 +21,9 @@ class WrestlerRating extends Model
     public function __construct()
     {
         $this->wrestler_rater = new WrestlerRater;
-        $this->community_ratings_compiler = new CommunityRatingsCompiler;
+        $this->community_ratings_compiler = new CommunityRatingsCompiler(new WrestlerRater, new WrestlerRepository);
         $this->ratings_normalizer = new RatingsNormalizer;
-        $this->community_ratings_eraser = new CommunityRatingsEraser;
+        $this->community_ratings_eraser = new CommunityRatingsEraser(new WrestlerRepository);
     }
 
     //returns wrestler the rating belongs to

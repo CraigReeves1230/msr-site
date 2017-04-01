@@ -4,24 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\CommentReply;
+use App\Services\Gateways\CommentsGateway;
 use App\Services\RatingConverter;
+use App\Services\Repositories\WrestlerRepository;
 use App\Services\WrestlerRater;
 use App\Wrestler;
-use App\WrestlerRating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserWrestlersController extends Controller
 {
-    public function __construct()
+
+    protected $wrestler_repository;
+
+    public function __construct(WrestlerRepository $wrestler_repository)
     {
         $this->middleware('auth');
+        $this->wrestler_repository = $wrestler_repository;
     }
 
     public function show($id, WrestlerRater $wrestler_rater, RatingConverter $rating_converter)
     {
 
-        $wrestler = Wrestler::findOrFail($id);
+        $wrestler = $this->wrestler_repository->find($id);
 
         //calculate community scores
 
@@ -80,32 +85,47 @@ class UserWrestlersController extends Controller
             'psychology', 'ability', 'score', 'user_execution', 'user_ability', 'user_psychology', 'comments'));
     }
 
-    public function store_comment(Comment $comment, Request $request){
+    public function store_comment(Comment $comment, Request $request, CommentsGateway $gateway){
+        $user = Auth::user();
         $data = $request->all();
-        $wrestler = Wrestler::findOrFail($data['wrestler_id']);
+        $wrestler = $this->wrestler_repository->find($data['wrestler_id']);
+
+        // gateway to access
+        if($gateway->enact($user)){
+            return redirect()->back();
+        }
+
         $comment->save_comment($wrestler, $data);
         return redirect()->back();
     }
 
-    public function store_reply(CommentReply $reply, Request $request){
+    public function store_reply(CommentReply $reply, Request $request, CommentsGateway $gateway){
+        $user = Auth::user();
         $data = $request->all();
+
+        // gateway to access
+        if($gateway->enact($user)){
+            return redirect()->back();
+        }
+
         $reply->save_reply($data);
         return redirect()->back();
     }
 
     public function favorite($id){
         $user = Auth::user();
-        $wrestler = Wrestler::findOrFail($id);
+        $wrestler = $this->wrestler_repository->find($id);
         $user->favorite($wrestler);
         return redirect('wres_profile/' . $id);
     }
 
     public function unfollow($id){
         $user = Auth::user();
-        $wrestler = Wrestler::findOrFail($id);
+        $wrestler = $this->wrestler_repository->find($id);
         $user->unfollow($wrestler);
         return redirect('wres_profile/' . $id);
     }
 
+    
 }
 

@@ -53,6 +53,7 @@
             <th>Role</th>
             <th>Image</th>
             <th>View Posts</th>
+            <th>View Ratings</th>
             <th>User Profile</th>
             <th>Edit</th>
             <th>Ban/Reinstate User</th>
@@ -79,8 +80,9 @@
                     @endif
                 </td>
                 <td><img height="80" src="{{$user->images[0]->path}}"></td>
-                <td><a href="">View Posts</a></td>
-                <td><a href="">User Profile</a></td>
+                <td><a href="{{route('see_posts', ['id' => $user->id])}}">View Posts</a></td>
+                <td><a href="{{route('see_ratings', ['id' => $user->id])}}">View Ratings</a></td>
+                <td><a href="{{route('user_profile', ['id' => $user->id])}}">User Profile</a></td>
                 <td><a href="{{route('users.edit', ['id' => $user->id])}}">Edit</a></td>
 
                 @if($user->status == "active")

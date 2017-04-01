@@ -9,12 +9,14 @@
 namespace App\Services\Repositories;
 
 
+use App\Services\CommunityRatingsEraser;
 use App\Wrestler;
 use App\WrestlerRating;
 use Illuminate\Support\Facades\Auth;
 
 class WrestlerRatingRepository
 {
+
     public function save($rating, $wrestler){
 
         // this is the user
@@ -120,5 +122,13 @@ class WrestlerRatingRepository
         }
     }
 
-
+    public function where_multiple($array, $method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
+        if($method == 'get'){
+            return WrestlerRating::where($array)->orderBy($order_index, $order)->get();
+        } elseif($method == 'paginate'){
+            return WrestlerRating::where($array)->orderBy($order_index, $order)->paginate($per_page);
+        } elseif($method == 'first'){
+            return WrestlerRating::where($array)->first();
+        }
+    }
 }

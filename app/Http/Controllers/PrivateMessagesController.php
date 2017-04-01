@@ -4,18 +4,24 @@ namespace App\Http\Controllers;
 
 use App\PrivateMessage;
 use App\PrivateMessageReply;
-use App\User;
+use App\Services\Gateways\PMGateway;
+use App\Services\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PrivateMessagesController extends Controller
 {
-    public function __construct(){
+    protected $user_repository;
+    protected $gateway;
+
+    public function __construct(UserRepository $user_repository, PMGateway $gateway){
         $this->middleware('auth');
+        $this->user_repository = $user_repository;
+        $this->gateway = $gateway;
     }
 
     public function create($id){
-        $recipient = User::findOrFail($id);
+        $recipient = $this->user_repository->find($id);
         return view('private_messages/create', compact('recipient'));
     }
 
@@ -23,10 +29,15 @@ class PrivateMessagesController extends Controller
 
         // validations
         $this->validate($request, ['content' => 'required']);
+        $author = Auth::user();
+        $recipient = $this->user_repository->find($id);
+
+        // gateway for access
+        if($this->gateway->enact($author, $recipient)){
+            return redirect("message/{$recipient->id}/create");
+        }
 
         $message = $request['content'];
-        $author = Auth::user();
-        $recipient = User::findOrFail($id);
         $pm->send_message($author, $recipient, $message);
         return redirect('user_dashboard/messages');
     }
@@ -64,6 +75,13 @@ class PrivateMessagesController extends Controller
 
         //handle validations
         $this->validate($request, ['content' => 'required']);
+
+        // get the recipient
+        $recipient = PrivateMessage::find($request['private_message_id'])->author();
+
+        if($this->gateway->enact(Auth::user(), $recipient)){
+            return redirect()->back();
+        }
 
         $data = $request->all();
         $reply->send_reply($data);

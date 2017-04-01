@@ -18,6 +18,10 @@
             <input value="Submit Message" type="submit" style="margin-top: 10px;" class="btn btn-primary" name="submit" >
         </form>
 
+        @if(Session::has('gateway_pm'))
+            <div class="alert alert-danger" style="margin-top: 10px;">{{session('gateway_pm')}}</div>
+        @endif
+
         <!-- Display errors -->
         @if(count($errors) > 0)
             <div class="alert alert-danger" style="margin-top: 10px;">

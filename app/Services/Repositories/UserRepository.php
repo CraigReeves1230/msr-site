@@ -101,4 +101,14 @@ class UserRepository
         }
     }
 
+    public function where_multiple($array, $method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
+        if($method == 'get'){
+            return User::where($array)->orderBy($order_index, $order)->get();
+        } elseif($method == 'paginate'){
+            return User::where($array)->orderBy($order_index, $order)->paginate($per_page);
+        } elseif($method == 'first'){
+            return User::where($array)->first();
+        }
+    }
+
 }

@@ -33,7 +33,6 @@
                         </div>
                     </article>
 
-
                     <!-- Reply -->
                     @foreach($private_message_replies as $reply)
                     <article class="row">
@@ -72,6 +71,10 @@
                         </div>
                     @endif
 
+                    @if(Session::has('gateway_pm'))
+                        <div style="margin-top: 10px;" class="alert alert-danger">{{session('gateway_pm')}}</div>
+                    @endif
+
                     <form action="{{route('send_pm_reply')}}" method="post">
                         {{csrf_field()}}
                         <div class="form-group" style="margin-top: 10px;">
@@ -81,10 +84,6 @@
                             <input type="submit" value="Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
                         </div>
                     </form>
-
-
-
-
 
 
 @endsection

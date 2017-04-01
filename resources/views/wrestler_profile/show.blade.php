@@ -191,6 +191,10 @@
     <div class="row">
         <div class="comments-container">
 
+            @if(Session::has('comments_gateway'))
+                <div class="alert alert-danger">{{session('comments_gateway')}}</div>
+            @endif
+
             @if(count($wrestler->comments) > 0)
                 <h1>Comments</h1>
             @endif

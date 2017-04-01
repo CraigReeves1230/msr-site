@@ -180,6 +180,7 @@ class User extends Authenticatable
             if($this->admin == 0 || $logged_in_user->master == 1) {
 
                 $this->status = "banned";
+                $this->muted = 1;
                 $this->update();
 
                 // send alert to user
@@ -212,6 +213,7 @@ class User extends Authenticatable
             if($logged_in_user-> id == $admin_id || $logged_in_user->master == 1) {
 
                 $this->status = "active";
+                $this->muted = 0;
                 $this->update();
 
                 // send alert to user

@@ -9,20 +9,24 @@
 namespace App\Services;
 
 
+use App\Services\Repositories\WrestlerRepository;
+
 class CommunityRatingsCompiler
 {
 
-    protected $wrestler_rater;
+    public $wrestler_rater;
+    public $wrestler_repository;
 
-    public function __contruct(WrestlerRater $wrestler_rater){
+    public function __construct(WrestlerRater $wrestler_rater, WrestlerRepository $wrestler_repository){
         $this->wrestler_rater = $wrestler_rater;
+        $this->wrestler_repository = $wrestler_repository;
     }
 
     //this function will automatically compile all ratings into community ratings
     public function compileCommunityRatings($wrestler_id) {
 
         // get wrestler
-        $wrestler = Wrestler::findOrFail($wrestler_id);
+        $wrestler = $this->wrestler_repository->find($wrestler_id);
 
         // zero out all ratings
         $wrestler->striking = 0;
@@ -78,31 +82,30 @@ class CommunityRatingsCompiler
             $wrestler->ring_awareness += $rating->ring_awareness;
         }
 
-        // average all ratings
-        $wrestler->striking = round($wrestler->striking / count($enabled_ratings), 2);
-        $wrestler->submission = round($wrestler->submission / count($enabled_ratings), 2);
-        $wrestler->throws = round($wrestler->throws / count($enabled_ratings), 2);
-        $wrestler->movement = round($wrestler->movement / count($enabled_ratings), 2);
-        $wrestler->mat_and_chain = round($wrestler->mat_and_chain / count($enabled_ratings), 2);
-        $wrestler->setting_up = round($wrestler->setting_up / count($enabled_ratings), 2);
-        $wrestler->sell_timing = round($wrestler->sell_timing / count($enabled_ratings), 2);
-        $wrestler->bumping = round($wrestler->bumping / count($enabled_ratings), 2);
-        $wrestler->technical = round($wrestler->technical / count($enabled_ratings), 2);
-        $wrestler->high_fly = round($wrestler->high_fly / count($enabled_ratings), 2);
-        $wrestler->power = round($wrestler->power / count($enabled_ratings), 2);
-        $wrestler->reaction = round($wrestler->reaction / count($enabled_ratings), 2);
-        $wrestler->durability = round($wrestler->durability / count($enabled_ratings), 2);
-        $wrestler->conditioning = round($wrestler->conditioning / count($enabled_ratings), 2);
-        $wrestler->basing = round($wrestler->basing / count($enabled_ratings), 2);
-        $wrestler->shine = round($wrestler->shine / count($enabled_ratings), 2);
-        $wrestler->heat = round($wrestler->heat / count($enabled_ratings), 2);
-        $wrestler->comebacks = round($wrestler->comebacks / count($enabled_ratings), 2);
-        $wrestler->selling = round($wrestler->selling / count($enabled_ratings), 2);
-        $wrestler->ring_awareness = round($wrestler->ring_awareness / count($enabled_ratings), 2);
+            $wrestler->striking = round($wrestler->striking / count($enabled_ratings), 2);
+            $wrestler->submission = round($wrestler->submission / count($enabled_ratings), 2);
+            $wrestler->throws = round($wrestler->throws / count($enabled_ratings), 2);
+            $wrestler->movement = round($wrestler->movement / count($enabled_ratings), 2);
+            $wrestler->mat_and_chain = round($wrestler->mat_and_chain / count($enabled_ratings), 2);
+            $wrestler->setting_up = round($wrestler->setting_up / count($enabled_ratings), 2);
+            $wrestler->sell_timing = round($wrestler->sell_timing / count($enabled_ratings), 2);
+            $wrestler->bumping = round($wrestler->bumping / count($enabled_ratings), 2);
+            $wrestler->technical = round($wrestler->technical / count($enabled_ratings), 2);
+            $wrestler->high_fly = round($wrestler->high_fly / count($enabled_ratings), 2);
+            $wrestler->power = round($wrestler->power / count($enabled_ratings), 2);
+            $wrestler->reaction = round($wrestler->reaction / count($enabled_ratings), 2);
+            $wrestler->durability = round($wrestler->durability / count($enabled_ratings), 2);
+            $wrestler->conditioning = round($wrestler->conditioning / count($enabled_ratings), 2);
+            $wrestler->basing = round($wrestler->basing / count($enabled_ratings), 2);
+            $wrestler->shine = round($wrestler->shine / count($enabled_ratings), 2);
+            $wrestler->heat = round($wrestler->heat / count($enabled_ratings), 2);
+            $wrestler->comebacks = round($wrestler->comebacks / count($enabled_ratings), 2);
+            $wrestler->selling = round($wrestler->selling / count($enabled_ratings), 2);
+            $wrestler->ring_awareness = round($wrestler->ring_awareness / count($enabled_ratings), 2);
 
-        // get the community score
-        $comm_score = $this->wrestler_rater->calculate($wrestler);
-        $wrestler->community_rating = round($comm_score, 2);
+            // get the community score
+            $comm_score = $this->wrestler_rater->calculate($wrestler);
+            $wrestler->community_rating = round($comm_score, 2);
 
         // save the wrestler
         $wrestler->save();
