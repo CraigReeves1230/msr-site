@@ -52,6 +52,7 @@
 
         </tbody>
       </table>
+        {{$private_messages->links()}}
     </div>
 
 @endsection

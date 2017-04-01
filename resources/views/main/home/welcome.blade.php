@@ -8,6 +8,9 @@
     @if(Session::has('user_created'))
         <div class="alert alert-success">{{session('user_created')}}</div>
     @endif
+    @if(Session::has('gateway_pm'))
+        <div class="alert alert-danger">{{session('gateway_pm')}}</div>
+    @endif
 
     @foreach($posts as $post)
         <div class="post-preview">

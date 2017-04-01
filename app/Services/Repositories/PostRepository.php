@@ -122,4 +122,20 @@ class PostRepository
             return Post::where($array)->first();
         }
     }
+
+    public function where_optional_double($array1, $array2, $method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
+        if($method == 'get'){
+            return Post::where($array1)->orWhere($array2)->orderBy($order_index, $order)->get();
+        } elseif($method == 'paginate'){
+            return Post::where($array1)->orWhere($array2)->orderBy($order_index, $order)->paginate($per_page);
+        }
+    }
+
+    public function where_optional_triple($array1, $array2, $array3, $method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
+        if($method == 'get'){
+            return Post::where($array1)->orWhere($array2)->orWhere($array3)->orderBy($order_index, $order)->get();
+        } elseif($method == 'paginate'){
+            return Post::where($array1)->orWhere($array2)->orWhere($array3)->orderBy($order_index, $order)->paginate($per_page);
+        }
+    }
 }

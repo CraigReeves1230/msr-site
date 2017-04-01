@@ -92,7 +92,7 @@ class WrestlerRepository
     public function update($id, $request){
 
         // get the wrestler
-        $wrestler = Wrestler::findOrFail($id);
+        $wrestler = $this->find($id);
 
         $wrestler->name = $request['name'];
 
@@ -202,7 +202,7 @@ class WrestlerRepository
     public function delete($id){
 
         // get the wrestler
-        $wrestler = Wrestler::findOrFail($id);
+        $wrestler = $this->find($id);
 
         // store alt names in temp array so we can access after detachment and deletion
         $temp_alt_names = $wrestler->alt_names;
@@ -260,6 +260,22 @@ class WrestlerRepository
             return Wrestler::where($array)->orderBy($order_index, $order)->paginate($per_page);
         } elseif($method == 'first'){
             return Wrestler::where($array)->first();
+        }
+    }
+
+    public function where_optional_double($array1, $array2, $method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
+        if($method == 'get'){
+            return Wrestler::where($array1)->orWhere($array2)->orderBy($order_index, $order)->get();
+        } elseif($method == 'paginate'){
+            return Wrestler::where($array1)->orWhere($array2)->orderBy($order_index, $order)->paginate($per_page);
+        }
+    }
+
+    public function where_optional_triple($array1, $array2, $array3, $method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
+        if($method == 'get'){
+            return Wrestler::where($array1)->orWhere($array2)->orWhere($array3)->orderBy($order_index, $order)->get();
+        } elseif($method == 'paginate'){
+            return Wrestler::where($array1)->orWhere($array2)->orWhere($array3)->orderBy($order_index, $order)->paginate($per_page);
         }
     }
 

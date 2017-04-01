@@ -9,6 +9,7 @@
 namespace App\Services\Gateways;
 
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class PMGateway
@@ -52,7 +53,11 @@ class PMGateway
             }
         }
 
-
+        // only the author and recipient can see a message
+        if(Auth::user() != $author && Auth::user() != $recipient){
+            Session::flash('gateway_pm', 'You are not allowed to view any private messages but your own.');
+            return true;
+        }
 
     }
 

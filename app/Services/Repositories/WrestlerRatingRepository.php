@@ -17,6 +17,13 @@ use Illuminate\Support\Facades\Auth;
 class WrestlerRatingRepository
 {
 
+    protected $wrestler_repository;
+
+    public function __construct(WrestlerRepository $wrestler_repository)
+    {
+        $this->wrestler_repository = $wrestler_repository;
+    }
+
     public function save($rating, $wrestler){
 
         // this is the user
@@ -35,7 +42,7 @@ class WrestlerRatingRepository
 
         // this will update the rating if rating has already been created
         if(!$user->has_rated_id(session('wrestler_id'))){
-            $wrestler = Wrestler::find(session('wrestler_id'));
+            $wrestler = $this->wrestler_repository->find(session('wrestler_id'));
             $wrestler->ratings()->save($rating);
         } else {
             $this->update();
@@ -129,6 +136,22 @@ class WrestlerRatingRepository
             return WrestlerRating::where($array)->orderBy($order_index, $order)->paginate($per_page);
         } elseif($method == 'first'){
             return WrestlerRating::where($array)->first();
+        }
+    }
+
+    public function where_optional_double($array1, $array2, $method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
+        if($method == 'get'){
+            return WrestlerRating::where($array1)->orWhere($array2)->orderBy($order_index, $order)->get();
+        } elseif($method == 'paginate'){
+            return WrestlerRating::where($array1)->orWhere($array2)->orderBy($order_index, $order)->paginate($per_page);
+        }
+    }
+
+    public function where_optional_triple($array1, $array2, $array3, $method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
+        if($method == 'get'){
+            return WrestlerRating::where($array1)->orWhere($array2)->orWhere($array3)->orderBy($order_index, $order)->get();
+        } elseif($method == 'paginate'){
+            return WrestlerRating::where($array1)->orWhere($array2)->orWhere($array3)->orderBy($order_index, $order)->paginate($per_page);
         }
     }
 }

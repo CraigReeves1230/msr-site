@@ -21,17 +21,4 @@ class PrivateMessageReply extends Model
         return $this->belongsTo('App\PrivateMessage');
     }
 
-    public function send_reply($data){
-        $id = $data['private_message_id'];
-        $private_message = PrivateMessage::findOrFail($id);
-        $content = $data['content'];
-        $author = Auth::user();
-        $recipient_id = $private_message->author()->id;
-        $reply = new PrivateMessageReply(['user_id' => $recipient_id,
-            'author_id' => $author->id,
-            'private_message_id' => $id,
-            'content' => $content]);
-        $reply->save();
-        return redirect('user_dashboard/message/' . $id);
-    }
 }
