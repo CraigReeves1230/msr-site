@@ -126,6 +126,6 @@ class UserWrestlersController extends Controller
         return redirect('wres_profile/' . $id);
     }
 
-    
+
 }
 
