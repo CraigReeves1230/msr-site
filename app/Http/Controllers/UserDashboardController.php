@@ -41,8 +41,8 @@ class UserDashboardController extends Controller
 
     public function update_user(Request $request){
 
-        // validate name no matter what
-        $this->validate($request, ['name' => 'required|max:255']);
+        // validate name and image no matter what
+        $this->validate($request, ['name' => 'required|max:255', 'image' => 'image|max:150|mimes:jpeg,png']);
 
         // validate email only if it is changed
         if($request['email'] != $request['old_email']){
@@ -54,10 +54,18 @@ class UserDashboardController extends Controller
             $this->validate($request, ['password' => 'required|min:6|confirmed']);
         }
 
-        // get logged in user
+        // get logged in user and store request data into array
         $user = Auth::user();
+        $data = $request->all();
 
-        $this->user_repository->update($user->id, $request);
+        // upload image if new one was uploaded
+        if($file = $request->file('image')){
+            $image_name = $file->getClientOriginalName();
+            $file->move('img', $image_name);
+            $data['image'] = $image_name;
+        }
+
+        $this->user_repository->update($user->id, $data);
         return redirect('/user_dashboard');
     }
 }

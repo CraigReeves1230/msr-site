@@ -30,6 +30,7 @@
             <th class="text-center">Title</th>
             <th class="text-center">Subtitle</th>
             <th class="text-center">Author</th>
+            <th class="text-center">Comments/Replies Allowed</th>
             <th class="text-center">Edit</th>
             <th class="text-center">Delete</th>
             <th class="text-center">Image</th>
@@ -43,6 +44,11 @@
             <td><a href="{{route('read_article', ['id' => $post->id])}}">{{$post->title}}</a></td>
             <td>{{$post->subtitle}}</td>
             <td>{{$post->user->name}}</td>
+            @if($post->locked)
+                <td><b style="color: red">Locked</b></td>
+            @else
+                <td><b style="color: green">Comments/Replies Allowed</b></td>
+            @endif
             <td><a href="{{route('edit_post', ['id' => $post->id])}}">Edit</a></td>
             <td>
                 <form method="post" action="{{route('delete_post', ['id' => $post->id])}}">

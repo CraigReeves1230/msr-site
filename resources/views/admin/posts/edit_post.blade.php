@@ -22,6 +22,14 @@
             {{csrf_field()}}
         </div>
         <div class="form-group">
+            <label for="locked">Locked (comments/replies no longer allowed)</label>
+            @if(!$post->locked)
+                <input type="checkbox" class="checkbox" name="locked">
+            @elseif($post->locked)
+                <input type="checkbox" checked="checked" class="checkbox" name="locked">
+            @endif
+        </div>
+        <div class="form-group">
             <label for="subtitle"><h3>Post Subtitle</h3></label>
             <input value="{{$post->subtitle}}" name="subtitle" type="text" class="form-control">
         </div>

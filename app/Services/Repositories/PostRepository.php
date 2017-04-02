@@ -11,30 +11,25 @@ namespace App\Services\Repositories;
 
 use App\Image;
 use App\Post;
+use App\Services\ImageUploader;
 use Illuminate\Support\Facades\Auth;
 
 class PostRepository
 {
+
+    protected $image_uploader;
+
+    public function __construct(ImageUploader $image_uploader){
+        $this->image_uploader = $image_uploader;
+    }
 
     public function save($request){
 
         // create new post
         $post = new Post;
 
-        // determine if image has been uploaded
-        if(!empty($request->file('image'))){
-            $uploaded_image = 1;
-        } else {
-            $uploaded_image = 0;
-        }
-
         // handle image uploading if image has been uploaded
-        if($uploaded_image == 1){
-            $imagefile = $request->file('image');
-            $image_name = $imagefile->getClientOriginalName();
-            $imagefile->move('img', $image_name);
-            $post_image = new Image(['path' => $image_name]);
-        }
+        $post_image = $this->image_uploader->get_image($request);
 
         // create post
         $post->title = $request['title'];
@@ -44,7 +39,10 @@ class PostRepository
         $post->save();
 
         // Attach image to post
-        if($uploaded_image == 1) {
+        if($post_image != null) {
+            $post->images()->save($post_image);
+        } else {
+            $post_image->path = 'genericface.jpg';
             $post->images()->save($post_image);
         }
     }
@@ -54,29 +52,24 @@ class PostRepository
         // get the post
         $post = $this->find($id);
 
-        // determine if image has been uploaded
-        if(!empty($request->file('image'))){
-            $uploaded_image = 1;
-        } else {
-            $uploaded_image = 0;
-        }
-
         // handle image uploading if image has been uploaded
-        if($uploaded_image == 1){
-            $imagefile = $request->file('image');
-            $image_name = $imagefile->getClientOriginalName();
-            $imagefile->move('img', $image_name);
-            $post_image = new Image(['path' => $image_name]);
+        $post_image = $this->image_uploader->get_image($request);
+
+
+        //handle locking/unlocking comments
+        if($request['locked']){
+            $post->locked = true;
+        } elseif(!$request['locked']){
+            $post->locked = false;
         }
 
-        // update post
         $post->title = $request['title'];
         $post->subtitle = $request['subtitle'];
         $post->content = $request['content'];
         $post->update();
 
         // Attach image to post, replacing the photo if it is already there
-        if($uploaded_image == 1) {
+        if($post_image != null) {
             $post->images()->where('imageable_id', $post->id)->delete();
             $post->images()->save($post_image);
         }

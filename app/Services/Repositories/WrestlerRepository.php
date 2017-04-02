@@ -11,10 +11,21 @@ namespace App\Services\Repositories;
 
 use App\AltName;
 use App\Image;
+use App\Services\ImageUploader;
 use App\Wrestler;
 
 class WrestlerRepository
 {
+
+
+    protected $image_uploader;
+
+    public function __construct(ImageUploader $image_uploader)
+    {
+
+        $this->image_uploader = $image_uploader;
+    }
+
     public function save($request){
 
         $wrestler = new Wrestler;
@@ -25,9 +36,6 @@ class WrestlerRepository
         $alt_name1 = $request['altname1'];
         $alt_name2 = $request['altname2'];
         $alt_name3 = $request['altname3'];
-
-        // Image field
-        $request->file('image');
 
         // Bio, gender, Twitter and Instagram
         $wrestler->bio = $request['bio'];
@@ -72,21 +80,9 @@ class WrestlerRepository
             }
         }
 
-        // determine if image has been uploaded
-        if(!empty($request->file('image'))){
-            $uploaded_image = 1;
-        } else {
-            $uploaded_image = 0;
-        }
-
-        // handle image uploading if image has been uploaded
-        if($uploaded_image == 1){
-            $imagefile = $request->file('image');
-            $image_name = $imagefile->getClientOriginalName();
-            $imagefile->move('img', $image_name);
-            $wrestler_image = new Image(['path' => $image_name]);
-            $wrestler->images()->save($wrestler_image);
-        }
+        // get image and save
+        $wrestler_image = $this->image_uploader->get_image($request);
+        $wrestler->images()->save($wrestler_image);
     }
 
     public function update($id, $request){
@@ -182,20 +178,10 @@ class WrestlerRepository
             }
         }
 
-        // determine if image has been uploaded
-        if(!empty($request->file('image'))){
-            $uploaded_image = 1;
-        } else {
-            $uploaded_image = 0;
-        }
-
-        // handle image uploading if image has been uploaded
-        if($uploaded_image == 1){
-            $imagefile = $request->file('image');
-            $image_name = $imagefile->getClientOriginalName();
-            $imagefile->move('img', $image_name);
-            $wrestler->images[0]->path = $image_name;
-            $wrestler->images[0]->update();
+        // get image and save
+        $wrestler_image = $this->image_uploader->get_image($request);
+        if($wrestler_image != null) {
+            $wrestler->images()->save($wrestler_image);
         }
     }
 

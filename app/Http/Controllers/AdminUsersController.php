@@ -47,6 +47,7 @@ class AdminUsersController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
+            'image' => 'image|max:150|mimes:jpeg,png'
         ]);
 
         if($file = $request->file('image')){
@@ -112,8 +113,10 @@ class AdminUsersController extends Controller
 
     public function update(Request $request, $id)
     {
-        // validate name no matter what
+
+        // validate name and image size as well as type no matter what
         $this->validate($request, ['name' => 'required|max:255']);
+        $this->validate($request, ['image' => 'image|max:150|mimes:jpeg,png']);
 
         // validate email only if it is changed
         if($request['email'] != $request['old_email']){

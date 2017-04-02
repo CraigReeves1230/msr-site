@@ -28,7 +28,7 @@ class PostCommentsController extends Controller
         $post = $this->post_repository->find($data['post_id']);
 
         // gateway for access
-        if($this->gateway->enact($user)){
+        if($this->gateway->enact($user, $post)){
             return redirect()->back();
         }
 
@@ -40,9 +40,10 @@ class PostCommentsController extends Controller
     public function store_reply(CommentReply $reply, Request $request){
         $user = Auth::user();
         $data = $request->all();
+        $post = Comment::find($request['comment_id'])->post;
 
         // gateway for access
-        if($this->gateway->enact($user)){
+        if($this->gateway->enact($user, $post)){
             return redirect()->back();
         }
 

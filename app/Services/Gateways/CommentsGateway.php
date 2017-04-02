@@ -21,5 +21,13 @@ class CommentsGateway
             return true;
         }
 
+        // don't allow comments or replies on a locked thread
+        if($post != null) {
+            if ($post->locked) {
+                Session::flash('comments_gateway', 'This thread has been locked. No one will be able to leave comments or replies.');
+                return true;
+            }
+        }
+
     }
 }

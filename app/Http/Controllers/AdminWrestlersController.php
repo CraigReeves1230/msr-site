@@ -28,7 +28,7 @@ class AdminWrestlersController extends Controller
     public function store_wrestler(Request $request){
 
         // validations
-        $this->validate($request, ['name' => 'required|unique:wrestlers|max:50', 'image' => 'required']);
+        $this->validate($request, ['name' => 'required|unique:wrestlers|max:50', 'image' => 'required|image|max:150|mimes:jpeg,png']);
 
         // save wrestler
         $this->wrestler_repository->save($request);
@@ -58,7 +58,7 @@ class AdminWrestlersController extends Controller
     public function update_wrestler(Request $request, $id){
 
         // validations
-        $this->validate($request, ['name' => 'required|max:50']);
+        $this->validate($request, ['name' => 'required|max:50', 'image' => 'image|max:150|mimes:jpeg,png']);
 
         // update wrestler
         $this->wrestler_repository->update($id, $request);

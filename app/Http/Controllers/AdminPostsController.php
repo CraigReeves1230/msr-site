@@ -31,7 +31,8 @@ class AdminPostsController extends Controller
 
         // validations
         $this->validate($request, ['title' => 'required',
-            'subtitle' => 'required', 'content' => 'required']);
+            'subtitle' => 'required', 'content' => 'required',
+            'image' => 'required|image']);
 
         $this->post_repository->save($request);
 
@@ -42,10 +43,10 @@ class AdminPostsController extends Controller
 
         // validations
         $this->validate($request, ['title' => 'required',
-            'subtitle' => 'required', 'content' => 'required']);
+            'subtitle' => 'required', 'content' => 'required', 'image' => 'image']);
 
         $this->post_repository->update($id, $request);
-        return redirect()->back();
+        return redirect('admin/posts/all');
     }
 
     public function edit($id){

@@ -20,7 +20,7 @@
             </div>
         @endif
 
-        <form action="{{route('dashboard_update_user')}}" method="post">
+        <form action="{{route('dashboard_update_user')}}" method="post" enctype="multipart/form-data">
             {{method_field('PATCH')}}
             <div class="form-group">
                 <label for="name"><h3>Name</h3></label>

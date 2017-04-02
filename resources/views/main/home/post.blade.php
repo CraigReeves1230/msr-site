@@ -76,6 +76,7 @@
                             </li>
                             @endforeach
                             <!-- end comment response -->
+                            @if(!$post->locked)
                                 <!-- comment reply form -->
                                 @if(Auth::check())
                                 <form action="{{route('save_post_comment_reply')}}" method="post">
@@ -88,6 +89,7 @@
                                     </div>
                                 </form>
                                 @endif
+                            @endif
                                 <!-- end comment reply form -->
                             </ul>
                         </li>
