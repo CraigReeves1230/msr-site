@@ -6,6 +6,8 @@ use App\Comment;
 use App\CommentReply;
 use App\Services\Gateways\CommentsGateway;
 use App\Services\RatingConverter;
+use App\Services\Repositories\CommentReplyRepository;
+use App\Services\Repositories\CommentsRepository;
 use App\Services\Repositories\WrestlerRepository;
 use App\Services\WrestlerRater;
 use App\Wrestler;
@@ -85,7 +87,7 @@ class UserWrestlersController extends Controller
             'psychology', 'ability', 'score', 'user_execution', 'user_ability', 'user_psychology', 'comments'));
     }
 
-    public function store_comment(Comment $comment, Request $request, CommentsGateway $gateway){
+    public function store_comment(Request $request, CommentsGateway $gateway, CommentsRepository $comments_repository){
         $user = Auth::user();
         $data = $request->all();
         $wrestler = $this->wrestler_repository->find($data['wrestler_id']);
@@ -95,11 +97,11 @@ class UserWrestlersController extends Controller
             return redirect()->back();
         }
 
-        $comment->save_comment($wrestler, $data);
+        $comments_repository->save($wrestler, $data);
         return redirect()->back();
     }
 
-    public function store_reply(CommentReply $reply, Request $request, CommentsGateway $gateway){
+    public function store_reply(Request $request, CommentsGateway $gateway, CommentReplyRepository $reply_repository){
         $user = Auth::user();
         $data = $request->all();
 
@@ -108,7 +110,7 @@ class UserWrestlersController extends Controller
             return redirect()->back();
         }
 
-        $reply->save_reply($data);
+        $reply_repository->save($data);
         return redirect()->back();
     }
 
