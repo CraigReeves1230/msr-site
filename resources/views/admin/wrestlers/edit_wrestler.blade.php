@@ -12,6 +12,14 @@
         {{method_field('PATCH')}}
         <input type="hidden" name="__method" value="PUT">
         <div class="form-group">
+            <label for="locked">Conversation Locked (comments/replies no longer allowed)</label>
+            @if(!$wrestler->conversation_locked)
+                <input type="checkbox" class="checkbox" name="locked">
+            @elseif($wrestler->conversation_locked)
+                <input type="checkbox" checked="checked" class="checkbox" name="locked">
+            @endif
+        </div>
+        <div class="form-group">
             <label for="name"><h3>Wrestler Name</h3></label>
             <input name="name" value="{{$wrestler->name}}" type="text" class="form-control">
             {{csrf_field()}}

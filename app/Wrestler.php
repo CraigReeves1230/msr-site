@@ -24,7 +24,7 @@ class Wrestler extends Model
         'reaction', 'durability', 'conditioning',
         'basing', 'shine', 'heat', 'comebacks',
         'selling', 'ring_awareness', 'community_rating', 'bio',
-        'twitter', 'instagram', 'gender'
+        'twitter', 'instagram', 'gender', 'conversation_locked'
     ];
 
     //returns images for wrestler

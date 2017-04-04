@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Session;
 
 class CommentsGateway
 {
-    public function enact($user, $post = null, $comment = null){
+    public function enact($user, $post = null, $wrestler = null, $comment = null){
 
         // don't allow banned users
         if($user->status == 'banned'){
@@ -21,9 +21,17 @@ class CommentsGateway
             return true;
         }
 
-        // don't allow comments or replies on a locked thread
+        // don't allow comments or replies on a locked post
         if($post != null) {
-            if ($post->locked) {
+            if($post->locked) {
+                Session::flash('comments_gateway', 'This thread has been locked. No one will be able to leave comments or replies.');
+                return true;
+            }
+        }
+
+        // don't allow comments or replies on a locked wrestler conversation
+        if($wrestler != null){
+            if($wrestler->conversation_locked) {
                 Session::flash('comments_gateway', 'This thread has been locked. No one will be able to leave comments or replies.');
                 return true;
             }

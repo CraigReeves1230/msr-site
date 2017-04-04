@@ -1,4 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.front')
+@section('title', 'Reset Password')
+@section('page_title', 'Reset Password')
+@section('page_heading_image', '/img/home-bg.jpg')
 
 @section('content')
 <div class="container">

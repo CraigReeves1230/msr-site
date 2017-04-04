@@ -251,17 +251,19 @@
                                 @endforeach
                             <!-- end comment response -->
                                 <!-- comment reply form -->
-                                @if(Auth::check())
-                                    <form action="{{route('save_wrestler_comment_reply')}}" method="post">
-                                        {{csrf_field()}}
-                                        <div class="form-group" style="margin-top: 10px;">
-                                            <label for="content"><h4>Comment Reply</h4></label>
-                                            <textarea class="form-control" name="content" rows="3"></textarea>
-                                            <input type="hidden" value="{{$comment->id}}" name="comment_id">
-                                            <input type="submit" value="Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
-                                        </div>
-                                    </form>
-                            @endif
+                                @if(!$wrestler->conversation_locked)
+                                    @if(Auth::check())
+                                        <form action="{{route('save_wrestler_comment_reply')}}" method="post">
+                                            {{csrf_field()}}
+                                            <div class="form-group" style="margin-top: 10px;">
+                                                <label for="content"><h4>Comment Reply</h4></label>
+                                                <textarea class="form-control" name="content" rows="3"></textarea>
+                                                <input type="hidden" value="{{$comment->id}}" name="comment_id">
+                                                <input type="submit" value="Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
+                                            </div>
+                                        </form>
+                                    @endif
+                                @endif
                             <!-- end comment reply form -->
                             </ul>
                     </li>

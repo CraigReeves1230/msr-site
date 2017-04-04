@@ -93,7 +93,7 @@ class UserWrestlersController extends Controller
         $wrestler = $this->wrestler_repository->find($data['wrestler_id']);
 
         // gateway to access
-        if($gateway->enact($user)){
+        if($gateway->enact($user, null, $wrestler)){
             return redirect()->back();
         }
 

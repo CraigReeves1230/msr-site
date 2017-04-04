@@ -98,6 +98,13 @@ class WrestlerRepository
         $wrestler->instagram = $request['instagram'];
         $wrestler->gender = $request['gender'];
 
+        // determine if conversation is locked
+        if($request['locked']){
+            $wrestler->conversation_locked = true;
+        } else{
+            $wrestler->conversation_locked = false;
+        }
+
         $wrestler->update();
 
         //update first alt-name index which is simply the name of the wrestler

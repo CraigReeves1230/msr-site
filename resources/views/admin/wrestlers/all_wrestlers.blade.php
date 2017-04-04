@@ -27,16 +27,15 @@
         <table class="table table-bordered table-hover">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Community Rating</th>
-                <th>Image</th>
-                <th>Gender</th>
-                <th>Bio</th>
-                <th>Twitter</th>
-                <th>Instagram</th>
-                <th>User Ratings</th>
-                <th>Edit</th>
-                <th>Delete</th>
+                <th class="text-center">Name</th>
+                <th class="text-center">Community Rating</th>
+                <th class="text-center">Image</th>
+                <th class="text-center">Gender</th>
+                <th class="text-center">Bio</th>
+                <th class="text-center">Comments/Replies Allowed</th>
+                <th class="text-center">User Ratings</th>
+                <th class="text-center">Edit</th>
+                <th class="text-center">Delete</th>
             </tr>
             </thead>
             @foreach($wrestlers as $wrestler)
@@ -46,8 +45,11 @@
                     <td><img height="80" src="{{$wrestler->images[0]->path}}"></td>
                     <td>{{$wrestler->gender}}</td>
                     <td>{{str_limit($wrestler->bio, 80)}}</td>
-                    <td>{{$wrestler->twitter}}</td>
-                    <td>{{$wrestler->instagram}}</td>
+                    @if($wrestler->conversation_locked)
+                        <td><b style="color: red">Locked</b></td>
+                    @else
+                        <td><b style="color: green">Comments/Replies Allowed</b></td>
+                    @endif
                     <td><a href="{{route('all_ratings', ['id' => $wrestler->id])}}">User Ratings</a></td>
                     <td><a href="{{route('edit_wrestler', ['id' => $wrestler->id])}}">Edit</a></td>
                     <td>
