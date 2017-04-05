@@ -11,6 +11,18 @@
     @if(Session::has('gateway_pm'))
         <div class="alert alert-danger">{{session('gateway_pm')}}</div>
     @endif
+    @if(Session::has('reset_deny'))
+        <div class="alert alert-danger">{{session('reset_deny')}}</div>
+    @endif
+    @if(Session::has('reset_successful'))
+        <div class="alert alert-success">{{session('reset_successful')}}</div>
+    @endif
+    @if(Session::has('reset_sent'))
+        <div class="alert alert-success">{{session('reset_sent')}}</div>
+    @endif
+    @if(Session::has('user_not_found'))
+        <div class="alert alert-danger">{{session('user_not_found')}}</div>
+    @endif
 
     @foreach($posts as $post)
         <div class="post-preview">

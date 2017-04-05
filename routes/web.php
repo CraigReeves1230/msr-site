@@ -10,10 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-use App\Services\RatingsRefresher;
-use App\Wrestler;
-use App\AltName;
-use Illuminate\Support\Facades\Mail;
+
 
 Route::group(['middlewareGroups' => 'web'], function(){
 
@@ -204,9 +201,19 @@ Route::group(['middlewareGroups' => 'web'], function(){
 
     Route::get('user_profile/{id}/show', 'UserProfileController@show')->name('user_profile');
 
+
+    /*
+   |----------------------------------------------------------------------------
+   | Password resets
+   |--------------------------------------------------------------------------*/
+    Route::post('password_reset/store', 'PasswordResetController@store')->name('password_reset_store');
+    Route::get('password_reset/{id}/new_password/{key}', 'PasswordResetController@new_password')->name('new_password_reset');
+    Route::post('password_reset/{id}/change/{key}', 'PasswordResetController@change_password')->name('change_password');
+
 });
 
 Auth::routes();
+
 
 
 

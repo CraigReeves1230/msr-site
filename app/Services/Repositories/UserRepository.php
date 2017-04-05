@@ -41,6 +41,8 @@ class UserRepository
 
         $user->name = $data['name'];
         $user->email = $data['email'];
+        $user->reset_digest = "";
+
         if(empty($data['summary'])) {
             $user->summary = "";
         } else {
