@@ -159,7 +159,7 @@ class AdminUsersController extends Controller
 			$admin = $this->user_repository->find($ban->admin_id);
 			array_push($ban_list, ['user' => $user, 'admin' => $admin]);
 		}
-    	return view('admin/ban_reports/ban_reports', compact('ban_list'));
+    	return view('admin/reports/ban_reports', compact('ban_list'));
 	}
 
     public function reinstate_user($id){

@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h1 class="text-center">Ban Report</h1>
+    <h1 class="text-center">Ban Reports</h1>
     @if(Session::has('cannot_reinstate'))
         <div class="alert alert-danger">{{session('cannot_reinstate')}}</div>
     @endif

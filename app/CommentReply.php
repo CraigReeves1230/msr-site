@@ -26,4 +26,5 @@ class CommentReply extends Model
         $comment = Comment::findOrFail($data['comment_id']);
         $comment->replies()->save($this);
     }
+
 }
