@@ -13,6 +13,7 @@ use App\AltName;
 use App\Image;
 use App\Services\ImageUploader;
 use App\Wrestler;
+use Illuminate\Support\Facades\DB;
 
 class WrestlerRepository
 {
@@ -192,10 +193,7 @@ class WrestlerRepository
         }
     }
 
-    public function delete($id){
-
-        // get the wrestler
-        $wrestler = $this->find($id);
+    public function delete($wrestler){
 
         // store alt names in temp array so we can access after detachment and deletion
         $temp_alt_names = $wrestler->alt_names;
@@ -205,6 +203,22 @@ class WrestlerRepository
 
         // detach alt names and remove wrestler
         $wrestler->alt_names()->detach();
+
+		// remove all replies from comments
+		foreach($wrestler->comments as $comment){
+			$comment->replies()->delete();
+		}
+
+		// remove all comments from wrestler
+		$wrestler->comments()->delete();
+
+		// remove all ratings from wrestler
+		$wrestler->ratings()->delete();
+
+		// remove all favorite associations
+		DB::table('wrestler_favorites')->where('wrestler_id', $wrestler->id)->delete();
+
+        // remove wrestler
         $wrestler->delete();
 
         // any alt names not being used by anyone else, delete them

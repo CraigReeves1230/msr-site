@@ -90,10 +90,9 @@ class PrivateMessagesController extends Controller
         if($this->gateway->enact(Auth::user(), $recipient)){
             return redirect()->back();
         }
-
         $data = $request->all();
-        $this->pm_reply_repository->save($data);
 
+        $this->pm_reply_repository->save($data);
         $id = $data['private_message_id'];
         return redirect('user_dashboard/message/' . $id);
     }

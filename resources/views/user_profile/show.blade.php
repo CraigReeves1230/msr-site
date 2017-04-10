@@ -7,11 +7,29 @@
 
     <!-- nav bar -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    @if(Session::has('block_forbidden'))
+        <div class="alert alert-danger">{{session('block_forbidden')}}</div>
+    @endif
+
     <div class="container">
         <div class="row">
             <div class="col-sm-3">
                 <a href="{{route('create_pm', ['id' => $user->id])}}" class="btn btn-primary btn-block btn-compose-email">Message User</a>
+
+                @if(!App\User::is_blocked($user, Auth::user()))
+                    <form method="post" action="{{route('block_user', ['id' => $user->id])}}">
+                        {{csrf_field()}}
+                        <input type="submit" class="btn btn-block btn-danger" value="Block User" name="block_user">
+                    </form>
+                @else
+                    <form method="post" action="{{route('unblock_user', ['id' => $user->id])}}">
+                        {{csrf_field()}}
+                        <input type="submit" class="btn btn-block btn-success" value="Unblock User" name="block_user">
+                    </form>
+                @endif
+
             </div>
+
             <div class="col-sm-9">
 
                 <!-- resume -->
@@ -25,6 +43,7 @@
                                     </figure>
                                 </div>
                                 <div class="col-xs-12 col-sm-8">
+
                                     <ul class="list-group">
                                         <li class="list-group-item">{{$user->name}}</li>
                                         @if($user->admin == 1 && $user->master == 0)
@@ -36,6 +55,7 @@
                                         @endif
                                         <li class="list-group-item"><i class="fa fa-envelope"></i> {{$user->email}}</li>
                                     </ul>
+
                                 </div>
                             </div>
                         </div>

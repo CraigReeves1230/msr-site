@@ -243,4 +243,18 @@ class User extends Authenticatable
         return $this->hasMany('App\Alert');
     }
 
+    // returns true if user is blocked by another user
+	public static function is_blocked($messenger, $user){
+    	// look for paring in database and determine if it is true
+		if($set = DB::table('pm_blocks')->where([['messenger_id', $messenger->id], ['user_id', $user->id]])->first()){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+
+
+
 }

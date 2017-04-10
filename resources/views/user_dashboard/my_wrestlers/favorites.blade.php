@@ -15,6 +15,7 @@
                 @else
                     <h3>Your Rating: N/A</h3>
                 @endif
+                <a href="{{route('remove_favorite', ['id' => $wrestler->id])}}">Remove From Favorites</a>
             </div>
         </div>
         <hr>

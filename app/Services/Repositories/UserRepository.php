@@ -11,6 +11,7 @@ namespace App\Services\Repositories;
 
 use App\Image;
 use App\User;
+use Carbon\Carbon;
 
 class UserRepository
 {
@@ -20,8 +21,10 @@ class UserRepository
         $user = new User;
 
         $user->name = $data['name'];
-        $user->email = $data['email'];
+        $user->email = strtolower($data['email']);
         $user->admin = $data['admin'];
+        $user->reset_digest = '';
+        $user->reset_digest_time = Carbon::now();
 
         if(empty($data['summary'])){
             $user->summary = '';
@@ -40,7 +43,7 @@ class UserRepository
         $user = $this->find($id);
 
         $user->name = $data['name'];
-        $user->email = $data['email'];
+        $user->email = strtolower($data['email']);
         $user->reset_digest = "";
 
         if(empty($data['summary'])) {

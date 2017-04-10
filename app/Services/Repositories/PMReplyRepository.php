@@ -15,9 +15,16 @@ use Illuminate\Support\Facades\Auth;
 
 class PMReplyRepository
 {
-    public function save($data){
+
+	protected $pm_repository;
+
+	public function __construct(PrivateMessageRepository $pm_repository){
+		$this->pm_repository = $pm_repository;
+	}
+
+	public function save($data){
         $id = $data['private_message_id'];
-        $private_message = $this->find($id);
+        $private_message = $this->pm_repository->find($id);
         $content = $data['content'];
         $author = Auth::user();
         $recipient_id = $private_message->author()->id;

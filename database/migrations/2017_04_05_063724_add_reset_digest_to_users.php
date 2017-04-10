@@ -14,8 +14,8 @@ class AddResetDigestToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('reset_digest');
-            $table->dateTime('reset_digest_time');
+            $table->string('reset_digest')->nullable();
+            $table->dateTime('reset_digest_time')->nullable();
         });
     }
 

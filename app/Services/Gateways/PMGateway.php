@@ -9,6 +9,7 @@
 namespace App\Services\Gateways;
 
 
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -58,6 +59,13 @@ class PMGateway
             Session::flash('gateway_pm', 'You are not allowed to view any private messages but your own.');
             return true;
         }
+
+        // if the recipient has blocked the sender, don't allow sender to send message
+		if(User::is_blocked(Auth::user(), $recipient)){
+			Session::flash('gateway_pm', 'You have been blocked from sending messages to this user.');
+			return true;
+		}
+
 
     }
 

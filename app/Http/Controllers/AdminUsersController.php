@@ -8,6 +8,7 @@ use App\Services\Repositories\UserRepository;
 use App\Services\Repositories\WrestlerRatingRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class AdminUsersController extends Controller
@@ -150,10 +151,21 @@ class AdminUsersController extends Controller
         return redirect('admin/users');
     }
 
+    public function ban_reports(){
+		$bans = DB::table('user_bans')->get();
+		$ban_list = [];
+		foreach($bans as $ban){
+			$user = $this->user_repository->find($ban->user_id);
+			$admin = $this->user_repository->find($ban->admin_id);
+			array_push($ban_list, ['user' => $user, 'admin' => $admin]);
+		}
+    	return view('admin/ban_reports/ban_reports', compact('ban_list'));
+	}
+
     public function reinstate_user($id){
         $user = $this->user_repository->find($id);
         $user->reinstate();
-        return redirect('admin/users');
+        return redirect()->back();
     }
 
     public function search_users(Request $request){

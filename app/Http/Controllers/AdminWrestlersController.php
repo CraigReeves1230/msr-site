@@ -68,8 +68,11 @@ class AdminWrestlersController extends Controller
 
     public function destroy($id){
 
+    	// get the wrestler
+    	$wrestler = $this->wrestler_repository->find($id);
+
         // delete wrestler
-        $this->wrestler_repository->delete($id);
+        $this->wrestler_repository->delete($wrestler);
 
         return redirect('admin/all_wrestlers');
     }

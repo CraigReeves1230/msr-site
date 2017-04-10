@@ -75,6 +75,20 @@ class PostRepository
         }
     }
 
+    public function delete($post){
+
+    	// remove all replies from comments
+		foreach($post->comments as $comment){
+			$comment->replies()->delete();
+		}
+
+		// remove all comments from post
+		$post->comments()->delete();
+
+		// remove the post
+    	$post->delete();
+	}
+
     public function all($method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
         if($method == 'get') {
             return Post::orderBy($order_index, $order)->get();

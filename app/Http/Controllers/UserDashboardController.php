@@ -2,30 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\MatchRater;
+
+use App\Services\RatingConverter;
+use App\Services\Repositories\CommentsRepository;
 use App\Services\Repositories\UserRepository;
-use App\Wrestler;
+use App\Services\Repositories\WrestlerRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserDashboardController extends Controller
 {
     protected $user_repository;
+    protected $comments_repository;
 
-    public function __construct(UserRepository $user_repository){
+    public function __construct(UserRepository $user_repository, CommentsRepository $comments_repository){
         $this->middleware('auth');
         $this->user_repository = $user_repository;
+        $this->comments_repository = $comments_repository;
     }
 
     public function index(){
         $user = Auth::user();
-        return view('user_dashboard/index', compact('user'));
+		$recent_comments = $user->comments()->orderBy('id', 'desc')->limit(4)->get();
+        return view('user_dashboard/index', compact('user', 'recent_comments'));
     }
 
-    public function my_wrestlers(){
+    public function my_wrestlers(RatingConverter $converter){
         $user = Auth::user();
         $wrestlers = $user->wrestlers_paginated(5);
-        return view('user_dashboard/my_wrestlers/my_ratings', compact('user', 'wrestlers'));
+        return view('user_dashboard/my_wrestlers/my_ratings', compact('user', 'wrestlers', 'converter'));
     }
 
     public function my_favorites(){
@@ -33,6 +39,16 @@ class UserDashboardController extends Controller
         $wrestlers = $user->favorites_paginated(5);
         return view('user_dashboard/my_wrestlers/favorites', compact('user', 'wrestlers'));
     }
+
+    public function remove_favorite($id){
+    	$user = Auth::user();
+
+    	// remove record
+		DB::table('wrestler_favorites')->where([['user_id', $user->id], ['wrestler_id', $id]])->delete();
+
+		//refresh
+		return redirect()->back();
+	}
 
     public function edit_user(){
         $user = Auth::user();
@@ -67,5 +83,17 @@ class UserDashboardController extends Controller
 
         $this->user_repository->update($user->id, $data);
         return redirect('/user_dashboard');
+    }
+
+    public function delete_rating($id, WrestlerRepository $wrestlers){
+
+        // set user variable
+        $user = Auth::user();
+
+        // get delete rating
+        $user->ratings()->where('wrestler_id', $id)->delete();
+
+        return redirect()->back();
+
     }
 }

@@ -76,6 +76,9 @@
                 <a href="{{route("users.index")}}">All Users</a>
             </li>
             <li>
+                <a href="{{route("ban_reports")}}">Ban Reports</a>
+            </li>
+            <li>
                 <a href="{{ route('logout') }}"
                    onclick="event.preventDefault();
                    document.getElementById('logout-form').submit();">Log Out</a>

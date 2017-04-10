@@ -105,6 +105,9 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // Ban user
     Route::patch('admin/users/{id}/ban_user', 'AdminUsersController@ban_user')->name('ban_user');
 
+    // Ban reports
+	Route::get('admin/bans', 'AdminUsersController@ban_reports')->name('ban_reports');
+
     // Reinstate user
     Route::patch('admin/users/{id}/reinstate_user', 'AdminUsersController@reinstate_user')->name('reinstate_user');
 
@@ -170,10 +173,12 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // user dashboard
     Route::get('/user_dashboard', 'UserDashboardController@index')->name('user_dashboard');
 
-    // My rated wrestlers page
+    // My wrestlers page
     Route::get('/user_dashboard/my_ratings', 'UserDashboardController@my_wrestlers')->name('my_wrestlers');
-
     Route::get('/user_dashboard/my_favorites', 'UserDashboardController@my_favorites')->name('my_favorites');
+    Route::delete('/user_dashboard/my_ratings/{id}/delete_rating', 'UserDashboardController@delete_rating')->name('user_delete_rating');
+    Route::get('/user_dashboard/my_favorite/{id}/remove', 'UserDashboardController@remove_favorite')->name('remove_favorite');
+
 
     // Private messages index
     Route::get('/user_dashboard/messages', 'PrivateMessagesController@see_messages')->name('pm_index');
@@ -199,7 +204,9 @@ Route::group(['middlewareGroups' => 'web'], function(){
     | User Profile
     |--------------------------------------------------------------------------*/
 
-    Route::get('user_profile/{id}/show', 'UserProfileController@show')->name('user_profile');
+    Route::get('user_profile/{id}/show', 'UserProfileController@show')->name('user_profile')->middleware('auth');;
+    Route::post('user_profile/{id}/block', 'UserProfileController@block_user')->name('block_user')->middleware('auth');
+	Route::post('user_profile/{id}/unblock', 'UserProfileController@unblock_user')->name('unblock_user')->middleware('auth');
 
 
     /*

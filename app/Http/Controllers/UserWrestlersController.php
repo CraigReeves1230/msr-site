@@ -81,7 +81,7 @@ class UserWrestlersController extends Controller
         }
 
         // get wrestler comments
-        $comments = $wrestler->comments;
+        $comments = $wrestler->comments()->orderBy('id', 'desc')->get();
 
         return view('wrestler_profile.show', compact('user', 'wrestler', 'rating_converter', 'execution', 'user_score',
             'psychology', 'ability', 'score', 'user_execution', 'user_ability', 'user_psychology', 'comments'));

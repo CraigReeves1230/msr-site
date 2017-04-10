@@ -56,7 +56,7 @@ class AdminPostsController extends Controller
 
     public function delete($id){
         $post = $this->post_repository->find($id);
-        $post->delete_post();
+        $this->post_repository->delete($post);
         return redirect()->back();
     }
 

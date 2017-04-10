@@ -9,7 +9,9 @@
     <h1 class="text-center">Send Message</h1>
     <hr>
     <div class="col-md-4">
-        <img class="img-rounded" height="128" src="{{$recipient->images[0]->path}}">
+        <a href="{{route('user_profile', ['id' => $recipient->id])}}">
+            <img class="img-rounded" height="128" src="{{$recipient->images[0]->path}}"></a>
+        <a href="{{route('user_profile', ['id' => $recipient->id])}}"><h4>{{$recipient->name}}</h4></a>
     </div>
     <div class="col-md-5">
         <form action="{{route('store_pm', ['id' => $recipient->id])}}" method="post">
