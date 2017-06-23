@@ -57,7 +57,9 @@
                     {{csrf_field()}}
                 </form>
             </td>
-            <td><img height="80" src="{{$post->images[0]->path}}"></td>
+            @if(!empty($post->images[0]))
+                <td><img height="80" src="{{$post->images[0]->path}}"></td>
+            @endif
             <td>{{str_limit($post->content, 300)}}</td>
         </tr>
         @endforeach

@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\MatchRater;
 use App\Services\RatingConverter;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Post;
-use App\MatchRater;
 
 class MatchRaterController extends Controller
 {
+    private $match_rater;
+
+    public function __construct(MatchRater $match_rater)
+    {
+        $this->match_rater = $match_rater;
+    }
+
     public function post($id){
         $post = Post::find($id);
         return view('main/post', compact('post'));
@@ -28,7 +35,7 @@ class MatchRaterController extends Controller
     public function ratingtool3(Request $request, RatingConverter $rating_converter){
 
         session()->put($request->all());
-        $match = new MatchRater;
+        $match = $this->match_rater;
         $match->offense = session('offense');
         $match->timing = session('timing');
         $match->movement = session('movement');

@@ -51,10 +51,10 @@
                 <span class="sr-only">Toggle navigation</span>
                 Menu <i class="fa fa-bars"></i>
             </button>
-            <a class="navbar-brand" href="{{route('home')}}">HOME</a>
+            <a class="navbar-brand" href="javascript:history.back()">BACK</a>
             @if(!Auth::guest())
                 @if(Auth::user()->admin)
-                    <a class="navbar-brand" href="{{route('all_posts')}}">ADMIN</a>
+                    <a class="navbar-brand" href="{{route('store_post')}}">PUBLISH</a>
                 @endif
             @endif
         </div>
@@ -63,35 +63,8 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="<?php echo route('rating_tool1') ?>">MATCH RATING TOOL</a>
-                </li>
-                <li>
-                    <a href="<?php echo route('select_wrestler') ?>">WRESTLER RATINGS</a>
-                </li>
-                <li>
-                    @if(Auth::guest())
-                        <a href="/login">LOG IN</a>
-                    @else
-                        <a href="{{ route('logout') }}"
-                        onclick="event.preventDefault();
-                        document.getElementById('logout-form').submit();">
-                        LOG-OUT
-                        </a>
-                    @endif
-                </li>
-                <li>
-                    <a href="#">COMMUNITY</a>
-                </li>
-                <li>
-                    @if(Auth::guest())
-                        <a href="/register">SIGN UP</a>
-                    @else
-                        <a href="{{route('user_dashboard')}}">
-                             {{Auth::user()->name}}
-                        </a>
-                    @endif
-                </li>
+
+
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -163,7 +136,7 @@
 </footer>
 
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-{{ csrf_field() }}
+    {{ csrf_field() }}
 </form>
 
 <!-- Scripts -->
@@ -171,9 +144,6 @@
 
 <!-- jQuery -->
 <script src="vendor/jquery/jquery.min.js"></script>
-
-<!-- extra javascript -->
-@yield('javascript')
 
 <!-- Bootstrap Core JavaScript -->
 <script src="vendor/bootstrap/js/bootstrap.min.js"></script>

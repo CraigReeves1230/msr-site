@@ -253,6 +253,8 @@
                                 <!-- comment reply form -->
                                 @if(!$wrestler->conversation_locked)
                                     @if(Auth::check())
+                                    <button class="btn btn-default btn-circle text-uppercase" onclick="document.querySelector('.reply-{{$comment->id}}').classList.toggle('hidden');" >Toggle Reply</button>
+                                    <div class="reply-{{$comment->id}} hidden">
                                         <form action="{{route('save_wrestler_comment_reply')}}" method="post">
                                             {{csrf_field()}}
                                             <div class="form-group" style="margin-top: 10px;">
@@ -262,6 +264,7 @@
                                                 <input type="submit" value="Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
                                             </div>
                                         </form>
+                                    </div>
                                     @endif
                                 @endif
                             <!-- end comment reply form -->

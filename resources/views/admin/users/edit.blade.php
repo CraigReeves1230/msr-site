@@ -4,7 +4,9 @@
     <h1 class="text-center">Edit User</h1>
     <hr>
     <div class="col-md-4">
-        <img class="img-rounded" height="128" src="{{$user->images[0]->path}}">
+        @if(!empty($user->images[0]))
+            <img class="img-rounded" height="128" src="{{$user->images[0]->path}}">
+        @endif
     </div>
     <div class="col-md-5">
         <form action="{{route('users.update', ['id' => $user->id])}}" method="post" enctype="multipart/form-data">

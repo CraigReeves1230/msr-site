@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use app\Includes\Search;
+use App\Services\Repositories\PostPreviewRepository;
 use App\Services\Repositories\PostRepository;
 use Illuminate\Http\Request;
 
@@ -27,14 +28,43 @@ class AdminPostsController extends Controller
         return view('admin/posts/create_post');
     }
 
-    public function store(Request $request){
+    public function preview(Request $request, PostPreviewRepository $preview_repository){
 
-        // validations
+        // refresh previews database
+        $user = Auth::user();
+        $user->post_previews()->delete();
+
         $this->validate($request, ['title' => 'required',
             'subtitle' => 'required', 'content' => 'required',
             'image' => 'required|image']);
 
-        $this->post_repository->save($request);
+        $preview = $preview_repository->save($request);
+
+        return view('main.home.post-preview', compact('preview'));
+    }
+
+    public function store(PostPreviewRepository $preview_repository){
+
+        // get the user and post
+        $user = Auth::user();
+        $preview = $user->post_previews[0];
+
+        // create new post
+        $post = new Post([
+            'title' => $preview->title,
+            'subtitle' => $preview->subtitle,
+            'user_id' => $preview->user_id,
+            'content' => $preview->content,
+        ]);
+
+        // save post
+        $this->post_repository->simple_save($post);
+
+        // save post image
+        $post->images()->save($preview->images[0]);
+
+        // discard preview
+        $preview_repository->delete($preview);
 
         return redirect('admin/posts/all');
     }

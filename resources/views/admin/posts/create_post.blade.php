@@ -14,7 +14,7 @@
         </div>
 
     @endif
-    <form action="{{route('store_post')}}" method="post" enctype="multipart/form-data">
+    <form action="{{route('preview_post')}}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="title"><h3>Post Title</h3></label>
             <input name="title" type="text" class="form-control">
@@ -34,7 +34,7 @@
             <!-- This script changes the textarea to a full featured word processor (www.ckeditor.com) -->
             <script> CKEDITOR.replace( 'content' ); </script>
         </div>
-        <input type="submit" class="btn btn-primary" name="submit" >
+        <input type="submit" value="Preview/Publish" class="btn btn-primary" name="submit" >
     </form>
 
     @endsection

@@ -63,7 +63,7 @@ class AdminWrestlersController extends Controller
         // update wrestler
         $this->wrestler_repository->update($id, $request);
 
-        return redirect('admin/all_wrestlers');
+        return redirect()->back();
     }
 
     public function destroy($id){

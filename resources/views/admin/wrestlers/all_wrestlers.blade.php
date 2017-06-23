@@ -42,7 +42,9 @@
                 <tr>
                     <td>{{$wrestler->name}}</td>
                     <td>{{$wrestler->community_rating}}</td>
-                    <td><img height="80" src="{{$wrestler->images[0]->path}}"></td>
+                    @if(!empty($wrestler->images[0]))
+                        <td><img height="80" src="{{$wrestler->images[0]->path}}"></td>
+                    @endif
                     <td>{{$wrestler->gender}}</td>
                     <td>{{str_limit($wrestler->bio, 80)}}</td>
                     @if($wrestler->conversation_locked)

@@ -4,7 +4,9 @@
     <h1 class="text-center">Edit Wrestler</h1>
     <hr>
     <div class="col-md-4">
-        <img class="img-rounded" height="256" src="{{$wrestler->images[0]->path}}" alt="">
+        @if(!empty($wrestler->images[0]))
+            <img class="img-rounded" height="256" src="{{$wrestler->images[0]->path}}" alt="">
+        @endif
     </div>
     <div class="col-md-5">
 

@@ -1,0 +1,64 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "3250",
+               "short_name" : "3250",
+               "types" : [ "street_number" ]
+            },
+            {
+               "long_name" : "Sweetwater Road",
+               "short_name" : "Sweetwater Rd",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "Lawrenceville",
+               "short_name" : "Lawrenceville",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Gwinnett County",
+               "short_name" : "Gwinnett County",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Georgia",
+               "short_name" : "GA",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United States",
+               "short_name" : "US",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "30044",
+               "short_name" : "30044",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "3250 Sweetwater Rd, Lawrenceville, GA 30044, USA",
+         "geometry" : {
+            "location" : {
+               "lat" : 33.947463,
+               "lng" : -84.111476
+            },
+            "location_type" : "ROOFTOP",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 33.9488119802915,
+                  "lng" : -84.11012701970849
+               },
+               "southwest" : {
+                  "lat" : 33.9461140197085,
+                  "lng" : -84.11282498029149
+               }
+            }
+         },
+         "place_id" : "ChIJdWtZwzmj9YgRaLoj-eZTXdc",
+         "types" : [ "street_address" ]
+      }
+   ],
+   "status" : "OK"
+}

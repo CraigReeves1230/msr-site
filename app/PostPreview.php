@@ -3,12 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
-class Post extends Model
+class PostPreview extends Model
 {
     //mass assignment
-    protected $fillable = ['title', 'user_id', 'subtitle', 'author', 'content', 'image', 'locked'];
+    protected $fillable = ['title', 'subtitle', 'author', 'content', 'image', 'locked'];
 
     //return images of Post
     public function images(){

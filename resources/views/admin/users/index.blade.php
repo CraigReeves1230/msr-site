@@ -79,7 +79,9 @@
                         Owner
                     @endif
                 </td>
-                <td><img height="80" src="{{$user->images[0]->path}}"></td>
+                @if(!empty($user->images[0]))
+                    <td><img height="80" src="{{$user->images[0]->path}}"></td>
+                @endif
                 <td><a href="{{route('see_posts', ['id' => $user->id])}}">View Posts</a></td>
                 <td><a href="{{route('see_ratings', ['id' => $user->id])}}">View Ratings</a></td>
                 <td><a href="{{route('user_profile', ['id' => $user->id])}}">User Profile</a></td>

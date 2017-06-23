@@ -70,8 +70,13 @@ class UserRepository
 
         //update image if it has been changed
         if(!empty($data['image'])){
-            $user->images[0]->path = $data['image'];
-            $user->images[0]->save();
+            if(!empty($user->images[0])) {
+                $user->images[0]->path = $data['image'];
+                $user->images[0]->save();
+            } else {
+                $gen_image = new Image(['path' => $data['image']]);
+                $user->images()->save($gen_image);
+            }
         }
     }
 

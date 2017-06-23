@@ -32,12 +32,11 @@
         </div>
         <hr>
     @endforeach
+    {{$posts->links()}}
 
-    <!-- Pager -->
-    <ul class="pager">
-        <li class="next">
-            <a href="<?php echo route('older_posts') ?>">Older Posts &rarr;</a>
-        </li>
-    </ul>
+    <script> src='require.js'</script>
+    <script>
+        Echo.channel('sample-event').listen('SampleEvent', (e) => alert('Event!'));
+    </script>
 
 @endsection

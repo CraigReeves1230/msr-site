@@ -198,6 +198,9 @@ class WrestlerRepository
         // store alt names in temp array so we can access after detachment and deletion
         $temp_alt_names = $wrestler->alt_names;
 
+        // get rid of all images associated with wrestler
+        $wrestler->images()->delete();
+
         // get rid of all ratings for wrestler
         $wrestler->ratings()->delete();
 

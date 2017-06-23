@@ -22,9 +22,6 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // Home page
     Route::get('/', 'HomeController@index')->name('home');
 
-    // Older posts
-    Route::get('/olderposts', 'HomeController@older_posts')->name('older_posts');
-
     // Post article
     Route::get('article/{id}', 'HomeController@post')->name('read_article');
 
@@ -60,8 +57,11 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // Delete post
     Route::delete('admin/posts/delete/{id}', 'AdminPostsController@delete')->name('delete_post');
 
+    // Preview post
+    Route::post('/posts/preview', 'AdminPostsController@preview')->name('preview_post');
+
     // Store post
-    Route::post('admin/posts/store', 'AdminPostsController@store')->name('store_post');
+    Route::get('admin/posts/store', 'AdminPostsController@store')->name('store_post');
 
     // Update post
     Route::patch('admin/posts/update/{id}', 'AdminPostsController@update')->name('update_post');
@@ -216,6 +216,10 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::post('password_reset/store', 'PasswordResetController@store')->name('password_reset_store');
     Route::get('password_reset/{id}/new_password/{key}', 'PasswordResetController@new_password')->name('new_password_reset');
     Route::post('password_reset/{id}/change/{key}', 'PasswordResetController@change_password')->name('change_password');
+
+    Route::get('test/broadcast', function(){
+        event(new \App\Events\SampleEvent());
+    });
 
 });
 

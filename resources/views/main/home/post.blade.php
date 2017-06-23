@@ -79,18 +79,22 @@
                             @if(!$post->locked)
                                 <!-- comment reply form -->
                                 @if(Auth::check())
-                                <form action="{{route('save_post_comment_reply')}}" method="post">
-                                    {{csrf_field()}}
-                                    <div class="form-group" style="margin-top: 10px;">
-                                        <label for="content"><h4>Comment Reply</h4></label>
-                                        <textarea class="form-control" name="content" rows="3"></textarea>
-                                        <input type="hidden" value="{{$comment->id}}" name="comment_id">
-                                        <input type="submit" value="Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
-                                    </div>
-                                </form>
+                                <button class="btn btn-default btn-circle text-uppercase"
+                                        onclick="document.querySelector('.reply-{{$comment->id}}').classList.toggle('hidden');" >Toggle Reply</button>
+                                <div class="reply-{{$comment->id}} hidden">
+                                    <form action="{{route('save_post_comment_reply')}}" method="post">
+                                        {{csrf_field()}}
+                                        <div class="form-group" style="margin-top: 10px;">
+                                            <label for="content"><h4>Comment Reply</h4></label>
+                                            <textarea class="form-control" name="content" rows="3"></textarea>
+                                            <input type="hidden" value="{{$comment->id}}" name="comment_id">
+                                            <input type="submit" value="Submit Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
+                                        </div>
+                                    </form>
+                                </div>
                                 @endif
                             @endif
-                                <!-- end comment reply form -->
+                            <!-- end comment reply form -->
                             </ul>
                         </li>
                         @endforeach
@@ -100,3 +104,10 @@
         </div>
     @endif
 @endsection
+
+@section('javascript')
+    <script>
+
+    </script>
+@endsection
+

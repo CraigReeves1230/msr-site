@@ -45,6 +45,9 @@ class PostRepository
             $post_image->path = 'genericface.jpg';
             $post->images()->save($post_image);
         }
+
+        // return the post in case it is needed
+        return $post;
     }
 
     public function update($id, $request){
@@ -77,6 +80,9 @@ class PostRepository
 
     public function delete($post){
 
+        // remove all images associated with post
+        $post->images()->delete();
+
     	// remove all replies from comments
 		foreach($post->comments as $comment){
 			$comment->replies()->delete();
@@ -88,6 +94,10 @@ class PostRepository
 		// remove the post
     	$post->delete();
 	}
+
+	public function simple_save($post){
+        $post->save();
+    }
 
     public function all($method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
         if($method == 'get') {

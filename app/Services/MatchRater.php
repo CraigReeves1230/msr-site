@@ -1,10 +1,15 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: reeve
+ * Date: 6/23/2017
+ * Time: 5:46 PM
+ */
 
-namespace App;
+namespace App\Services;
 
-use Illuminate\Database\Eloquent\Model;
 
-class MatchRater extends Model
+class MatchRater
 {
     //match statistics
     public $offense;
@@ -16,10 +21,6 @@ class MatchRater extends Model
     public $story;
     public $selling;
     public $crowd;
-
-    // mass assignment permissions
-    protected $fillable = ['offense', 'timing', 'movement',
-        'action', 'excitement', 'time', 'story', 'selling', 'crowd'];
 
     //calculate match score
     public function calculate_score(){
@@ -85,5 +86,4 @@ class MatchRater extends Model
         }
         return $score;
     }
-
 }

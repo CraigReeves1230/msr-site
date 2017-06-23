@@ -10,7 +10,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        $posts = Post::orderBy('id', 'desc')->limit(6)->get();
+        $posts = Post::orderBy('id', 'desc')->paginate(4);
         return view('main/home/welcome', compact('posts'));
     }
 
@@ -20,8 +20,4 @@ class HomeController extends Controller
         return view('main/home/post', compact('post', 'comments'));
     }
 
-    public function older_posts(){
-        $posts = Post::orderBy('id', 'desc')->skip(6)->take(100)->get();
-        return view('main/home/older_posts', compact('posts'));
-    }
 }

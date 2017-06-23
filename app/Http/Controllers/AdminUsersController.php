@@ -125,8 +125,7 @@ class AdminUsersController extends Controller
         }
 
         // validate password only if it is changed
-        if(!empty($request['password'])){
-
+        if(!empty($request['password']) || !empty($request['password_confirmation'])){
             $this->validate($request, ['password' => 'required|min:6|confirmed']);
         }
 

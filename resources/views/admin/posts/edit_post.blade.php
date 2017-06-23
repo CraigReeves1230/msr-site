@@ -34,7 +34,9 @@
             <input value="{{$post->subtitle}}" name="subtitle" type="text" class="form-control">
         </div>
         <div class="form-group">
-            <img height="100" src="{{$post->images[0]->path}}" alt=""><br>
+            @if(!empty($post->images[0]))
+                <img height="100" src="{{$post->images[0]->path}}" alt=""><br>
+            @endif
             <label for="image"><h3>Image</h3></label>
             <input name="image" type="file">
         </div>

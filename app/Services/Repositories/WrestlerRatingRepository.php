@@ -88,6 +88,7 @@ class WrestlerRatingRepository
         // get the wrestler to whom the rating belongs
         $wrestler = $rating->wrestler;
 
+        // delete the rating
         $rating->delete();
 
         // Update community score
