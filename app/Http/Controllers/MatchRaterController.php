@@ -18,11 +18,6 @@ class MatchRaterController extends Controller
         $this->match_rater = $match_rater;
     }
 
-    public function post($id){
-        $post = Post::find($id);
-        return view('main/post', compact('post'));
-    }
-
     public function ratingtool1(){
         return view('main/match_rater/mrt_page1');
     }

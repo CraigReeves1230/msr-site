@@ -217,9 +217,6 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::get('password_reset/{id}/new_password/{key}', 'PasswordResetController@new_password')->name('new_password_reset');
     Route::post('password_reset/{id}/change/{key}', 'PasswordResetController@change_password')->name('change_password');
 
-    Route::get('test/broadcast', function(){
-        event(new \App\Events\SampleEvent());
-    });
 
 });
 

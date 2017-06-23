@@ -44,20 +44,26 @@ class MatchRater
             $score = ($execution + $difficulty + $psychology) / 3;
         }
 
+        // come up with base average
+        if($factoring_heat) {
+            $score = ($execution + $this->crowd + $difficulty + $psychology) / 4;
+        } else {
+            $score = ($execution + $difficulty + $psychology) / 3;
+        }
+
         // If the execution is poor, punish performers harshly
         if($execution < 2.0) {
             $score -= 1.5;
         }
 
-        // If execution is great, reward performers greatly but only if athleticism is strong
-        if($execution >= 4.0 && $difficulty >= 3.0) {
+        // reward generously for great execution if match has good story
+        if($difficulty >= 3.0 && $execution >= 3.5 && $psychology >= 3.5){
             $score += 0.25;
         }
 
-        // If the crowd is hot for the match and the story is good, reward match but only
-        // if difficulty too is strong
-        if($factoring_heat){
-            if($this->crowd > 3.0 && $psychology >= 3.0 && $difficulty >= 3.0) {
+        // reward generously for great storytelling
+        if($factoring_heat) {
+            if ($psychology >= 3.0 && $this->crowd >= 4.0) {
                 $score += 0.25;
             }
         }
@@ -69,14 +75,14 @@ class MatchRater
         }
 
         // If the execution is very good and the action is too, reward performers
-        if($execution > 3.25 && $difficulty > 3.25){
+        if($execution >= 3.0 && $difficulty >= 3.5){
             $score += 0.25;
         }
 
         // If the heat is incredible and the match is great, reward match generously
         if($factoring_heat){
-            if($this->crowd > 4.0 && $psychology >= 4.0 && $psychology >= 3.0){
-                $score += 0.50;
+            if($this->crowd > 4.0 && $psychology >= 4.0){
+                $score += 0.25;
             }
         }
 
@@ -84,6 +90,7 @@ class MatchRater
         if($execution >= 4.5 && $score >= 3.5) {
             $score += 0.25;
         }
+
         return $score;
     }
 }
