@@ -28,7 +28,7 @@ class CommentReplyRepository
             $reply = new CommentReply;
         }
 
-        $reply->content = $data['content'];
+        $reply->content = $data['reply_content'];
         $reply->user_id = Auth::user()->id;
         $reply->likes = 0;
         //$comment = Comment::findOrFail($data['comment_id']);

@@ -205,7 +205,6 @@
                     <div class="form-group">
                         <label for="content">Leave a Comment</label>
                         <textarea class="form-control" name="content" id="" rows="5"></textarea>
-                        {{csrf_field()}}
                         <input type="hidden" name="wrestler_id" value="{{$wrestler->id}}">
                         <input style="margin-top: 8px;" value="Submit" type="submit" class="btn btn-default" name="leave_comment">
                     </div>
@@ -256,7 +255,6 @@
                                     <button class="btn btn-default btn-circle text-uppercase" onclick="document.querySelector('.reply-{{$comment->id}}').classList.toggle('hidden');" >Toggle Reply</button>
                                     <div class="reply-{{$comment->id}} hidden">
                                         <form action="{{route('save_wrestler_comment_reply')}}" method="post">
-                                            {{csrf_field()}}
                                             <div class="form-group" style="margin-top: 10px;">
                                                 <label for="content"><h4>Comment Reply</h4></label>
                                                 <textarea class="form-control" name="content" rows="3"></textarea>

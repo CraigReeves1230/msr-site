@@ -27,11 +27,10 @@
 
                 @if(Auth::check())
                 <!-- Comment form -->
-                <form action="{{route('save_post_comment')}}" method="post">
+                <form class="comment-form" action="{{route('save_post_comment')}}" method="post">
                     <div class="form-group">
                         <label for="content">Leave Comment</label>
                         <textarea class="form-control" name="content" id="" rows="5"></textarea>
-                        {{csrf_field()}}
                         <input type="hidden" name="post_id" value="{{$post->id}}">
                         <input style="margin-top: 8px;" value="Submit" type="submit" class="btn btn-default" name="leave_comment">
                     </div>
@@ -39,19 +38,19 @@
                 @endif
 
                 @if(count($comments) > 0)
-                <ul id="comments-list" class="comments-list">
+                <div id="comments-list" class="comments-list">
                     <li>
 
                         <!-- Comment -->
                         @foreach($comments as $comment)
-                            <div class="comment-main-level">
+                            <div id="#comment-{{$comment->id}}" class="comment-main-level">
                                 <div class="comment-avatar"><a href="{{route('user_profile', ['id' => $comment->user->id])}}"><img src="{{$comment->user->images[0]->path}}" alt=""></a></div>
                                 <div class="comment-box">
                                     <div class="comment-head">
                                       <h6 class="comment-name"><a href="{{route('user_profile', ['id' => $comment->user->id])}}">{{$comment->user->name}}</a></h6>
                                         <span>posted {{$comment->created_at->diffForHumans()}}</span>
                                     </div>
-                                    <div class="comment-content">
+                                    <div id="comment-content" class="comment-content">
                                         {{$comment->content}}
                                     </div>
                                 </div>
@@ -60,44 +59,43 @@
 
                         <ul class="comments-list reply-list">
 
-                            <!-- Comment replies -->
-                            @foreach($comment->replies as $reply)
-                            <li>
-                                <div class="comment-avatar"><a href="{{route('user_profile', ['id' => $reply->user->id])}}"><img src="{{$reply->user->images[0]->path}}" alt=""></a></div>
-                                    <div class="comment-box">
-                                        <div class="comment-head">
-                                            <h6 class="comment-name"><a href="{{route('user_profile', ['id' => $reply->user->id])}}">{{$reply->user->name}}</a></h6>
-                                            <span>{{$reply->created_at->diffForHumans()}}</span>
+                                @foreach($comment->replies as $reply)
+                                <li>
+                                    <div class="comment-avatar"><a href="{{route('user_profile', ['id' => $reply->user->id])}}"><img src="{{$reply->user->images[0]->path}}" alt=""></a></div>
+                                        <div class="comment-box">
+                                            <div class="comment-head">
+                                                <h6 class="comment-name"><a href="{{route('user_profile', ['id' => $reply->user->id])}}">{{$reply->user->name}}</a></h6>
+                                                <span>{{$reply->created_at->diffForHumans()}}</span>
+                                            </div>
+                                            <div id="reply-content" class="comment-content">
+                                                {{$reply->content}}
+                                            </div>
                                         </div>
-                                        <div class="comment-content">
-                                            {{$reply->content}}
-                                        </div>
+                                </li>
+                                @endforeach
+                                <!-- end comment response -->
+                                @if(!$post->locked)
+                                    <!-- comment reply form -->
+                                    @if(Auth::check())
+                                    <button class="btn btn-default btn-circle text-uppercase"
+                                            onclick="document.querySelector('.reply-{{$comment->id}}').classList.toggle('hidden');" >Toggle Reply</button>
+                                    <div class="reply-{{$comment->id}} hidden">
+                                        <form class="reply-form" data-comment-id="{{$comment->id}}" data-url="{{route('save_post_comment_reply')}}" id="reply-form-{{$comment->id}}" action="{{route('save_post_comment_reply')}}" method="post">
+                                            <div class="form-group" style="margin-top: 10px;">
+                                                <label for="content"><h4>Comment Reply</h4></label>
+                                                <textarea id="reply-content" class="form-control" name="content" rows="3"></textarea>
+                                                <input type="hidden" value="{{$comment->id}}" name="comment_id">
+                                                <input type="submit" value="Submit Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
+                                            </div>
+                                        </form>
                                     </div>
+                                    @endif
+                                @endif
+                                <!-- end comment reply form -->
+                                </ul>
                             </li>
                             @endforeach
-                            <!-- end comment response -->
-                            @if(!$post->locked)
-                                <!-- comment reply form -->
-                                @if(Auth::check())
-                                <button class="btn btn-default btn-circle text-uppercase"
-                                        onclick="document.querySelector('.reply-{{$comment->id}}').classList.toggle('hidden');" >Toggle Reply</button>
-                                <div class="reply-{{$comment->id}} hidden">
-                                    <form action="{{route('save_post_comment_reply')}}" method="post">
-                                        {{csrf_field()}}
-                                        <div class="form-group" style="margin-top: 10px;">
-                                            <label for="content"><h4>Comment Reply</h4></label>
-                                            <textarea class="form-control" name="content" rows="3"></textarea>
-                                            <input type="hidden" value="{{$comment->id}}" name="comment_id">
-                                            <input type="submit" value="Submit Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
-                                        </div>
-                                    </form>
-                                </div>
-                                @endif
-                            @endif
-                            <!-- end comment reply form -->
-                            </ul>
-                        </li>
-                        @endforeach
+                        </div>
                     </ul>
                 </div>
             </div>
@@ -107,6 +105,23 @@
 
 @section('javascript')
     <script>
+
+        $("#comments-list").delegate(".reply-form", "submit", function(event){
+            event.preventDefault();
+            var url = $(this).data('url');
+            var reply_content = $(this).find("#reply-content").val();
+            var comment_id = $(this).data("comment-id");
+            data = {
+                reply_content: reply_content,
+                comment_id: comment_id
+            };
+            $.post(url, data, function(response){
+            }).done(function(){
+
+            }).fail(function(){
+                alert("AJAX request failed!");
+            });
+        });
 
     </script>
 @endsection

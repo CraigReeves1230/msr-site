@@ -46,6 +46,26 @@ class PostCommentsController extends Controller
     }
 
     public function store_reply(Request $request){
+
+        if($request->ajax()){
+
+            $user = Auth::user();
+            //$data = $request->all();
+            $post = Comment::find($request['comment_id'])->post;
+
+            // gateway for access
+           // if($this->gateway->enact($user, $post)){
+            //    return redirect()->back();
+            //}
+
+            $this->comment_reply_repository->save($request);
+
+            return response()->json([
+                'reply' => $request->reply_content,
+                'comment_id' => $request->comment_id
+            ]);
+        }
+
         $user = Auth::user();
         $data = $request->all();
         $post = Comment::find($request['comment_id'])->post;
@@ -58,6 +78,11 @@ class PostCommentsController extends Controller
         // save reply
         //$reply->save_reply($data);
         $this->comment_reply_repository->save($data);
-        return redirect()->back();
+        // return redirect()->back();
+        return response()->json([
+            'reply' => $this,
+            'author' => $user,
+            'original_post' => $post
+        ]);
     }
 }
