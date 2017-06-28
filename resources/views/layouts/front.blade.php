@@ -9,9 +9,21 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <script src="https://cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
 
     <title>Match Star Rater - @yield('title')</title>
+
+    <!-- JQuery -->
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Javascript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
 
     <!-- Bootstrap Core CSS -->
     <link href="\vendor\bootstrap\css\bootstrap.min.css" rel="stylesheet">
@@ -32,13 +44,15 @@
     <script src="/https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="/https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 
+    <![endif]-->
+
     <script>
         window.Laravel = {!! json_encode([
                     'csrfToken' => csrf_token(),
         ]) !!};
     </script>
 
-    <![endif]-->
+    <script src="/js/bundle.js"></script>
 
 </head>
 <body>
@@ -58,7 +72,6 @@
                 @endif
             @endif
         </div>
-
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -120,6 +133,8 @@
                 <div class="alert alert-danger">{{session('banned_admin')}}</div>
             @endif
 
+            <div id="alert"></div>
+
             @yield('content')
 
         </div>
@@ -165,18 +180,6 @@
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 {{ csrf_field() }}
 </form>
-
-<!-- Scripts -->
-<script src="{{ asset('js/app.js') }}"></script>
-
-<!-- jQuery -->
-<script src="vendor/jquery/jquery.min.js"></script>
-
-<!-- extra javascript -->
-@yield('javascript')
-
-<!-- Bootstrap Core JavaScript -->
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 
 <!-- Contact Form JavaScript -->
 <script src="js/jqBootstrapValidation.js"></script>

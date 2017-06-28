@@ -34,9 +34,4 @@
     @endforeach
     {{$posts->links()}}
 
-    <script> src='require.js'</script>
-    <script>
-        Echo.channel('sample-event').listen('SampleEvent', (e) => alert('Event!'));
-    </script>
-
 @endsection

@@ -30,9 +30,11 @@ class PrivateMessageRepository
         $recipient->save();
 
         // send alert if message is from admin
-        if($author->admin == 1){
-            Alert::send_alert($recipient, "Admin Message", "info", $author->name . " has sent you a message.", route('pm_show', ['id' => $pm->id]));
-        }
+        //if($author->admin == 1){
+        //    Alert::send_alert($recipient, "Admin Message", "info", $author->name . " has sent you a message.", route('pm_show', ['id' => $pm->id]));
+       // }
+
+        return $pm;
     }
 
     public function delete($pm){

@@ -28,6 +28,7 @@
                 @if(Auth::check())
                 <!-- Comment form -->
                 <form class="comment-form" action="{{route('save_post_comment')}}" method="post">
+                    {{csrf_field()}}
                     <div class="form-group">
                         <label for="content">Leave Comment</label>
                         <textarea class="form-control" name="content" id="" rows="5"></textarea>
@@ -81,9 +82,10 @@
                                             onclick="document.querySelector('.reply-{{$comment->id}}').classList.toggle('hidden');" >Toggle Reply</button>
                                     <div class="reply-{{$comment->id}} hidden">
                                         <form class="reply-form" data-comment-id="{{$comment->id}}" data-url="{{route('save_post_comment_reply')}}" id="reply-form-{{$comment->id}}" action="{{route('save_post_comment_reply')}}" method="post">
+                                            {{csrf_field()}}
                                             <div class="form-group" style="margin-top: 10px;">
                                                 <label for="content"><h4>Comment Reply</h4></label>
-                                                <textarea id="reply-content" class="form-control" name="content" rows="3"></textarea>
+                                                <textarea id="reply-content" class="form-control" name="reply_content" rows="3"></textarea>
                                                 <input type="hidden" value="{{$comment->id}}" name="comment_id">
                                                 <input type="submit" value="Submit Reply" style="margin-top: 10px;" class="btn btn-primary" name="submit_reply">
                                             </div>
@@ -101,9 +103,7 @@
             </div>
         </div>
     @endif
-@endsection
-
-@section('javascript')
 
 @endsection
+
 

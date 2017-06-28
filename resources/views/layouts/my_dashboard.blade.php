@@ -9,6 +9,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- JQuery -->
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Javascript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
     <script src="https://cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
 
     <title>MSR My Profile - @yield('page_title')</title>
@@ -35,6 +46,14 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script>
+        window.Laravel = {!! json_encode([
+                    'csrfToken' => csrf_token(),
+        ]) !!};
+    </script>
+
+    <script src="/js/bundle.js"></script>
+
 </head>
 
 <body>
@@ -56,14 +75,15 @@
         <!-- Top Menu Items -->
         <ul class="nav navbar-right top-nav">
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                <a id="user_messages" data-user-id="{{$user->id}}" href="#" class="dropdown-toggle" data-toggle="dropdown"><i id="message_icon"
 
                             @if($user->new_messages == 1)
                                     style="color: #50D4FD;"
                             @endif
 
                             class="fa fa-envelope"></i> <b class="caret"></b></a>
-                <ul class="dropdown-menu message-dropdown">
+                <ul id="message-dropdown" class="dropdown-menu message-dropdown">
+
                     <?php $user->new_messages = 0; ?>
                     <?php $user->save(); ?>
                     @foreach($private_messages as $pm)
@@ -92,14 +112,14 @@
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i id="alert_icon"
 
                             @if($user->new_alerts == 1)
                                     style="color: #50D4FD;"
                             @endif
 
                             class="fa fa-bell"></i> <b class="caret"></b></a>
-                <ul class="dropdown-menu alert-dropdown">
+                <ul id="alert-dropdown" class="dropdown-menu alert-dropdown">
                     <?php $user->new_alerts = 0; ?>
                     <?php $user->save(); ?>
                     @foreach($alerts as $alert)
@@ -107,7 +127,6 @@
                             <a href="{{$alert->link}}">{{str_limit($alert->message, 50)}}
                                 <span class="label label-{{$alert->type}}">{{$alert->name}}</span>
                                 <br><i style="color: #9d9d9d">{{$alert->created_at->diffForHumans()}}</i></a>
-
                         </li>
                     @endforeach
                 </ul>
@@ -199,7 +218,12 @@
             </div>
             <hr>
 
+            <div id="alert_message" class="alert alert-warning" hidden>
+                <a href="{{route('pm_index')}}" id="alert_message_button" class="btn btn-xs btn-warning pull-right">See Message</a>
+            </div>
+
             @yield('content')
+
 
         </div>
         <!-- /.container-fluid -->
@@ -211,10 +235,7 @@
 <!-- /#wrapper -->
 
 
-
-
-<!-- jQuery -->
-<script src="/js/jquery.js"></script>
+<script src="/js/alerts.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script src="/js/bootstrap.min.js"></script>

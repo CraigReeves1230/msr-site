@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PrivateMessageSent;
 use App\PrivateMessage;
 use App\PrivateMessageReply;
 use App\Services\Gateways\PMGateway;
@@ -46,7 +47,8 @@ class PrivateMessagesController extends Controller
         }
 
         $message = $request['content'];
-        $this->pm_repository->save($author, $recipient, $message);
+        $pm = $this->pm_repository->save($author, $recipient, $message);
+        event(new PrivateMessageSent($author, $recipient, $message, $pm->created_at->diffForHumans(), route('pm_show', ['id' => $pm->id])));
         return redirect('user_dashboard/messages');
     }
 
@@ -75,8 +77,8 @@ class PrivateMessagesController extends Controller
         }
 
         $private_message_replies = PrivateMessageReply::orderBy('id', 'asc')->where('private_message_id', $private_message->id)->get();
+        $user->new_messages = false;
         return view('private_messages/show', compact('user', 'private_message', 'private_message_replies'));
-
     }
 
     public function send_reply(PrivateMessageReply $reply, Request $request){
