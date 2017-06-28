@@ -104,25 +104,6 @@
 @endsection
 
 @section('javascript')
-    <script>
 
-        $("#comments-list").delegate(".reply-form", "submit", function(event){
-            event.preventDefault();
-            var url = $(this).data('url');
-            var reply_content = $(this).find("#reply-content").val();
-            var comment_id = $(this).data("comment-id");
-            data = {
-                reply_content: reply_content,
-                comment_id: comment_id
-            };
-            $.post(url, data, function(response){
-            }).done(function(){
-
-            }).fail(function(){
-                alert("AJAX request failed!");
-            });
-        });
-
-    </script>
 @endsection
 

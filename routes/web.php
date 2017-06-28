@@ -12,7 +12,7 @@
 */
 
 
-//Route::group(['middlewareGroups' => 'web'], function(){
+Route::group(['middlewareGroups' => 'web'], function(){
 
     /*
     |--------------------------------------------------------------------------
@@ -218,7 +218,7 @@
     Route::post('password_reset/{id}/change/{key}', 'PasswordResetController@change_password')->name('change_password');
 
 
-//});
+});
 
 Auth::routes();
 
