@@ -17,7 +17,7 @@ $(function(){
                     <i class='fa fa-clock-o'></i> ${event.created_at}</p><p>${event.message}</p></div></div></a></li>`;
 
         // fade in alert
-        alert_message.text("You have been sent a new message from " + event.author.name + ".");
+        alert_message.text("You have been sent a new private message from " + event.author.name + ".");
         alert_message.fadeIn(500);
         alert_message.removeProp("hidden").delay(4000);
         alert_message.fadeOut(500);
@@ -27,6 +27,7 @@ $(function(){
 
         // update icon on top bar
         message_icon.css("color", "#50D4FD");
+
     });
 
 });

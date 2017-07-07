@@ -83,7 +83,7 @@ $(function () {
                 var message_html = "<li class='message-preview'>\n                    <a href=\"" + event.link + "\"><div class='media'>\n                    <span class='pull-left'><img class='media-object' height='35' src=\"" + event.image + "\" alt=''>\n                    </span><div class='media-body'><h5 class='media-heading'>\n                    <strong>" + event.author.name + "</strong></h5><p class='small text-muted'>\n                    <i class='fa fa-clock-o'></i> " + event.created_at + "</p><p>" + event.message + "</p></div></div></a></li>";
 
                 // fade in alert
-                alert_message.text("You have been sent a new message from " + event.author.name + ".");
+                alert_message.text("You have been sent a new private message from " + event.author.name + ".");
                 alert_message.fadeIn(500);
                 alert_message.removeProp("hidden").delay(4000);
                 alert_message.fadeOut(500);

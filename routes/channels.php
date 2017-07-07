@@ -17,7 +17,7 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('new-pm.{recipient_id}', function ($user, $recipient_id) {
+Broadcast::channel('new-pm.{recipient_id}', function ($x, $recipient_id) {
     $user = Auth::user();
     return (int) $user->id === (int) $recipient_id;
 });
