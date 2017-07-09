@@ -34,3 +34,21 @@ module.exports = {
         ]
     }
 };
+
+module.exports = {
+    entry: "./resources/assets/js/comments",
+    output: {
+        filename: "./public/js/comments-combined.js"
+    },
+    module: {
+        loaders: [
+            {
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+                query: {
+                    presets: ['react', 'es2015']
+                }
+            }
+        ]
+    }
+};

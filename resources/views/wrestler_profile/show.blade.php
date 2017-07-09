@@ -204,7 +204,7 @@
                 <form action="{{route('save_wrestler_comment')}}" method="post">
                     <div class="form-group">
                         <label for="content">Leave a Comment</label>
-                        <textarea class="form-control" name="content" id="" rows="5"></textarea>
+                        <textarea class="form-control" name="message_content" id="" rows="5"></textarea>
                         <input type="hidden" name="wrestler_id" value="{{$wrestler->id}}">
                         <input style="margin-top: 8px;" value="Submit" type="submit" class="btn btn-default" name="leave_comment">
                     </div>

@@ -34,6 +34,8 @@ class CommentReplyRepository
         //$comment = Comment::findOrFail($data['comment_id']);
         $comment = $this->comments_repository->find($data['comment_id']);
         $comment->replies()->save($reply);
+
+        return $reply;
     }
 
 }

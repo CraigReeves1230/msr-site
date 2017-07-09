@@ -30,10 +30,53 @@ class PostCommentsController extends Controller
         $this->comment_reply_repository = $comment_reply_repository;
     }
 
-    public function store_comment(Request $request){
+    public function store_comment(Request $request, $post_id){
+
+        // for ajax
+        if($request->ajax()){
+
+            $user = Auth::user();
+            $post = $this->post_repository->find($post_id);
+
+            // gateway for access
+            if($this->gateway->enact($user, $post)){
+                return redirect()->back();
+            }
+
+            // save comment
+            $comment = $this->comments_repository->save($post, $request);
+
+            // this is for replies to be available in json object
+            $replies_array = [];
+            foreach($comment->replies as $reply){
+                array_push($replies, [
+                    'profileURL' => route('user_profile', ['id' => $reply->user->id]),
+                    'imageURL' => $reply->user->images[0]->path,
+                    'username' => $reply->user->name,
+                    'createdAt' => $reply->created_at->diffForHumans(),
+                    'replyMessage' => $reply->content,
+                    'comment_id' => $reply->comment->id,
+                    'id' => $reply->id
+                ]);
+            }
+
+            $json_payload = [
+                "profileURL" => route('user_profile', ['id' => $comment->user->id]),
+                "imageURL" => $comment->user->images[0]->path,
+                "username" => $comment->user->name,
+                "createdAt" => $comment->created_at->diffForHumans(),
+                "commentMessage" => $comment->content,
+                "id" => $comment->id,
+                "replies" => $replies_array,
+                "comment_reply_link" => route('save_post_comment_reply')
+            ];
+
+            return response()->json($json_payload);
+        }
+
+        // for view
         $user = Auth::user();
-        $data = $request->all();
-        $post = $this->post_repository->find($data['post_id']);
+        $post = $this->post_repository->find($post_id);
 
         // gateway for access
         if($this->gateway->enact($user, $post)){
@@ -41,11 +84,36 @@ class PostCommentsController extends Controller
         }
 
         // save comment
-        $this->comments_repository->save($post, $data);
+        $comment = $this->comments_repository->save($post, $request);
+
         return redirect()->back();
     }
 
     public function store_reply(Request $request){
+
+        if($request->ajax()){
+            $user = Auth::user();
+            $data = $request->all();
+            $post = $this->comments_repository->find($request['comment_id'])->post;
+
+            // gateway for access
+            if($this->gateway->enact($user, $post)){
+                return redirect()->back();
+            }
+
+            // save reply
+            $reply = $this->comment_reply_repository->save($data);
+
+            // create json payload
+            $json_payload = [
+                "profileURL" => route('user_profile', ['id' => $reply->user->id]),
+                "id" => $reply->id, "imageURL" => $reply->user->images[0]->path,
+                "username" => $reply->user->name, "createdAt" => $reply->created_at->diffForHumans(),
+                "replyMessage" => $reply->content, "comment_id" => $reply->comment->id
+            ];
+
+            return response()->json($json_payload);
+        }
 
         $user = Auth::user();
         $data = $request->all();

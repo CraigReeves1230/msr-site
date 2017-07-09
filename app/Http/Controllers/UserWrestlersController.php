@@ -97,7 +97,7 @@ class UserWrestlersController extends Controller
             return redirect()->back();
         }
 
-        $comments_repository->save($wrestler, $data);
+        $comments_repository->save($wrestler, $request);
         return redirect()->back();
     }
 

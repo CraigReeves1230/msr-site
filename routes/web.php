@@ -26,7 +26,7 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::get('article/{id}', 'HomeController@post')->name('read_article');
 
     // Post comments
-    Route::post('post/comment/create', 'PostCommentsController@store_comment')->name('save_post_comment');
+    Route::post('post/comment/create/{post_id}', 'PostCommentsController@store_comment')->name('save_post_comment');
 
     // Post comment replies
     Route::post('post/reply/create', 'PostCommentsController@store_reply')->name('save_post_comment_reply');
@@ -216,10 +216,6 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::post('password_reset/store', 'PasswordResetController@store')->name('password_reset_store');
     Route::get('password_reset/{id}/new_password/{key}', 'PasswordResetController@new_password')->name('new_password_reset');
     Route::post('password_reset/{id}/change/{key}', 'PasswordResetController@change_password')->name('change_password');
-
-    Route::get('test/event', function(){
-        event(new \App\Events\EchoTest("This is an event fired!"));
-    });
 
 });
 

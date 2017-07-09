@@ -21,10 +21,12 @@ class CommentsRepository
             $comment = new Comment;
         }
 
-        $comment->content = $data['content'];
+        $comment->content = $data->message_content;
         $comment->user_id = Auth::user()->id;
         $comment->likes = 0;
         $commentable->comments()->save($comment);
+
+        return $comment;
     }
 
     public function all($method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){
