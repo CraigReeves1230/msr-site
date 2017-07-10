@@ -108,6 +108,7 @@ jQuery.ajax({
     var profile_urls = json_data.profile_urls;
     var image_urls = json_data.image_urls;
     var created_ats = json_data.created_ats;
+    var update_urls = json_data.update_urls;
     var initial_comments = [];
 
     json_data.comments.map(function (comment, index) {
@@ -120,17 +121,23 @@ jQuery.ajax({
         // comments
         initial_comments = [].concat(_toConsumableArray(initial_comments), [{
             profileURL: profile_urls[index],
+            user_id: comment.user.id,
             imageURL: image_urls[index],
             username: comment.user.name,
             createdAt: created_ats[index],
             commentMessage: comment.content,
+            commentUpdateURL: update_urls[index],
             replies: replies,
             id: comment.id,
             comment_reply_link: json_data.comment_reply_link
         }]);
     });
 
-    var initial_state = { comments: initial_comments };
+    var initial_state = {
+        comments: initial_comments,
+        auth_guest: json_data.auth_guest,
+        auth_user: json_data.auth_user
+    };
 
     var store = (0, _redux.createStore)(_reducer2.default, initial_state);
     _reactDom2.default.render(_react2.default.createElement(
@@ -22515,15 +22522,34 @@ var App = function (_Component) {
     }
 
     _createClass(App, [{
+        key: 'renderCommentForm',
+        value: function renderCommentForm() {
+            if (this.props.store.auth_guest == false) {
+                return _react2.default.createElement(_CommentForm2.default, { app: this, postCommentUrl: this.props.data.post_comment_url });
+            } else {
+                return _react2.default.createElement(
+                    'h1',
+                    null,
+                    'Comments'
+                );
+            }
+        }
+    }, {
+        key: 'renderReplyForm',
+        value: function renderReplyForm(comment) {
+            if (this.props.store.auth_guest == false) {
+                return _react2.default.createElement(_ReplyForm2.default, { postReplyURL: comment.comment_reply_link, key: comment.id, comment_id: comment.id, app: this });
+            }
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this2 = this;
 
-            console.log('store state from App render: ', this.props.store);
             return _react2.default.createElement(
                 'div',
                 null,
-                _react2.default.createElement(_CommentForm2.default, { app: this, postCommentUrl: this.props.data.post_comment_url }),
+                this.renderCommentForm(),
                 _react2.default.createElement(
                     'div',
                     { id: 'comments-list', className: 'comments-list' },
@@ -22534,14 +22560,14 @@ var App = function (_Component) {
                             return _react2.default.createElement(
                                 'span',
                                 { key: comment.id },
-                                _react2.default.createElement(_Comment2.default, { profileURL: comment.profileURL, imageURL: comment.imageURL, username: comment.username, createdAt: comment.createdAt, commentMessage: comment.commentMessage }),
+                                _react2.default.createElement(_Comment2.default, { user_id: comment.user_id, app: _this2, profileURL: comment.profileURL, commentUpdateURL: comment.commentUpdateURL, imageURL: comment.imageURL, username: comment.username, createdAt: comment.createdAt, commentMessage: comment.commentMessage }),
                                 _react2.default.createElement(
                                     'ul',
                                     { className: 'comments-list reply-list' },
                                     comment.replies.map(function (reply, index) {
-                                        return _react2.default.createElement(_CommentReply2.default, { key: reply.id, profileURL: reply.profileURL, imageURL: reply.imageURL, username: reply.username, createdAt: reply.createdAt, replyMessage: reply.replyMessage });
+                                        return _react2.default.createElement(_CommentReply2.default, { user_id: reply.user_id, app: _this2, updateReplyURL: reply.updateReplyURL, key: reply.id, profileURL: reply.profileURL, imageURL: reply.imageURL, username: reply.username, createdAt: reply.createdAt, replyMessage: reply.replyMessage });
                                     }),
-                                    _react2.default.createElement(_ReplyForm2.default, { postReplyURL: comment.comment_reply_link, key: comment.id, comment_id: comment.id, app: _this2 })
+                                    _this2.renderReplyForm(comment)
                                 )
                             );
                         })
@@ -22624,13 +22650,12 @@ var CommentForm = function (_Component) {
                 url: url,
                 type: "POST",
                 data: { message_content: text },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 async: true,
                 timeout: 30000,
                 dataType: 'json'
-            }).done(function (data) {
-                var payload = data;
-
-                _this2.props.postComment(text, url, payload);
+            }).done(function (responsedata) {
+                _this2.props.postComment(text, url, responsedata);
                 _this2.props.app.setState(_this2.props.store);
                 _this2.refs.textarea.value = '';
                 _this2.refs.textarea.focus();
@@ -25000,6 +25025,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 var POST_COMMENT = exports.POST_COMMENT = 'POST_COMMENT';
 var POST_REPLY = exports.POST_REPLY = 'POST_REPLY';
+var UPDATE_COMMENT = exports.UPDATE_COMMENT = 'EDIT_COMMENT';
+var UPDATE_REPLY = exports.UPDATE_REPLY = 'UPDATE_REPLY';
 
 /***/ }),
 /* 229 */
@@ -25011,7 +25038,7 @@ var POST_REPLY = exports.POST_REPLY = 'POST_REPLY';
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.postReply = exports.postComment = undefined;
+exports.updateReply = exports.updateComment = exports.postReply = exports.postComment = undefined;
 
 var _constants = __webpack_require__(228);
 
@@ -25027,6 +25054,24 @@ var postComment = exports.postComment = function postComment(text, url, payload)
 var postReply = exports.postReply = function postReply(text, url, payload) {
     return {
         type: _constants.POST_REPLY,
+        postCommentUrl: url,
+        text: text,
+        payload: payload
+    };
+};
+
+var updateComment = exports.updateComment = function updateComment(text, url, payload) {
+    return {
+        type: _constants.UPDATE_COMMENT,
+        postCommentUrl: url,
+        text: text,
+        payload: payload
+    };
+};
+
+var updateReply = exports.updateReply = function updateReply(text, url, payload) {
+    return {
+        type: _constants.UPDATE_REPLY,
         postCommentUrl: url,
         text: text,
         payload: payload
@@ -25051,17 +25096,39 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var reducer = function reducer(state, action) {
     var new_state = state;
     switch (action.type) {
+
         case _constants.POST_COMMENT:
             new_state.comments = [action.payload].concat(_toConsumableArray(state.comments));
             return new_state;
+
         case _constants.POST_REPLY:
-            console.log('action payload from reducer:', action.payload);
             new_state.comments.map(function (comment, index) {
                 if (comment.id == action.payload.comment_id) {
                     comment.replies = [].concat(_toConsumableArray(comment.replies), [action.payload]);
                 }
             });
             return new_state;
+
+        case _constants.UPDATE_COMMENT:
+            new_state.comments.map(function (comment, index) {
+                if (comment.id == action.payload.id) {
+                    comment.commentMessage = action.text;
+                }
+            });
+            return new_state;
+
+        case _constants.UPDATE_REPLY:
+            new_state.comments.map(function (comment, index) {
+                if (action.payload.comment_id == comment.id) {
+                    comment.replies.map(function (reply, index) {
+                        if (action.payload.id == reply.id) {
+                            reply.replyMessage = action.payload.replyMessage;
+                        }
+                    });
+                }
+            });
+            return new_state;
+
         default:
             return state;
     }
@@ -25086,6 +25153,12 @@ var _react = __webpack_require__(82);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _redux = __webpack_require__(189);
+
+var _actions = __webpack_require__(229);
+
+var _reactRedux = __webpack_require__(215);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -25097,63 +25170,203 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Comment = function (_Component) {
     _inherits(Comment, _Component);
 
-    function Comment() {
+    function Comment(props) {
         _classCallCheck(this, Comment);
 
-        return _possibleConstructorReturn(this, (Comment.__proto__ || Object.getPrototypeOf(Comment)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (Comment.__proto__ || Object.getPrototypeOf(Comment)).call(this, props));
+
+        _this.state = {
+            editing: false,
+            text: _this.props.commentMessage
+        };
+        return _this;
     }
 
     _createClass(Comment, [{
-        key: "render",
-        value: function render() {
+        key: 'updateComment',
+        value: function updateComment(event, text, url) {
+            var _this2 = this;
+
+            event.preventDefault();
+
+            $.ajax({
+                data: { message_content: text },
+                url: url,
+                type: 'POST',
+                async: true,
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                timeout: 30000,
+                dataType: 'json'
+            }).done(function (responsedata) {
+                _this2.props.updateComment(text, url, responsedata);
+                _this2.props.app.setState(_this2.props.store);
+                _this2.setState({ editing: false });
+            });
+        }
+    }, {
+        key: 'cancelUpdate',
+        value: function cancelUpdate() {
+            this.setState({ editing: false, text: this.props.commentMessage });
+        }
+    }, {
+        key: 'render_edit',
+        value: function render_edit() {
+            var _this3 = this;
+
             return _react2.default.createElement(
-                "div",
-                { className: "comment-main-level" },
+                'div',
+                { className: 'comment-main-level' },
                 _react2.default.createElement(
-                    "div",
-                    { className: "comment-avatar" },
+                    'div',
+                    { className: 'comment-avatar' },
                     _react2.default.createElement(
-                        "a",
+                        'a',
                         { href: this.props.profileURL },
-                        _react2.default.createElement("img", { src: this.props.imageURL, alt: "" })
+                        _react2.default.createElement('img', { src: this.props.imageURL, alt: '' })
                     )
                 ),
                 _react2.default.createElement(
-                    "div",
-                    { className: "comment-box" },
+                    'div',
+                    { className: 'comment-box' },
                     _react2.default.createElement(
-                        "div",
-                        { className: "comment-head" },
+                        'div',
+                        { className: 'comment-head' },
                         _react2.default.createElement(
-                            "h6",
-                            { className: "comment-name" },
+                            'h6',
+                            { className: 'comment-name' },
                             _react2.default.createElement(
-                                "a",
+                                'a',
                                 { href: this.props.profileURL },
                                 this.props.username
                             )
                         ),
                         _react2.default.createElement(
-                            "span",
+                            'span',
                             { style: { marginTop: 7 } },
-                            "posted ",
+                            'posted ',
                             this.props.createdAt
                         )
                     ),
                     _react2.default.createElement(
-                        "div",
-                        { id: "comment-content", className: "comment-content" },
+                        'form',
+                        { onSubmit: function onSubmit(event) {
+                                _this3.updateComment(event, _this3.state.text, _this3.props.commentUpdateURL);
+                            } },
+                        _react2.default.createElement(
+                            'div',
+                            { id: 'comment-content', className: 'comment-content' },
+                            _react2.default.createElement('textarea', { rows: '4', onChange: function onChange(event) {
+                                    return _this3.setState({ text: event.target.value });
+                                }, className: 'form-control', value: this.state.text })
+                        ),
+                        _react2.default.createElement(
+                            'span',
+                            null,
+                            _react2.default.createElement(
+                                'button',
+                                { onClick: function onClick() {
+                                        return _this3.cancelUpdate();
+                                    },
+                                    style: { float: "right", marginBottom: 12, marginRight: 12 }, value: 'CANCEL', type: 'submit', className: 'btn btn-danger btn-circle' },
+                                'CANCEL'
+                            ),
+                            _react2.default.createElement('input', { style: { float: "right", marginBottom: 12, marginRight: 12 }, value: 'SAVE CHANGES', type: 'submit', className: 'btn btn-success btn-circle' })
+                        )
+                    )
+                )
+            );
+        }
+    }, {
+        key: 'renderEditButton',
+        value: function renderEditButton() {
+            var _this4 = this;
+
+            if (this.props.store.auth_guest == false) {
+                if (this.props.store.auth_user.id == this.props.user_id) {
+                    return _react2.default.createElement(
+                        'span',
+                        null,
+                        _react2.default.createElement(
+                            'button',
+                            { onClick: function onClick() {
+                                    return _this4.setState({ editing: true });
+                                }, style: { marginLeft: 30 },
+                                className: 'btn btn-default btn-circle' },
+                            'EDIT'
+                        )
+                    );
+                }
+            }
+        }
+    }, {
+        key: 'render_display',
+        value: function render_display() {
+            return _react2.default.createElement(
+                'div',
+                { className: 'comment-main-level' },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'comment-avatar' },
+                    _react2.default.createElement(
+                        'a',
+                        { href: this.props.profileURL },
+                        _react2.default.createElement('img', { src: this.props.imageURL, alt: '' })
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'comment-box' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'comment-head' },
+                        _react2.default.createElement(
+                            'h6',
+                            { className: 'comment-name' },
+                            _react2.default.createElement(
+                                'a',
+                                { href: this.props.profileURL },
+                                this.props.username
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'span',
+                            { style: { marginTop: 7 } },
+                            'posted ',
+                            this.props.createdAt
+                        ),
+                        this.renderEditButton()
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { id: 'comment-content', className: 'comment-content' },
                         this.props.commentMessage
                     )
                 )
             );
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            if (this.state.editing == true) {
+                return this.render_edit();
+            } else {
+                return this.render_display();
+            }
         }
     }]);
 
     return Comment;
 }(_react.Component);
 
-exports.default = Comment;
+function mapStateToProps(store) {
+    return { store: store };
+}
+
+function mapDispatchToProps(dispatch) {
+    return (0, _redux.bindActionCreators)({ updateComment: _actions.updateComment }, dispatch);
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Comment);
 
 /***/ }),
 /* 232 */
@@ -25174,6 +25387,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _redux = __webpack_require__(189);
 
+var _actions = __webpack_require__(229);
+
 var _reactRedux = __webpack_require__(215);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -25187,15 +25402,70 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var CommentReply = function (_Component) {
     _inherits(CommentReply, _Component);
 
-    function CommentReply() {
+    function CommentReply(props) {
         _classCallCheck(this, CommentReply);
 
-        return _possibleConstructorReturn(this, (CommentReply.__proto__ || Object.getPrototypeOf(CommentReply)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (CommentReply.__proto__ || Object.getPrototypeOf(CommentReply)).call(this, props));
+
+        _this.state = {
+            text: _this.props.replyMessage,
+            editing: false
+        };
+        return _this;
     }
 
     _createClass(CommentReply, [{
-        key: 'render',
-        value: function render() {
+        key: 'updateReply',
+        value: function updateReply(event, text, url) {
+            var _this2 = this;
+
+            event.preventDefault();
+
+            $.ajax({
+                data: { reply_content: text },
+                url: url,
+                type: 'POST',
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                async: true,
+                timeout: 30000,
+                dataType: 'json'
+            }).done(function (responsedata) {
+                _this2.props.updateReply(text, url, responsedata);
+                _this2.props.app.setState(_this2.props.store);
+                _this2.setState({ editing: false });
+            });
+        }
+    }, {
+        key: 'cancelUpdate',
+        value: function cancelUpdate() {
+            this.setState({ editing: false, text: this.props.replyMessage });
+        }
+    }, {
+        key: 'renderEditButton',
+        value: function renderEditButton() {
+            var _this3 = this;
+
+            if (this.props.store.auth_guest == false) {
+                if (this.props.store.auth_user.id == this.props.user_id) {
+                    return _react2.default.createElement(
+                        'span',
+                        null,
+                        _react2.default.createElement(
+                            'button',
+                            { onClick: function onClick() {
+                                    return _this3.setState({ editing: true });
+                                }, style: { marginLeft: 30 }, className: 'btn btn-default btn-circle' },
+                            'EDIT'
+                        )
+                    );
+                }
+            }
+        }
+    }, {
+        key: 'render_edit',
+        value: function render_edit() {
+            var _this4 = this;
+
             return _react2.default.createElement(
                 'li',
                 null,
@@ -25231,6 +25501,73 @@ var CommentReply = function (_Component) {
                         )
                     ),
                     _react2.default.createElement(
+                        'form',
+                        { onSubmit: function onSubmit(event) {
+                                return _this4.updateReply(event, _this4.state.text, _this4.props.updateReplyURL);
+                            } },
+                        _react2.default.createElement(
+                            'div',
+                            { id: 'reply-content', className: 'comment-content' },
+                            _react2.default.createElement('textarea', { rows: '4', onChange: function onChange(event) {
+                                    return _this4.setState({ text: event.target.value });
+                                }, className: 'form-control', value: this.state.text })
+                        ),
+                        _react2.default.createElement(
+                            'span',
+                            null,
+                            _react2.default.createElement(
+                                'button',
+                                { onClick: function onClick() {
+                                        return _this4.cancelUpdate();
+                                    },
+                                    style: { float: "right", marginBottom: 12, marginRight: 12 }, value: 'CANCEL', type: 'submit', className: 'btn btn-danger btn-circle' },
+                                'CANCEL'
+                            ),
+                            _react2.default.createElement('input', { style: { float: "right", marginBottom: 12, marginRight: 12 }, value: 'SAVE CHANGES', type: 'submit', className: 'btn btn-success btn-circle' })
+                        )
+                    )
+                )
+            );
+        }
+    }, {
+        key: 'render_display',
+        value: function render_display() {
+            return _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                    'div',
+                    { className: 'comment-avatar' },
+                    _react2.default.createElement(
+                        'a',
+                        { href: this.props.profileURL },
+                        _react2.default.createElement('img', { src: this.props.imageURL, alt: '' })
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'comment-box' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'comment-head' },
+                        _react2.default.createElement(
+                            'h6',
+                            { className: 'comment-name' },
+                            _react2.default.createElement(
+                                'a',
+                                { href: this.props.profileURL },
+                                this.props.username
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'span',
+                            { style: { marginTop: 7 } },
+                            'posted ',
+                            this.props.createdAt
+                        ),
+                        this.renderEditButton()
+                    ),
+                    _react2.default.createElement(
                         'div',
                         { id: 'reply-content', className: 'comment-content' },
                         this.props.replyMessage
@@ -25238,12 +25575,29 @@ var CommentReply = function (_Component) {
                 )
             );
         }
+    }, {
+        key: 'render',
+        value: function render() {
+            if (this.state.editing == false) {
+                return this.render_display();
+            } else {
+                return this.render_edit();
+            }
+        }
     }]);
 
     return CommentReply;
 }(_react.Component);
 
-exports.default = CommentReply;
+function mapStateToProps(store) {
+    return { store: store };
+}
+
+function mapDispatchToProps(dispatch) {
+    return (0, _redux.bindActionCreators)({ updateReply: _actions.updateReply }, dispatch);
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CommentReply);
 
 /***/ }),
 /* 233 */
@@ -25303,6 +25657,7 @@ var ReplyForm = function (_Component) {
                 url: url,
                 type: "POST",
                 data: { reply_content: text, comment_id: this.props.comment_id },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 async: true,
                 timeout: 30000,
                 dataType: 'json'
@@ -25327,8 +25682,6 @@ var ReplyForm = function (_Component) {
         value: function render() {
             var _this3 = this;
 
-            console.log('App prop from reply form: ', this.props.app);
-            console.log('Post Reply URL: ', this.props.postReplyURL);
             return _react2.default.createElement(
                 'span',
                 null,

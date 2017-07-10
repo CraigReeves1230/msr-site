@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Post;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -25,10 +26,12 @@ class HomeController extends Controller
             $profile_urls = [];
             $created_ats = [];
             $replies = [];
+            $update_urls = [];
             foreach($comments as $comment){
                 array_push($image_urls, $comment->user->images[0]->path);
                 array_push($profile_urls, route('user_profile', ['id' => $comment->user->id]));
                 array_push($created_ats, $comment->created_at->diffForHumans());
+                array_push($update_urls, route('update_post_comment', ['comment_id' => $comment->id]));
 
                 // this is for replies
                 foreach($comment->replies as $reply){
@@ -40,6 +43,8 @@ class HomeController extends Controller
                         'replyMessage' => $reply->content,
                         'comment_id' => $reply->comment->id,
                         'id' => $reply->id,
+                        'user_id' => $reply->user->id,
+                        'updateReplyURL' => route('update_post_comment_reply', ['reply_id' => $reply->id])
                     ]);
                 }
             }
@@ -50,8 +55,9 @@ class HomeController extends Controller
             return response()->json([
                 "post" => $post, "comments" => $comments, "image_urls" => $image_urls,
                 "profile_urls" => $profile_urls, "created_ats" => $created_ats,
-                "post_comment_url" => $post_comment_url, "replies" => $replies,
-                "comment_reply_link" => route('save_post_comment_reply')
+                "post_comment_url" => $post_comment_url, "update_urls" => $update_urls, "replies" => $replies,
+                "comment_reply_link" => route('save_post_comment_reply'), "auth_user" => Auth::user(),
+                "auth_guest" => Auth::guest()
             ]);
         }
 

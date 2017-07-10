@@ -28,6 +28,12 @@ Route::group(['middlewareGroups' => 'web'], function(){
     // Post comments
     Route::post('post/comment/create/{post_id}', 'PostCommentsController@store_comment')->name('save_post_comment');
 
+    // Update comment
+    Route::post('post/comment/update/{comment_id}', 'PostCommentsController@update_comment')->name('update_post_comment');
+
+    // Update reply
+    Route::post('post/comment/reply/update/{reply_id}', 'PostCommentsController@update_reply')->name('update_post_comment_reply');
+
     // Post comment replies
     Route::post('post/reply/create', 'PostCommentsController@store_reply')->name('save_post_comment_reply');
 

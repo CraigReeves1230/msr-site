@@ -38,4 +38,8 @@ class CommentReplyRepository
         return $reply;
     }
 
+    public function find($id){
+        return CommentReply::find($id);
+    }
+
 }

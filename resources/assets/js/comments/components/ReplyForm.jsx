@@ -22,6 +22,7 @@ class ReplyForm extends Component {
             url: url,
             type: "POST",
             data: {reply_content: text, comment_id: this.props.comment_id},
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             async: true,
             timeout: 30000,
             dataType: 'json'
@@ -42,8 +43,6 @@ class ReplyForm extends Component {
     }
 
     render(){
-        console.log('App prop from reply form: ', this.props.app);
-        console.log('Post Reply URL: ', this.props.postReplyURL);
         return(
             <span>
                 <button onClick={() => this.toggleVisible()} className="btn btn-default btn-circle text-uppercase">Toggle Reply</button>
@@ -51,7 +50,7 @@ class ReplyForm extends Component {
                     <form onSubmit={(event) => this.postReply(event, this.state.text, this.props.postReplyURL)} className="reply-form">
                         <div className="form-group" style={{marginTop: 10}}>
                             <label><h4>Comment Reply</h4></label>
-                            <textarea onChange={(event) => this.setState({text: event.target.value})} ref="textarea" id="reply-content" className="form-control" name="reply_content" rows="3"></textarea>
+                            <textarea onChange={(event) => this.setState({text: event.target.value})} ref="textarea" id="reply-content" className="form-control" name="reply_content" rows="3"/>
                             <input type="hidden" value="{{$comment->id}}" name="comment_id" />
                             <input type="submit" value="Submit Reply" style={{marginTop: 10}} className="btn btn-primary" name="submit_reply"/>
                         </div>

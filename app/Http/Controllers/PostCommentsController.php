@@ -68,7 +68,9 @@ class PostCommentsController extends Controller
                 "commentMessage" => $comment->content,
                 "id" => $comment->id,
                 "replies" => $replies_array,
-                "comment_reply_link" => route('save_post_comment_reply')
+                "comment_reply_link" => route('save_post_comment_reply'),
+                "user_id" => $comment->user->id,
+                "commentUpdateURL" => route('update_post_comment', ['comment_id' => $comment->id])
             ];
 
             return response()->json($json_payload);
@@ -87,6 +89,32 @@ class PostCommentsController extends Controller
         $comment = $this->comments_repository->save($post, $request);
 
         return redirect()->back();
+    }
+
+    public function update_comment(Request $request, $comment_id){
+
+        // get the comment being edited and change the content
+        $comment = $this->comments_repository->find($comment_id);
+
+        if($comment->user == Auth::user()){
+            $comment->content = $request->message_content;
+            $comment->save();
+        }
+
+        // form json payload to send response
+        $json_payload = [
+            "profileURL" => route('user_profile', ['id' => $comment->user->id]),
+            "imageURL" => $comment->user->images[0]->path,
+            "username" => $comment->user->name,
+            "createdAt" => $comment->created_at->diffForHumans(),
+            "commentMessage" => $comment->content,
+            "id" => $comment->id,
+            "comment_reply_link" => route('save_post_comment_reply'),
+            "user_id" => $comment->user->id,
+            "commentUpdateURL" => route('update_post_comment', ['comment_id' => $comment->id])
+        ];
+
+        return response()->json($json_payload);
     }
 
     public function store_reply(Request $request){
@@ -109,7 +137,10 @@ class PostCommentsController extends Controller
                 "profileURL" => route('user_profile', ['id' => $reply->user->id]),
                 "id" => $reply->id, "imageURL" => $reply->user->images[0]->path,
                 "username" => $reply->user->name, "createdAt" => $reply->created_at->diffForHumans(),
-                "replyMessage" => $reply->content, "comment_id" => $reply->comment->id
+                "replyMessage" => $reply->content, "comment_id" => $reply->comment->id,
+                'update_reply_url' => route('update_post_comment_reply', ['reply_id' => $reply->id]),
+                "user_id" => $reply->user->id,
+                'updateReplyURL' => route('update_post_comment_reply', ['reply_id' => $reply->id])
             ];
 
             return response()->json($json_payload);
@@ -129,4 +160,31 @@ class PostCommentsController extends Controller
         return redirect()->back();
 
     }
+
+    public function update_reply(Request $request, $reply_id){
+
+        // get the comment being edited and change the content
+        $reply = $this->comment_reply_repository->find($reply_id);
+
+      //  if($reply->user == Auth::user()){
+            $reply->content = $request->reply_content;
+            $reply->save();
+       // }
+
+        // form json payload to send response
+        $json_payload = [
+            "profileURL" => route('user_profile', ['id' => $reply->user->id]),
+            "imageURL" => $reply->user->images[0]->path,
+            "username" => $reply->user->name,
+            "createdAt" => $reply->created_at->diffForHumans(),
+            "replyMessage" => $reply->content,
+            "comment_id" => $reply->comment->id,
+            "id" => $reply->id,
+            'updateReplyURL' => route('update_post_comment_reply', ['reply_id' => $reply->id]),
+            "user_id" => $reply->user_id
+        ];
+
+        return response()->json($json_payload);
+    }
+
 }

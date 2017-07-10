@@ -14,24 +14,43 @@ class App extends Component{
         this.state = this.props.store;
     }
 
+    renderCommentForm(){
+        if(this.props.store.auth_guest == false){
+            return(
+                <CommentForm app={this} postCommentUrl={this.props.data.post_comment_url} />
+            )
+        } else {
+            return(
+                <h1>Comments</h1>
+            );
+        }
+    }
+
+    renderReplyForm(comment){
+        if(this.props.store.auth_guest == false){
+            return(
+                <ReplyForm postReplyURL={comment.comment_reply_link} key={comment.id} comment_id={comment.id} app={this} />
+            );
+        }
+    }
+
     render(){
-        console.log('store state from App render: ', this.props.store);
         return(
             <div>
-                <CommentForm app={this} postCommentUrl={this.props.data.post_comment_url} />
+                {this.renderCommentForm()}
                 <div id="comments-list" className="comments-list">
                     <li>
                         {this.state.comments.map((comment, index) => {
                             return(
                             <span key={comment.id}>
-                                <Comment profileURL={comment.profileURL} imageURL={comment.imageURL} username={comment.username} createdAt={comment.createdAt} commentMessage={comment.commentMessage}/>
+                                <Comment user_id={comment.user_id} app={this} profileURL={comment.profileURL} commentUpdateURL={comment.commentUpdateURL} imageURL={comment.imageURL} username={comment.username} createdAt={comment.createdAt} commentMessage={comment.commentMessage}/>
                                 <ul className="comments-list reply-list">
                                     {comment.replies.map((reply, index) => {
                                     return(
-                                        <CommentReply key={reply.id} profileURL={reply.profileURL} imageURL={reply.imageURL} username={reply.username} createdAt={reply.createdAt} replyMessage={reply.replyMessage}/>
+                                        <CommentReply user_id={reply.user_id} app={this} updateReplyURL={reply.updateReplyURL} key={reply.id} profileURL={reply.profileURL} imageURL={reply.imageURL} username={reply.username} createdAt={reply.createdAt} replyMessage={reply.replyMessage}/>
                                     );
                                     })}
-                                    <ReplyForm postReplyURL={comment.comment_reply_link} key={comment.id} comment_id={comment.id} app={this} />
+                                    {this.renderReplyForm(comment)}
                                 </ul>
                             </span>
                             );
