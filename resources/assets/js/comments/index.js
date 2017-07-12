@@ -48,7 +48,8 @@ jQuery.ajax({
     const initial_state = {
                             comments: initial_comments,
                             auth_guest: json_data.auth_guest,
-                            auth_user: json_data.auth_user
+                            auth_user: json_data.auth_user,
+                            is_locked: json_data.is_locked
                           };
 
     const store = createStore(reducer, initial_state);

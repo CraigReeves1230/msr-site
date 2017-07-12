@@ -16,20 +16,32 @@ class App extends Component{
 
     renderCommentForm(){
         if(this.props.store.auth_guest == false){
-            return(
-                <CommentForm app={this} postCommentUrl={this.props.data.post_comment_url} />
-            )
-        } else {
-            return(
-                <h1>Comments</h1>
-            );
+            if(this.props.store.is_locked == false) {
+                return (
+                    <CommentForm app={this} postCommentUrl={this.props.data.post_comment_url}/>
+                )
+            }
         }
     }
 
     renderReplyForm(comment){
-        if(this.props.store.auth_guest == false){
+        if(this.props.store.auth_guest == false) {
+            if (this.props.store.is_locked == false) {
+                return (
+                    <ReplyForm postReplyURL={comment.comment_reply_link} key={comment.id} comment_id={comment.id}
+                               app={this}/>
+                );
+            }
+        }
+    }
+
+    renderLocked(){
+        if(this.props.store.is_locked == true){
             return(
-                <ReplyForm postReplyURL={comment.comment_reply_link} key={comment.id} comment_id={comment.id} app={this} />
+                <span>
+                    <i className="fa fa-lock" />
+                    <b style={{fontSize: 24}}> LOCKED</b>
+                </span>
             );
         }
     }
@@ -37,6 +49,7 @@ class App extends Component{
     render(){
         return(
             <div>
+                {this.renderLocked()}
                 {this.renderCommentForm()}
                 <div id="comments-list" className="comments-list">
                     <li>

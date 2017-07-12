@@ -47,7 +47,7 @@ class Comment extends Component {
                     </div>
                     <form onSubmit={(event) => {this.updateComment(event, this.state.text, this.props.commentUpdateURL);}}>
                         <div id="comment-content" className="comment-content">
-                            <textarea rows="4" onChange={(event) => this.setState({text: event.target.value})} className="form-control" value={this.state.text}/>
+                            <textarea rows="7" onChange={(event) => this.setState({text: event.target.value})} className="form-control" value={this.state.text}/>
                         </div>
                         <span>
                             <button onClick={() => this.cancelUpdate()}
@@ -60,16 +60,20 @@ class Comment extends Component {
         )
     }
 
-    renderEditButton(){
-        if(this.props.store.auth_guest == false) {
-            if (this.props.store.auth_user.id == this.props.user_id) {
-                return (
-                    <span><button onClick={() => this.setState({editing: true})} style={{marginLeft: 30}}
-                                  className="btn btn-default btn-circle">EDIT</button></span>
-                );
+    renderEditButton() {
+        if (this.props.store.auth_guest == false) {
+            if (this.props.store.is_locked == false) {
+                if (this.props.store.auth_user.id == this.props.user_id) {
+                    return (
+                        <span><button onClick={() => this.setState({editing: true})} style={{marginLeft: 30}}
+                                      className="btn btn-default btn-circle">EDIT</button></span>
+                    );
+                }
             }
         }
     }
+
+
 
     render_display(){
         return(

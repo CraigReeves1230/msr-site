@@ -136,7 +136,8 @@ jQuery.ajax({
     var initial_state = {
         comments: initial_comments,
         auth_guest: json_data.auth_guest,
-        auth_user: json_data.auth_user
+        auth_user: json_data.auth_user,
+        is_locked: json_data.is_locked
     };
 
     var store = (0, _redux.createStore)(_reducer2.default, initial_state);
@@ -22525,20 +22526,35 @@ var App = function (_Component) {
         key: 'renderCommentForm',
         value: function renderCommentForm() {
             if (this.props.store.auth_guest == false) {
-                return _react2.default.createElement(_CommentForm2.default, { app: this, postCommentUrl: this.props.data.post_comment_url });
-            } else {
-                return _react2.default.createElement(
-                    'h1',
-                    null,
-                    'Comments'
-                );
+                if (this.props.store.is_locked == false) {
+                    return _react2.default.createElement(_CommentForm2.default, { app: this, postCommentUrl: this.props.data.post_comment_url });
+                }
             }
         }
     }, {
         key: 'renderReplyForm',
         value: function renderReplyForm(comment) {
             if (this.props.store.auth_guest == false) {
-                return _react2.default.createElement(_ReplyForm2.default, { postReplyURL: comment.comment_reply_link, key: comment.id, comment_id: comment.id, app: this });
+                if (this.props.store.is_locked == false) {
+                    return _react2.default.createElement(_ReplyForm2.default, { postReplyURL: comment.comment_reply_link, key: comment.id, comment_id: comment.id,
+                        app: this });
+                }
+            }
+        }
+    }, {
+        key: 'renderLocked',
+        value: function renderLocked() {
+            if (this.props.store.is_locked == true) {
+                return _react2.default.createElement(
+                    'span',
+                    null,
+                    _react2.default.createElement('i', { className: 'fa fa-lock' }),
+                    _react2.default.createElement(
+                        'b',
+                        { style: { fontSize: 24 } },
+                        ' LOCKED'
+                    )
+                );
             }
         }
     }, {
@@ -22549,6 +22565,7 @@ var App = function (_Component) {
             return _react2.default.createElement(
                 'div',
                 null,
+                this.renderLocked(),
                 this.renderCommentForm(),
                 _react2.default.createElement(
                     'div',
@@ -25255,7 +25272,7 @@ var Comment = function (_Component) {
                         _react2.default.createElement(
                             'div',
                             { id: 'comment-content', className: 'comment-content' },
-                            _react2.default.createElement('textarea', { rows: '4', onChange: function onChange(event) {
+                            _react2.default.createElement('textarea', { rows: '7', onChange: function onChange(event) {
                                     return _this3.setState({ text: event.target.value });
                                 }, className: 'form-control', value: this.state.text })
                         ),
@@ -25282,19 +25299,21 @@ var Comment = function (_Component) {
             var _this4 = this;
 
             if (this.props.store.auth_guest == false) {
-                if (this.props.store.auth_user.id == this.props.user_id) {
-                    return _react2.default.createElement(
-                        'span',
-                        null,
-                        _react2.default.createElement(
-                            'button',
-                            { onClick: function onClick() {
-                                    return _this4.setState({ editing: true });
-                                }, style: { marginLeft: 30 },
-                                className: 'btn btn-default btn-circle' },
-                            'EDIT'
-                        )
-                    );
+                if (this.props.store.is_locked == false) {
+                    if (this.props.store.auth_user.id == this.props.user_id) {
+                        return _react2.default.createElement(
+                            'span',
+                            null,
+                            _react2.default.createElement(
+                                'button',
+                                { onClick: function onClick() {
+                                        return _this4.setState({ editing: true });
+                                    }, style: { marginLeft: 30 },
+                                    className: 'btn btn-default btn-circle' },
+                                'EDIT'
+                            )
+                        );
+                    }
                 }
             }
         }
@@ -25446,18 +25465,21 @@ var CommentReply = function (_Component) {
             var _this3 = this;
 
             if (this.props.store.auth_guest == false) {
-                if (this.props.store.auth_user.id == this.props.user_id) {
-                    return _react2.default.createElement(
-                        'span',
-                        null,
-                        _react2.default.createElement(
-                            'button',
-                            { onClick: function onClick() {
-                                    return _this3.setState({ editing: true });
-                                }, style: { marginLeft: 30 }, className: 'btn btn-default btn-circle' },
-                            'EDIT'
-                        )
-                    );
+                if (this.props.store.is_locked == false) {
+                    if (this.props.store.auth_user.id == this.props.user_id) {
+                        return _react2.default.createElement(
+                            'span',
+                            null,
+                            _react2.default.createElement(
+                                'button',
+                                { onClick: function onClick() {
+                                        return _this3.setState({ editing: true });
+                                    }, style: { marginLeft: 30 },
+                                    className: 'btn btn-default btn-circle' },
+                                'EDIT'
+                            )
+                        );
+                    }
                 }
             }
         }
@@ -25508,7 +25530,7 @@ var CommentReply = function (_Component) {
                         _react2.default.createElement(
                             'div',
                             { id: 'reply-content', className: 'comment-content' },
-                            _react2.default.createElement('textarea', { rows: '4', onChange: function onChange(event) {
+                            _react2.default.createElement('textarea', { rows: '7', onChange: function onChange(event) {
                                     return _this4.setState({ text: event.target.value });
                                 }, className: 'form-control', value: this.state.text })
                         ),

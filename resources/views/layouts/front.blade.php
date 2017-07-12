@@ -116,7 +116,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="site-heading">
+                <div class="site-heading" style="filter: brightness(100%)">
                     <h1>@yield('page_title')</h1><br><br><br>
                     <h3>@yield('page_subtitle')</h3>
                 </div>

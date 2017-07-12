@@ -57,7 +57,7 @@ class HomeController extends Controller
                 "profile_urls" => $profile_urls, "created_ats" => $created_ats,
                 "post_comment_url" => $post_comment_url, "update_urls" => $update_urls, "replies" => $replies,
                 "comment_reply_link" => route('save_post_comment_reply'), "auth_user" => Auth::user(),
-                "auth_guest" => Auth::guest()
+                "auth_guest" => Auth::guest(), "is_locked" => $post->locked
             ]);
         }
 
