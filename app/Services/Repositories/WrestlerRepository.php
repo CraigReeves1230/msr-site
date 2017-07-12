@@ -241,7 +241,7 @@ class WrestlerRepository
     }
 
     public function find($id){
-        return Wrestler::findOrFail($id);
+        return Wrestler::find($id);
     }
 
     public function where($column, $operand, $value, $method = 'get', $per_page = 10, $order_index = 'id', $order = 'desc'){

@@ -54,6 +54,7 @@ jQuery.ajax({
 
     const store = createStore(reducer, initial_state);
     ReactDOM.render(<Provider store={store}><App data={json_data} /></Provider>, document.getElementById('root'));
+
 });
 
 

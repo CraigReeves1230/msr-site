@@ -12,7 +12,7 @@ const reducer = function(state, action) {
         case POST_REPLY:
             new_state.comments.map((comment, index) => {
                 if(comment.id == action.payload.comment_id){
-                    comment.replies = [...comment.replies, action.payload]
+                    comment.replies = [...comment.replies, action.payload];
                 }
             });
             return new_state;

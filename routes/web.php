@@ -168,8 +168,10 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::get('/wres_profile/{id}', 'UserWrestlersController@show')->name('wrestler_profile');
     Route::get('/wres_profile/fav/{id}', 'UserWrestlersController@favorite')->name('wrestler_fav');
     Route::get('/wres_profile/unfollow/{id}', 'UserWrestlersController@unfollow')->name('wrestler_unfollow');
-    Route::post('/wres_profile/comment', 'UserWrestlersController@store_comment')->name('save_wrestler_comment');
+    Route::post('/wres_profile/comment/{wrestler_id}', 'UserWrestlersController@store_comment')->name('save_wrestler_comment');
     Route::post('/wres_profile/reply', 'UserWrestlersController@store_reply')->name('save_wrestler_comment_reply');
+    Route::post('/wres_profile/reply/{id}/update', 'UserWrestlersController@update_reply')->name('update_wrestler_comment_reply');
+    Route::post('/wres_profile/comment/{id}/update', 'UserWrestlersController@update_comment');
 
     /*
     |----------------------------------------------------------------------------
@@ -184,7 +186,6 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::get('/user_dashboard/my_favorites', 'UserDashboardController@my_favorites')->name('my_favorites');
     Route::delete('/user_dashboard/my_ratings/{id}/delete_rating', 'UserDashboardController@delete_rating')->name('user_delete_rating');
     Route::get('/user_dashboard/my_favorite/{id}/remove', 'UserDashboardController@remove_favorite')->name('remove_favorite');
-
 
     // Private messages index
     Route::get('/user_dashboard/messages', 'PrivateMessagesController@see_messages')->name('pm_index');
