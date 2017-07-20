@@ -224,6 +224,14 @@ Route::group(['middlewareGroups' => 'web'], function(){
     Route::get('password_reset/{id}/new_password/{key}', 'PasswordResetController@new_password')->name('new_password_reset');
     Route::post('password_reset/{id}/change/{key}', 'PasswordResetController@change_password')->name('change_password');
 
+    /*
+   |----------------------------------------------------------------------------
+   | Community page
+   |--------------------------------------------------------------------------*/
+    Route::get('/community/home', function(){
+        return view('community.home');
+    })->name('community_home');
+
 });
 
 Auth::routes();

@@ -1,0 +1,244 @@
+
+body{
+    background-image: url('/img/community_background.jpg');
+}
+
+.search-main{
+    background-color: darkred;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.search-area{
+    background-color: inherit;
+}
+
+.search-field{
+    background-image: -webkit-linear-gradient(top, #f5f5f5, #d1d1d1);
+    background-image: -moz-linear-gradient(top, #f5f5f5, #d1d1d1);
+    background-image: -ms-linear-gradient(top, #f5f5f5, #d1d1d1);
+    background-image: -o-linear-gradient(top, #f5f5f5, #d1d1d1);
+    background-image: linear-gradient(to bottom, #f5f5f5, #d1d1d1);
+    border-style: none;
+}
+
+.search-field:focus{
+    background-color: #d1d1d1;
+    border-style: none;
+}
+
+.search-button{
+    margin: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.search-input-group {
+    background-color: inherit;
+    height: 30px;
+}
+
+.navigation{
+    background-color: darkgray;
+}
+
+img{
+    border-radius: 10px;
+}
+
+.nav-link {
+    color: white;
+    font-size: 1.2rem;
+    font-family: 'Verdana', 'sans-serif';
+    border-radius: 10px;
+    transition: .3s;
+}
+
+.nav-link:hover {
+    color: white;
+    background-color: #5e5e5e;
+}
+
+.title{
+    background-color: black;
+}
+
+.header-text{
+    color: white;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    font-family: 'Anton', 'sans-serif';
+}
+
+.site-body{
+    background-color: black;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.news-section{
+    margin-top: 120px;
+}
+
+.news-section hr {
+    border-style: groove;
+}
+
+.news-card{
+    margin-bottom: 40px;
+}
+
+.news-box{
+    background-color: #acacac;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.news-post{
+    margin: 10px;
+}
+
+hr{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border-color: darkgray;
+}
+
+h1 {
+    color: white;
+    font-family: 'News Cycle', 'sans-serif';
+    text-align: center;
+}
+
+.article-title{
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: grey;
+    font-family: 'News Cycle', 'sans-serif';
+    text-align: center;
+    font-size: 1.50rem;
+}
+
+.post-title{
+    color: lightgray;
+    font-weight: bold;
+    font-size: 1.4rem;
+    font-family: 'News Cycle', 'serif';
+    font-style: italic;
+}
+
+.post{
+    margin-top: 60px;
+}
+
+.post-author{
+    color: #acacac;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: bold;
+    font-size: 1.0rem;
+    margin-top: 10px;
+}
+
+.btn-primary{
+    border-style: none;
+    background: #d9343c;
+    background-image: -webkit-linear-gradient(top, #d9343c, #7a0000);
+    background-image: -moz-linear-gradient(top, #d9343c, #7a0000);
+    background-image: -ms-linear-gradient(top, #d9343c, #7a0000);
+    background-image: -o-linear-gradient(top, #d9343c, #7a0000);
+    background-image: linear-gradient(to bottom, #d9343c, #7a0000);
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background: #fc3c3c;
+    background-image: -webkit-linear-gradient(top, #fc3c3c, #cf0202);
+    background-image: -moz-linear-gradient(top, #fc3c3c, #cf0202);
+    background-image: -ms-linear-gradient(top, #fc3c3c, #cf0202);
+    background-image: -o-linear-gradient(top, #fc3c3c, #cf0202);
+    background-image: linear-gradient(to bottom, #fc3c3c, #cf0202);
+    text-decoration: none;
+}
+
+.post-text{
+    color: #5e5e5e;
+    margin-top: 30px;
+    font-size: 1.2rem;
+    font-family: 'Crete Round', 'serif';
+}
+
+.aside{
+    margin-top:120px;
+}
+
+.top-wrestlers{
+    margin-bottom: 40px;
+}
+
+.rankings-table {
+    margin-top: 20px;
+    color: lightgrey;
+    font-family: 'Crete Round', 'serif';
+}
+
+.table td{
+    background: #595959;
+    background-image: -webkit-linear-gradient(top, #595959, #1c1c1c);
+    background-image: -moz-linear-gradient(top, #595959, #1c1c1c);
+    background-image: -ms-linear-gradient(top, #595959, #1c1c1c);
+    background-image: -o-linear-gradient(top, #595959, #1c1c1c);
+    background-image: linear-gradient(to bottom, #595959, #1c1c1c);
+}
+
+.table tbody tr:hover td, .table tbody tr:hover th {
+    background: black;
+}
+
+thead{
+    font-family: 'arial', 'sans-serif';
+    background-color: #9c3328;
+}
+
+tr{
+    border-style: groove;
+}
+
+.see-more a{
+    font-family: 'News Cycle', 'serif';
+    color: #acacac;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.see-more a:hover {
+    color: white;
+    font-weight: bold;
+}
+
+/* For mobile and smaller screens */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
